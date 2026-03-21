@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EventHub — Student Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --purple:#5B4FE8;--purple-dark:#3D35C0;--purple-light:#EAE8FD;--purple-faint:#F4F3FE;
+  --teal:#0ABFA3;--teal-light:#E0F8F5;
+  --red:#E84F4F;--red-light:#FDF0F0;
+  --green:#22C55E;--green-light:#F0FDF4;
+  --amber:#F59E0B;--amber-light:#FFFBEB;
+  --bg:#F9FAFB;--surface:#FFFFFF;--surface2:#F3F4F6;
+  --text:#111827;--text2:#6B7280;--text3:#9CA3AF;
+  --border:#E5E7EB;--sidebar:220px;
+}
+[data-theme="dark"]{
+  --bg:#0F1117;--surface:#1A1D27;--surface2:#222636;
+  --text:#F1F5F9;--text2:#94A3B8;--text3:#64748B;
+  --border:#2D3148;--purple-faint:#1E1B3A;--purple-light:#2D2860;
+  --teal-light:#0D2E2A;--green-light:#0D2416;
+  --amber-light:#2A1F00;--red-light:#2A0E0E;
+}
+
+html,body{height:100%;font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);font-size:14px;transition:background 0.2s,color 0.2s}
+
+/* ── LAYOUT ── */
+.app{display:flex;min-height:100vh}
+
+/* ── SIDEBAR ── */
+.sidebar{
+  width:var(--sidebar);flex-shrink:0;background:var(--surface);
+  border-right:1px solid var(--border);
+  display:flex;flex-direction:column;
+  position:fixed;top:0;left:0;bottom:0;z-index:200;
+  transition:transform 0.28s ease,background 0.2s
+}
+.sidebar-logo{display:flex;align-items:center;gap:9px;padding:15px 14px;border-bottom:1px solid var(--border);text-decoration:none}
+.logo-icon{width:30px;height:30px;border-radius:8px;background:var(--purple);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.logo-icon svg{width:15px;height:15px}
+.logo-text{font-size:15px;font-weight:700;color:var(--text)}
+.logo-text span{color:var(--purple)}
+.student-badge{
+  margin:10px 14px;padding:6px 10px;border-radius:8px;
+  background:var(--purple-light);border:1px solid rgba(91,79,232,0.2);
+  display:flex;align-items:center;gap:7px;font-size:12px;font-weight:600;color:var(--purple)
+}
+.student-badge svg{width:13px;height:13px;flex-shrink:0}
+.sidebar-nav{flex:1;padding:8px;display:flex;flex-direction:column;gap:1px;overflow-y:auto}
+.nav-label{font-size:10px;font-weight:600;color:var(--text3);letter-spacing:0.8px;text-transform:uppercase;padding:10px 8px 4px}
+.nav-item{
+  display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:7px;
+  font-size:13px;font-weight:500;color:var(--text2);
+  cursor:pointer;border:none;background:none;width:100%;text-align:left;transition:all 0.12s;
+  font-family:'Plus Jakarta Sans',sans-serif
+}
+.nav-item svg{width:15px;height:15px;flex-shrink:0;opacity:0.65}
+.nav-item:hover{background:var(--surface2);color:var(--text)}
+.nav-item:hover svg{opacity:1}
+.nav-item.active{background:var(--purple-faint);color:var(--purple);font-weight:600}
+.nav-item.active svg{opacity:1}
+.nav-count{margin-left:auto;background:var(--purple);color:#fff;font-size:10px;font-weight:700;border-radius:9px;padding:1px 6px;min-width:16px;text-align:center}
+.sidebar-bottom{padding:8px;border-top:1px solid var(--border)}
+.user-row{display:flex;align-items:center;gap:9px;padding:9px 10px;border-radius:8px;background:var(--surface2)}
+.user-av{width:32px;height:32px;border-radius:50%;background:var(--purple-light);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--purple);flex-shrink:0}
+.user-info{flex:1;min-width:0}
+.user-name{font-size:13px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.user-role{font-size:11px;color:var(--purple);font-weight:500}
+.logout-btn{display:flex;align-items:center;gap:8px;width:100%;padding:8px 10px;margin-top:4px;border-radius:7px;font-size:13px;font-weight:500;color:var(--red);background:none;border:none;cursor:pointer;transition:background 0.12s;font-family:'Plus Jakarta Sans',sans-serif}
+.logout-btn:hover{background:var(--red-light)}
+.logout-btn svg{width:14px;height:14px}
+
+/* ── MAIN ── */
+.main{margin-left:var(--sidebar);flex:1;display:flex;flex-direction:column;min-width:0}
+
+/* ── TOPBAR ── */
+.topbar{
+  position:sticky;top:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 20px;height:54px;gap:12px;
+  background:var(--surface);border-bottom:1px solid var(--border);
+  transition:background 0.2s
+}
+.topbar-left{display:flex;align-items:center;gap:10px}
+.ham-btn{display:none;background:none;border:none;cursor:pointer;padding:4px;color:var(--text2);border-radius:6px}
+.ham-btn svg{width:18px;height:18px;display:block}
+.topbar-title{font-size:15px;font-weight:600;color:var(--text)}
+.topbar-right{display:flex;align-items:center;gap:8px}
+.search-box{display:flex;align-items:center;gap:7px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:6px 11px;transition:border-color 0.15s}
+.search-box:focus-within{border-color:var(--purple)}
+.search-box svg{width:14px;height:14px;color:var(--text3);flex-shrink:0}
+.search-box input{border:none;outline:none;font-size:13px;font-family:'Plus Jakarta Sans',sans-serif;color:var(--text);background:transparent;width:160px}
+.search-box input::placeholder{color:var(--text3)}
+.theme-btn{width:34px;height:34px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text2);transition:all 0.15s;flex-shrink:0}
+.theme-btn:hover{border-color:var(--purple);color:var(--purple)}
+.theme-btn svg{width:15px;height:15px}
+.icon-sun{display:none}.icon-moon{display:block}
+[data-theme="dark"] .icon-sun{display:block}[data-theme="dark"] .icon-moon{display:none}
+
+/* ── CONTENT ── */
+.content{padding:20px;flex:1}
+
+/* WELCOME BANNER */
+.welcome-banner{
+  background:var(--purple);border-radius:14px;
+  padding:20px 24px;margin-bottom:18px;
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+  position:relative;overflow:hidden
+}
+.welcome-banner::before{
+  content:'';position:absolute;right:-40px;top:-40px;
+  width:180px;height:180px;border-radius:50%;
+  background:rgba(255,255,255,0.08)
+}
+.welcome-banner::after{
+  content:'';position:absolute;right:60px;bottom:-60px;
+  width:140px;height:140px;border-radius:50%;
+  background:rgba(255,255,255,0.05)
+}
+.wb-left{position:relative;z-index:1}
+.wb-title{font-size:17px;font-weight:700;color:#fff;margin-bottom:3px}
+.wb-sub{font-size:13px;color:rgba(255,255,255,0.75)}
+.wb-right{position:relative;z-index:1;flex-shrink:0}
+.wb-stats{display:flex;gap:20px}
+.wb-stat{text-align:center}
+.wb-stat-num{font-size:22px;font-weight:700;color:#fff}
+.wb-stat-label{font-size:11px;color:rgba(255,255,255,0.7);font-weight:500}
+
+/* STATS ROW */
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px}
+.scard{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px;transition:background 0.2s}
+.scard-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.scard-icon{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center}
+.scard-icon svg{width:16px;height:16px}
+.i-teal{background:var(--purple-faint)}.i-amber{background:var(--amber-light)}.i-green{background:var(--green-light)}
+.scard-pill{font-size:11px;font-weight:600;padding:2px 8px;border-radius:20px}
+.pill-teal{background:var(--purple-faint);color:var(--purple)}
+.pill-amber{background:var(--amber-light);color:#92400E}
+.pill-green{background:var(--green-light);color:#166534}
+[data-theme="dark"] .pill-purple{color:#a5b4fc}[data-theme="dark"] .pill-amber{color:#fbbf24}[data-theme="dark"] .pill-green{color:#4ade80}
+.scard-num{font-size:24px;font-weight:700;color:var(--text);margin-bottom:2px}
+.scard-label{font-size:12px;color:var(--text3)}
+
+/* TABS */
+.tabs-row{display:flex;gap:4px;background:var(--surface2);border-radius:10px;padding:4px;margin-bottom:16px;border:1px solid var(--border)}
+.tab-btn{
+  flex:1;padding:8px 12px;border:none;border-radius:7px;
+  font-size:13px;font-weight:500;color:var(--text2);
+  background:transparent;cursor:pointer;transition:all 0.15s;
+  font-family:'Plus Jakarta Sans',sans-serif;white-space:nowrap
+}
+.tab-btn.active{background:var(--surface);color:var(--purple);font-weight:600;box-shadow:0 1px 4px rgba(0,0,0,0.08)}
+.tab-panel{display:none}.tab-panel.active{display:block}
+
+/* SECTION HEAD */
+.sec-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px}
+.sec-title{font-size:14px;font-weight:600;color:var(--text)}
+.filter-row{display:flex;gap:6px;flex-wrap:wrap}
+.fchip{padding:4px 12px;border:1px solid var(--border);border-radius:20px;font-size:12px;font-weight:500;color:var(--text2);cursor:pointer;background:var(--surface);transition:all 0.12s;white-space:nowrap}
+.fchip:hover{border-color:var(--purple);color:var(--purple)}
+.fchip.on{background:var(--purple);border-color:var(--purple);color:#fff}
+
+/* EVENT CARDS */
+.events-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:12px}
+.ecard{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px;transition:border-color 0.15s,background 0.2s;position:relative}
+.ecard:hover{border-color:var(--teal)}
+.ecard.registered{border-color:var(--purple);background:var(--purple-faint)}
+.registered-tag{
+  position:absolute;top:10px;right:10px;
+  background:var(--purple);color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px}
+.ecard-top{display:flex;align-items:flex-start;gap:10px;margin-bottom:10px}
+.ecard-icon{width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ec-hack{background:var(--purple-faint)}.ec-quiz{background:var(--amber-light)}.ec-cult{background:#FFE4E6}.ec-tech{background:var(--teal-light)}
+[data-theme="dark"] .ec-cult{background:#2A0D14}
+.ecard-icon svg{width:18px;height:18px}
+.ecard-info{flex:1;min-width:0}
+.ecard-name{font-size:14px;font-weight:600;color:var(--text);margin-bottom:3px;line-height:1.3}
+.etype-badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600}
+.tb-hack{background:var(--purple-faint);color:var(--purple)}
+.tb-quiz{background:var(--amber-light);color:#92400E}
+.tb-cult{background:#FFE4E6;color:#9F1239}
+.tb-tech{background:var(--teal-light);color:#0F766E}
+[data-theme="dark"] .tb-quiz{color:#fbbf24}[data-theme="dark"] .tb-cult{background:#2A0D14;color:#fb7185}[data-theme="dark"] .tb-tech{color:#2dd4bf}
+.emeta{display:flex;flex-direction:column;gap:4px;margin-bottom:10px}
+.emeta-row{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text2)}
+.emeta-row svg{width:12px;height:12px;flex-shrink:0;color:var(--text3)}
+.edivider{height:1px;background:var(--border);margin-bottom:10px}
+.ecard-footer{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.estatus{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text2)}
+.sdot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.sdot-live{background:var(--green)}.sdot-up{background:var(--amber)}.sdot-done{background:var(--text3)}
+.btn-register{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:5px 12px;border:none;border-radius:7px;
+  font-size:12px;font-weight:600;color:#fff;background:var(--purple);
+  cursor:pointer;transition:all 0.15s;font-family:'Plus Jakarta Sans',sans-serif;white-space:nowrap
+}
+.btn-register:hover{background:var(--purple-dark)}
+.btn-register.registered{background:var(--surface2);color:var(--text3);border:1px solid var(--border);cursor:default}
+.btn-view{padding:5px 12px;border:1px solid var(--border);border-radius:7px;font-size:12px;font-weight:500;color:var(--text2);background:transparent;cursor:pointer;transition:all 0.12s;font-family:'Plus Jakarta Sans',sans-serif}
+.btn-view:hover{border-color:var(--teal);color:var(--teal)}
+
+/* MY REGISTRATIONS */
+.reg-list{display:flex;flex-direction:column;gap:10px}
+.reg-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:10px;padding:14px;
+  display:flex;align-items:center;gap:14px;
+  transition:background 0.2s
+}
+.reg-card:hover{border-color:var(--border)}
+.reg-event-icon{width:40px;height:40px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.reg-info{flex:1;min-width:0}
+.reg-event-name{font-size:14px;font-weight:600;color:var(--text);margin-bottom:2px}
+.reg-team-name{font-size:12px;color:var(--text2);margin-bottom:4px}
+.reg-meta{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.reg-meta-item{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--text3)}
+.reg-meta-item svg{width:11px;height:11px}
+.reg-status{flex-shrink:0}
+.badge-confirmed{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;background:var(--green-light);color:#166534}
+.badge-upcoming{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;background:var(--amber-light);color:#92400E}
+.badge-done{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;background:var(--surface2);color:var(--text3)}
+[data-theme="dark"] .badge-confirmed{color:#4ade80}[data-theme="dark"] .badge-upcoming{color:#fbbf24}
+
+/* EMPTY STATE */
+.empty{text-align:center;padding:40px 16px}
+.empty svg{width:40px;height:40px;color:var(--text3);margin:0 auto 10px;display:block}
+.empty h3{font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px}
+.empty p{font-size:12px;color:var(--text3)}
+
+/* ── REGISTER MODAL ── */
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:500;align-items:center;justify-content:center;padding:1rem}
+.overlay.open{display:flex}
+.modal{background:var(--surface);border-radius:12px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto;animation:mIn 0.2s ease;border:1px solid var(--border)}
+@keyframes mIn{from{opacity:0;transform:translateY(8px) scale(0.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+.modal-hd{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--surface);z-index:1}
+.modal-hd-title{font-size:15px;font-weight:700;color:var(--text)}
+.modal-hd-sub{font-size:12px;color:var(--teal);font-weight:500;margin-top:1px}
+.modal-x{width:28px;height:28px;border-radius:7px;background:var(--surface2);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text2)}
+.modal-x svg{width:14px;height:14px}
+.modal-body{padding:16px;display:flex;flex-direction:column;gap:12px}
+.mfield label{display:block;font-size:12px;font-weight:600;color:var(--text2);margin-bottom:5px}
+.mfield input,.mfield select{width:100%;padding:9px 11px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:'Plus Jakarta Sans',sans-serif;color:var(--text);background:var(--surface2);outline:none;transition:border-color 0.15s}
+.mfield input:focus,.mfield select:focus{border-color:var(--purple);background:var(--surface)}
+.mrow{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.members-list{display:flex;flex-direction:column;gap:6px}
+.member-row{display:flex;gap:6px;align-items:center}
+.member-row input{flex:1}
+.member-add-btn{padding:8px 12px;border:1px dashed var(--border);border-radius:8px;font-size:12px;font-weight:500;color:var(--text3);background:transparent;cursor:pointer;transition:all 0.12s;font-family:'Plus Jakarta Sans',sans-serif;width:100%;text-align:center}
+.member-add-btn:hover{border-color:var(--teal);color:var(--teal)}
+.member-remove{width:26px;height:26px;border-radius:6px;border:1px solid var(--border);background:var(--surface2);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text3);flex-shrink:0;transition:all 0.12s}
+.member-remove:hover{border-color:var(--red);color:var(--red);background:var(--red-light)}
+.member-remove svg{width:12px;height:12px}
+.modal-ft{display:flex;justify-content:flex-end;gap:8px;padding:12px 16px;border-top:1px solid var(--border)}
+.btn-cancel{padding:8px 16px;border:1px solid var(--border);border-radius:7px;font-size:13px;font-weight:500;color:var(--text2);background:transparent;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif}
+.btn-cancel:hover{border-color:var(--border)}
+.btn-save{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:8px 20px;border:none;border-radius:7px;font-size:13px;font-weight:600;
+  color:#fff;background:var(--purple);cursor:pointer;
+  font-family:'Plus Jakarta Sans',sans-serif;transition:background 0.15s;min-width:120px;justify-content:center
+}
+.btn-save:hover{background:var(--purple-dark)}
+.btn-save:disabled{opacity:0.6;cursor:not-allowed}
+.spinner{width:14px;height:14px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* TOAST */
+.toast{position:fixed;bottom:20px;right:20px;max-width:300px;padding:11px 15px;border-radius:9px;font-size:13px;font-weight:500;display:flex;align-items:center;gap:8px;z-index:9999;opacity:0;transform:translateY(10px);transition:all 0.22s ease;pointer-events:none;box-shadow:0 4px 20px rgba(0,0,0,0.12)}
+.toast.show{opacity:1;transform:translateY(0)}
+.toast.success{background:var(--green-light);color:#166534;border:1px solid #bbf7d0}
+.toast.fail{background:var(--red-light);color:#991b1b;border:1px solid #fecaca}
+[data-theme="dark"] .toast.success{color:#4ade80}[data-theme="dark"] .toast.fail{color:#f87171}
+.toast svg{width:15px;height:15px;flex-shrink:0}
+
+/* SIDEBAR OVERLAY */
+.s-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.35);z-index:199}
+.s-overlay.open{display:block}
+
+/* ── RESPONSIVE ── */
+@media(max-width:860px){.stats-row{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%)}.sidebar.open{transform:translateX(0)}
+  .main{margin-left:0}.ham-btn{display:flex}
+  .search-box{display:none}
+  .wb-right{display:none}
+}
+@media(max-width:540px){
+  .stats-row{grid-template-columns:1fr 1fr 1fr}
+  .scard-num{font-size:20px}
+  .events-grid{grid-template-columns:1fr}
+  .mrow{grid-template-columns:1fr}
+  .toast{right:10px;left:10px;max-width:unset}
+  .content{padding:12px}
+  .topbar{padding:0 12px}
+  .tabs-row{overflow-x:auto}
+}
+</style>
+</head>
+<body>
+
+<div class="toast" id="toast">
+  <svg id="ti" viewBox="0 0 20 20" fill="currentColor"></svg>
+  <span id="tm"></span>
+</div>
+
+<div class="s-overlay" id="sOverlay" onclick="closeSidebar()"></div>
+
+<div class="app">
+
+  <!-- ── SIDEBAR ── -->
+  <aside class="sidebar" id="sidebar">
+    <a href="index.html" class="sidebar-logo">
+      <div class="logo-icon">
+        <svg viewBox="0 0 16 16" fill="none">
+          <rect x="1" y="4" width="14" height="10" rx="2" fill="rgba(255,255,255,0.15)" stroke="white" stroke-width="1.2"/>
+          <path d="M5 4V3a3 3 0 016 0v1" stroke="white" stroke-width="1.2" stroke-linecap="round"/>
+          <circle cx="8" cy="9" r="1.5" fill="white"/>
+        </svg>
+      </div>
+      <span class="logo-text">Event<span>Hub</span></span>
+    </a>
+
+    <div class="student-badge">
+      <svg viewBox="0 0 14 14" fill="none"><circle cx="7" cy="5" r="3" stroke="currentColor" stroke-width="1.3"/><path d="M2 13c0-2.8 2.2-5 5-5s5 2.2 5 5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+      Student Portal
+    </div>
+
+    <div class="sidebar-nav">
+      <span class="nav-label">Menu</span>
+      <button class="nav-item active" onclick="switchTab('browse');navClick(this,'Browse Events')">
+        <svg viewBox="0 0 16 16" fill="none"><rect x="1" y="3" width="14" height="11" rx="2" stroke="currentColor" stroke-width="1.3"/><path d="M5 1v4M11 1v4M1 7h14" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+        Browse Events
+      </button>
+      <button class="nav-item" onclick="switchTab('myteams');navClick(this,'My Registrations')">
+        <svg viewBox="0 0 16 16" fill="none"><circle cx="6" cy="5" r="3" stroke="currentColor" stroke-width="1.3"/><path d="M1 14c0-3 2.2-5 5-5s5 2 5 5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M12 7v4M14 9h-4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+        My Registrations
+        <span class="nav-count" id="reg-count">0</span>
+      </button>
+      <button class="nav-item" onclick="switchTab('upcoming');navClick(this,'Upcoming Events')">
+        <svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.3"/><path d="M8 4.5V8l2.5 1.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+        Upcoming Events
+      </button>
+    </div>
+
+    <div class="sidebar-bottom">
+      <div class="user-row">
+        <div class="user-av" id="uav">S</div>
+        <div class="user-info">
+          <div class="user-name" id="uname">—</div>
+          <div class="user-role">Student</div>
+        </div>
+      </div>
+      <button class="logout-btn" onclick="logout()">
+        <svg viewBox="0 0 16 16" fill="none"><path d="M6 2H3a1 1 0 00-1 1v10a1 1 0 001 1h3M10 11l3-3-3-3M13 8H6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Sign out
+      </button>
+    </div>
+  </aside>
+
+  <!-- ── MAIN ── -->
+  <div class="main">
+
+    <!-- TOPBAR -->
+    <div class="topbar">
+      <div class="topbar-left">
+        <button class="ham-btn" onclick="toggleSidebar()">
+          <svg viewBox="0 0 20 20" fill="none"><path d="M3 6h14M3 10h14M3 14h14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </button>
+        <div class="topbar-title" id="page-title">Browse Events</div>
+      </div>
+      <div class="topbar-right">
+        <div class="search-box">
+          <svg viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="4.5" stroke="currentColor" stroke-width="1.3"/><path d="M10 10l3.5 3.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+          <input type="text" placeholder="Search events..." oninput="filterEvents(this.value)">
+        </div>
+        <button class="theme-btn" onclick="toggleTheme()">
+          <svg class="icon-sun" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="4" stroke="currentColor" stroke-width="1.5"/><path d="M10 2v2M10 16v2M2 10h2M16 10h2M4.22 4.22l1.42 1.42M14.36 14.36l1.42 1.42M4.22 15.78l1.42-1.42M14.36 5.64l1.42-1.42" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          <svg class="icon-moon" viewBox="0 0 20 20" fill="none"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content">
+
+      <!-- WELCOME BANNER -->
+      <div class="welcome-banner">
+        <div class="wb-left">
+          <div class="wb-title" id="welcome">Hey there 👋</div>
+          <div class="wb-sub">Discover events, register your team and track your participation.</div>
+        </div>
+        <div class="wb-right">
+          <div class="wb-stats">
+            <div class="wb-stat">
+              <div class="wb-stat-num" id="wb-total">0</div>
+              <div class="wb-stat-label">Events</div>
+            </div>
+            <div class="wb-stat">
+              <div class="wb-stat-num" id="wb-regs">0</div>
+              <div class="wb-stat-label">Registered</div>
+            </div>
+            <div class="wb-stat">
+              <div class="wb-stat-num" id="wb-up">0</div>
+              <div class="wb-stat-label">Upcoming</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STATS -->
+      <div class="stats-row">
+        <div class="scard">
+          <div class="scard-top">
+            <div class="scard-icon i-purple"><svg viewBox="0 0 16 16" fill="none"><rect x="1" y="3" width="14" height="11" rx="2" stroke="#5B4FE8" stroke-width="1.3"/><path d="M5 1v4M11 1v4M1 7h14" stroke="#5B4FE8" stroke-width="1.3" stroke-linecap="round"/></svg></div>
+            <span class="scard-pill pill-purple">Total</span>
+          </div>
+          <div class="scard-num" id="s-total">0</div>
+          <div class="scard-label">Available Events</div>
+        </div>
+        <div class="scard">
+          <div class="scard-top">
+            <div class="scard-icon i-amber"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="#F59E0B" stroke-width="1.3"/><path d="M8 5v3.5l2 1.5" stroke="#F59E0B" stroke-width="1.3" stroke-linecap="round"/></svg></div>
+            <span class="scard-pill pill-amber">Upcoming</span>
+          </div>
+          <div class="scard-num" id="s-up">0</div>
+          <div class="scard-label">Upcoming Events</div>
+        </div>
+        <div class="scard">
+          <div class="scard-top">
+            <div class="scard-icon i-green"><svg viewBox="0 0 16 16" fill="none"><circle cx="6" cy="5" r="3" stroke="#22C55E" stroke-width="1.3"/><path d="M1 14c0-3 2.2-5 5-5s5 2 5 5" stroke="#22C55E" stroke-width="1.3" stroke-linecap="round"/></svg></div>
+            <span class="scard-pill pill-green">Mine</span>
+          </div>
+          <div class="scard-num" id="s-regs">0</div>
+          <div class="scard-label">My Registrations</div>
+        </div>
+      </div>
+
+      <!-- TABS -->
+      <div class="tabs-row">
+        <button class="tab-btn active" id="tab-browse" onclick="switchTab('browse')">Browse Events</button>
+        <button class="tab-btn" id="tab-myteams" onclick="switchTab('myteams')">My Registrations</button>
+        <button class="tab-btn" id="tab-upcoming" onclick="switchTab('upcoming')">Upcoming I Joined</button>
+      </div>
+
+      <!-- TAB: BROWSE EVENTS -->
+      <div class="tab-panel active" id="panel-browse">
+        <div class="sec-hd">
+          <div class="sec-title">All Events</div>
+          <div class="filter-row">
+            <div class="fchip on" onclick="setFilter('All',this)">All</div>
+            <div class="fchip" onclick="setFilter('Hackathon',this)">Hackathon</div>
+            <div class="fchip" onclick="setFilter('Quiz',this)">Quiz</div>
+            <div class="fchip" onclick="setFilter('Cultural',this)">Cultural</div>
+            <div class="fchip" onclick="setFilter('Tech Talk',this)">Tech Talk</div>
+          </div>
+        </div>
+        <div class="events-grid" id="egrid"></div>
+      </div>
+
+      <!-- TAB: MY REGISTRATIONS -->
+      <div class="tab-panel" id="panel-myteams">
+        <div class="sec-hd">
+          <div class="sec-title">My Registrations</div>
+        </div>
+        <div class="reg-list" id="reg-list">
+          <div class="empty">
+            <svg viewBox="0 0 40 40" fill="none"><circle cx="15" cy="12" r="6" stroke="currentColor" stroke-width="1.8"/><path d="M4 34c0-6 4.9-11 11-11s11 4.9 11 11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M28 18l2.5 2.5L36 14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <h3>No registrations yet</h3>
+            <p>Browse events and register your team to get started.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB: UPCOMING I JOINED -->
+      <div class="tab-panel" id="panel-upcoming">
+        <div class="sec-hd">
+          <div class="sec-title">Upcoming Events I'm Part Of</div>
+        </div>
+        <div class="reg-list" id="upcoming-list">
+          <div class="empty">
+            <svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="16" stroke="currentColor" stroke-width="1.8"/><path d="M20 12v8l5 3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            <h3>No upcoming events</h3>
+            <p>Register for upcoming events and they'll appear here.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ── REGISTER TEAM MODAL ── -->
+<div class="overlay" id="reg-modal" onclick="if(event.target===this)closeRegModal()">
+  <div class="modal">
+    <div class="modal-hd">
+      <div>
+        <div class="modal-hd-title">Register your team</div>
+        <div class="modal-hd-sub" id="reg-modal-event">—</div>
+      </div>
+      <button class="modal-x" onclick="closeRegModal()">
+        <svg viewBox="0 0 16 16" fill="none"><path d="M3 3l10 10M13 3L3 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="mrow">
+        <div class="mfield"><label>Team name *</label><input id="r-teamname" placeholder="e.g. Code Crushers"></div>
+        <div class="mfield"><label>Team lead name *</label><input id="r-leadname" placeholder="Your name"></div>
+      </div>
+      <div class="mrow">
+        <div class="mfield"><label>College ID *</label><input id="r-collegeid" placeholder="e.g. 1RV21CS001"></div>
+        <div class="mfield"><label>Contact email *</label><input type="email" id="r-email" placeholder="you@college.edu"></div>
+      </div>
+      <div class="mfield">
+        <label>Team members</label>
+        <div class="members-list" id="members-list">
+          <div class="member-row">
+            <input placeholder="Member 1 name" class="member-input">
+            <button class="member-remove" onclick="removeMember(this)"><svg viewBox="0 0 12 12" fill="none"><path d="M2 2l8 8M10 2l-8 8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></button>
+          </div>
+        </div>
+        <button class="member-add-btn" onclick="addMember()">+ Add member</button>
+      </div>
+    </div>
+    <div class="modal-ft">
+      <button class="btn-cancel" onclick="closeRegModal()">Cancel</button>
+      <button class="btn-save" id="reg-save-btn" onclick="submitRegistration()">Register Team</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(async () => {
+
+  // ── STEP 1: Logout flag check ──
+  if(sessionStorage.getItem('eventhub_logging_out')){
+    sessionStorage.clear();
+    window.location.replace('login-signup.html');
+    return;
+  }
+
+  // ── STEP 2: Get user from session ──
+  let user = {};
+  try{ user = JSON.parse(sessionStorage.getItem('eventhub_user') || '{}'); }catch(e){}
+
+  // ── STEP 3: Verify via cookie if no session ──
+  if(!user._id){
+    try{
+      const r = await fetch('http://localhost:8000/api/v1/auth/me', { credentials:'include' });
+      if(!r.ok) throw new Error('not authenticated');
+      const data = await r.json();
+      user = data.user;
+      sessionStorage.setItem('eventhub_user', JSON.stringify(user));
+    } catch(e){
+      window.location.replace('login-signup.html');
+      return;
+    }
+  }
+
+  // ── STEP 4: Role check ──
+  if(user.role && user.role !== 'Student'){
+    window.location.replace('dashboard.html');
+    return;
+  }
+
+  // ── STEP 5: Set UI ──
+  const _fn = user.firstname || user.firstName || user.name || 'Student';
+  const _in = (((user.firstname||user.firstName||'')[0])||(user.email||'S')[0]).toUpperCase()+((user.lastname||user.lastName||'')[0]||'').toUpperCase();
+  document.getElementById('uav').textContent = _in || 'S';
+  document.getElementById('uname').textContent = [user.firstname||user.firstName, user.lastname||user.lastName].filter(Boolean).join(' ') || user.email || 'Student';
+  document.getElementById('welcome').textContent = 'Hey, ' + _fn + ' 👋';
+
+  // ── THEME ──
+  const savedTheme = localStorage.getItem('eventhub_theme') || 'light';
+  document.documentElement.setAttribute('data-theme', savedTheme);
+  function toggleTheme(){
+    const next = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('eventhub_theme', next);
+  }
+
+  // ── API ──
+  const API = 'http://localhost:8000/api/v1';
+
+  // ── STATE ──
+  let events = [];
+  let myRegs = []; // loaded from API
+  let activeFilter = 'All';
+  let searchQ = '';
+  let currentEventId = null;
+
+  // ── SIDEBAR ──
+  function toggleSidebar(){ document.getElementById('sidebar').classList.toggle('open'); document.getElementById('sOverlay').classList.toggle('open'); }
+  function closeSidebar(){ document.getElementById('sidebar').classList.remove('open'); document.getElementById('sOverlay').classList.remove('open'); }
+  function navClick(el, title){
+    document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('page-title').textContent = title;
+    closeSidebar();
+  }
+
+  // ── LOGOUT ──
+  async function logout(){
+    sessionStorage.setItem('eventhub_logging_out', '1');
+    sessionStorage.removeItem('eventhub_user');
+    try{ await fetch('http://localhost:8000/api/v1/auth/logout', { method:'POST', credentials:'include' }); }catch(e){}
+    window.location.replace('login-signup.html');
+  }
+
+  // ── TOAST ──
+  let tt;
+  function toast(msg, type='success'){
+    clearTimeout(tt);
+    const el = document.getElementById('toast');
+    document.getElementById('tm').textContent = msg;
+    document.getElementById('ti').innerHTML = type === 'success'
+      ? '<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>'
+      : '<path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>';
+    el.className = 'toast ' + type;
+    el.classList.add('show');
+    tt = setTimeout(() => el.classList.remove('show'), 3000);
+  }
+
+  // ── TABS ──
+  function switchTab(tab){
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('tab-' + tab).classList.add('active');
+    document.getElementById('panel-' + tab).classList.add('active');
+  }
+
+  // ── FILTERS ──
+  function setFilter(type, el){
+    activeFilter = type;
+    document.querySelectorAll('.fchip').forEach(c => c.classList.remove('on'));
+    el.classList.add('on');
+    renderEvents();
+  }
+  function filterEvents(q){ searchQ = q.toLowerCase(); renderEvents(); }
+
+  // ── CHECK IF REGISTERED ──
+  function isRegistered(eventId){
+    return myRegs.some(r => {
+      // event can be populated object or just an ID string
+      const evId = r.event && typeof r.event === 'object'
+        ? (r.event._id || r.event.id)
+        : r.event;
+      return String(evId) === String(eventId);
+    });
+  }
+
+  // ── TYPE CONFIG ──
+  const TC = {
+    Hackathon: { ic:'ec-hack', bc:'tb-hack', svg:'<rect x="1" y="3" width="14" height="10" rx="2" stroke="#5B4FE8" stroke-width="1.3"/><path d="M5 3V2a3 3 0 016 0v1" stroke="#5B4FE8" stroke-width="1.3" stroke-linecap="round"/>' },
+    Quiz:      { ic:'ec-quiz', bc:'tb-quiz', svg:'<path d="M8 1l1.8 4.5h4.7l-3.8 2.8 1.5 4.7L8 10.5l-4.2 2.5 1.5-4.7L1.5 5.5h4.7z" stroke="#92400E" stroke-width="1.2" stroke-linejoin="round"/>' },
+    Cultural:  { ic:'ec-cult', bc:'tb-cult', svg:'<circle cx="8" cy="6" r="3.5" stroke="#9F1239" stroke-width="1.3"/><path d="M2 14c0-2.8 2.7-5 6-5s6 2.2 6 5" stroke="#9F1239" stroke-width="1.3" stroke-linecap="round"/>' },
+    'Tech Talk':{ ic:'ec-tech', bc:'tb-tech', svg:'<path d="M2 2h12v9H2z" stroke="#0F766E" stroke-width="1.3" stroke-linejoin="round"/><path d="M6 14h4M8 11v3" stroke="#0F766E" stroke-width="1.3" stroke-linecap="round"/>' },
+    Sports:    { ic:'ec-tech', bc:'tb-tech', svg:'<circle cx="8" cy="8" r="5.5" stroke="#0F766E" stroke-width="1.3"/>' },
+  };
+  const SC = {
+    Live:      { dot:'sdot-live', label:'Live' },
+    Upcoming:  { dot:'sdot-up',   label:'Upcoming' },
+    Completed: { dot:'sdot-done', label:'Completed' },
+  };
+
+  // ── RENDER EVENTS ──
+  function renderEvents(){
+    const grid = document.getElementById('egrid');
+    const list = events.filter(e => {
+      const matchType = activeFilter === 'All' || e.type === activeFilter;
+      const matchSearch = !searchQ || e.name.toLowerCase().includes(searchQ) || (e.venue||'').toLowerCase().includes(searchQ);
+      return matchType && matchSearch;
+    });
+    if(!list.length){
+      grid.innerHTML = `<div class="empty" style="grid-column:1/-1">
+        <svg viewBox="0 0 40 40" fill="none"><rect x="3" y="9" width="34" height="26" rx="4" stroke="currentColor" stroke-width="1.8"/><path d="M13 9V6a7 7 0 0114 0v3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        <h3>No events found</h3>
+        <p>${activeFilter !== 'All' ? `No ${activeFilter} events available.` : 'No events have been created yet.'}</p>
+      </div>`;
+      return;
+    }
+    grid.innerHTML = list.map(e => {
+      const tc = TC[e.type] || TC['Tech Talk'];
+      const sc = SC[e.status] || SC['Upcoming'];
+      const ds = e.date ? new Date(e.date).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}) : 'TBD';
+      const reg = isRegistered(e._id);
+      const isCompleted = e.status === 'Completed';
+      return `<div class="ecard${reg?' registered':''}">
+        ${reg ? '<div class="registered-tag">✓ Registered</div>' : ''}
+        <div class="ecard-top">
+          <div class="ecard-icon ${tc.ic}"><svg viewBox="0 0 16 16" fill="none">${tc.svg}</svg></div>
+          <div class="ecard-info">
+            <div class="ecard-name">${e.name}</div>
+            <span class="etype-badge ${tc.bc}">${e.type}</span>
+          </div>
+        </div>
+        <div class="emeta">
+          <div class="emeta-row"><svg viewBox="0 0 12 12" fill="none"><rect x="0.5" y="2" width="11" height="9" rx="1.5" stroke="currentColor" stroke-width="1.1"/><path d="M4 1v2M8 1v2M0.5 5h11" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>${ds}${e.time?' · '+e.time:''}</div>
+          ${e.venue ? `<div class="emeta-row"><svg viewBox="0 0 12 12" fill="none"><path d="M6 1a4 4 0 014 4c0 2.8-4 7-4 7S2 7.8 2 5a4 4 0 014-4z" stroke="currentColor" stroke-width="1.1"/><circle cx="6" cy="5" r="1.5" stroke="currentColor" stroke-width="1.1"/></svg>${e.venue}</div>` : ''}
+          ${e.prize ? `<div class="emeta-row"><svg viewBox="0 0 12 12" fill="none"><path d="M6 1l1.2 3.5H11l-3 2.2 1.2 3.5L6 8.5 2.8 10.2 4 6.7 1 4.5h3.8z" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round"/></svg>${e.prize}</div>` : ''}
+        </div>
+        <div class="edivider"></div>
+        <div class="ecard-footer">
+          <div class="estatus"><div class="sdot ${sc.dot}"></div>${sc.label} · <strong>${e.teams||0}</strong> teams${e.maxTeams?' / '+e.maxTeams:''}</div>
+          <div style="display:flex;gap:6px">
+            ${reg
+              ? `<button class="btn-register registered">✓ Registered</button>`
+              : isCompleted
+                ? `<button class="btn-register registered">Closed</button>`
+                : `<button class="btn-register" onclick="openRegModal('${e._id}')">Register</button>`
+            }
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  // ── RENDER MY REGISTRATIONS ──
+  function renderMyRegs(){
+    const list = document.getElementById('reg-list');
+    const upList = document.getElementById('upcoming-list');
+    if(!myRegs.length){
+      list.innerHTML = `<div class="empty"><svg viewBox="0 0 40 40" fill="none"><circle cx="15" cy="12" r="6" stroke="currentColor" stroke-width="1.8"/><path d="M4 34c0-6 4.9-11 11-11s11 4.9 11 11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><h3>No registrations yet</h3><p>Browse events and register your team.</p></div>`;
+      upList.innerHTML = `<div class="empty"><svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="16" stroke="currentColor" stroke-width="1.8"/><path d="M20 12v8l5 3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><h3>No upcoming events</h3><p>Register for upcoming events and they will appear here.</p></div>`;
+      return;
+    }
+    const renderCard = r => {
+      // event is populated from backend OR fallback to events array
+      const ev = r.event && typeof r.event === 'object' ? r.event : (events.find(e => e._id === r.event) || {});
+      const tc = TC[ev.type] || TC['Tech Talk'];
+      const ds = ev.date ? new Date(ev.date).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}) : 'TBD';
+      const statusCls = ev.status==='Upcoming'?'badge-upcoming':ev.status==='Completed'?'badge-done':'badge-confirmed';
+      const membersCount = Array.isArray(r.members) ? r.members.length : (r.members || 1);
+      return `<div class="reg-card">
+        <div class="reg-event-icon ${tc.ic}"><svg viewBox="0 0 16 16" fill="none">${tc.svg}</svg></div>
+        <div class="reg-info">
+          <div class="reg-event-name">${ev.name || r.eventName || 'Event'}</div>
+          <div class="reg-team-name">Team: <strong>${r.teamname || r.teamName || '—'}</strong></div>
+          <div class="reg-meta">
+            <div class="reg-meta-item"><svg viewBox="0 0 12 12" fill="none"><rect x="0.5" y="2" width="11" height="9" rx="1.5" stroke="currentColor" stroke-width="1.1"/><path d="M4 1v2M8 1v2M0.5 5h11" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>${ds}</div>
+            ${ev.venue ? `<div class="reg-meta-item"><svg viewBox="0 0 12 12" fill="none"><path d="M6 1a4 4 0 014 4c0 2.8-4 7-4 7S2 7.8 2 5a4 4 0 014-4z" stroke="currentColor" stroke-width="1.1"/></svg>${ev.venue}</div>` : ''}
+            <div class="reg-meta-item"><svg viewBox="0 0 12 12" fill="none"><circle cx="6" cy="4" r="2.5" stroke="currentColor" stroke-width="1.1"/><path d="M1 11c0-2.5 2-4 5-4s5 1.5 5 4" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>${membersCount} members</div>
+          </div>
+        </div>
+        <div class="reg-status"><span class="${statusCls}">${ev.status||'Confirmed'}</span></div>
+      </div>`;
+    };
+    list.innerHTML = myRegs.map(renderCard).join('');
+    const upcoming = myRegs.filter(r => { const ev = r.event && typeof r.event === 'object' ? r.event : events.find(e => String(e._id) === String(r.event)); return ev && ev.status === 'Upcoming'; });
+    upList.innerHTML = upcoming.length ? upcoming.map(renderCard).join('') : `<div class="empty"><svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="16" stroke="currentColor" stroke-width="1.8"/><path d="M20 12v8l5 3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><h3>No upcoming events</h3><p>Register for upcoming events and they will appear here.</p></div>`;
+  }
+
+  // ── STATS ──
+  function updateStats(){
+    document.getElementById('s-total').textContent = events.length;
+    document.getElementById('s-up').textContent = events.filter(e => e.status === 'Upcoming').length;
+    document.getElementById('s-regs').textContent = myRegs.length;
+    document.getElementById('wb-total').textContent = events.length;
+    document.getElementById('wb-regs').textContent = myRegs.length;
+    document.getElementById('wb-up').textContent = events.filter(e => e.status === 'Upcoming').length;
+    document.getElementById('reg-count').textContent = myRegs.length;
+  }
+
+  // ── REGISTER MODAL ──
+  function openRegModal(eventId){
+    currentEventId = eventId;
+    const ev = events.find(e => e._id === eventId || e.id === eventId);
+    if(!ev) return;
+    document.getElementById('reg-modal-event').textContent = ev.name;
+    document.getElementById('reg-modal').classList.add('open');
+    document.getElementById('r-teamname').focus();
+  }
+  function closeRegModal(){
+    document.getElementById('reg-modal').classList.remove('open');
+    ['r-teamname','r-leadname','r-collegeid','r-email'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('members-list').innerHTML = `<div class="member-row"><input placeholder="Member 1 name" class="member-input"><button class="member-remove" onclick="removeMember(this)"><svg viewBox="0 0 12 12" fill="none"><path d="M2 2l8 8M10 2l-8 8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></button></div>`;
+    currentEventId = null;
+  }
+  function addMember(){
+    const list = document.getElementById('members-list');
+    const count = list.querySelectorAll('.member-row').length + 1;
+    if(count > 5){ toast('Max 5 members allowed', 'fail'); return; }
+    const div = document.createElement('div');
+    div.className = 'member-row';
+    div.innerHTML = `<input placeholder="Member ${count} name" class="member-input"><button class="member-remove" onclick="removeMember(this)"><svg viewBox="0 0 12 12" fill="none"><path d="M2 2l8 8M10 2l-8 8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></button>`;
+    list.appendChild(div);
+  }
+  function removeMember(btn){
+    const rows = document.querySelectorAll('#members-list .member-row');
+    if(rows.length <= 1){ toast('At least 1 member required', 'fail'); return; }
+    btn.closest('.member-row').remove();
+  }
+
+  // ── SUBMIT REGISTRATION ──
+  async function submitRegistration(){
+    const teamName = document.getElementById('r-teamname').value.trim();
+    const leadName = document.getElementById('r-leadname').value.trim();
+    const collegeId = document.getElementById('r-collegeid').value.trim();
+    const email = document.getElementById('r-email').value.trim();
+    const memberInputs = document.querySelectorAll('.member-input');
+    const memberNames = Array.from(memberInputs).map(i=>i.value.trim()).filter(Boolean);
+
+    if(!teamName){ toast('Team name is required', 'fail'); return; }
+    if(!leadName){ toast('Team lead name is required', 'fail'); return; }
+    if(!collegeId){ toast('College ID is required', 'fail'); return; }
+    if(!email){ toast('Valid email is required', 'fail'); return; }
+
+    const ev = events.find(e => e._id === currentEventId || e.id === currentEventId);
+    if(!ev) return;
+
+    const btn = document.getElementById('reg-save-btn');
+    btn.disabled = true;
+    btn.innerHTML = '<div class="spinner"></div> Registering...';
+
+    try{
+      const res = await fetch(`${API}/teams/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          teamname:  teamName,
+          leadname:  leadName,
+          collegeid: collegeId,
+          email,
+          members:   memberNames.length ? memberNames : ['Solo'],
+          eventId:   ev._id || currentEventId
+        })
+      });
+      const data = await res.json();
+      if(res.ok){
+        closeRegModal();
+        await loadMyRegistrations();
+        await loadEvents();
+        toast('Team "' + teamName + '" registered for ' + ev.name + '!');
+      } else {
+        toast(data.message || 'Registration failed', 'fail');
+      }
+    } catch(e){
+      toast('Cannot connect to server', 'fail');
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = 'Register Team';
+    }
+  }
+
+  // ── LOAD EVENTS FROM API ──
+  async function loadEvents(){
+    try{
+      const res = await fetch(`${API}/events`, { credentials:'include' });
+      const data = await res.json();
+      if(res.ok){
+        events = data.events || [];
+        renderEvents(); // only render events — myRegs already loaded
+        updateStats();
+      } else {
+        toast('Failed to load events', 'fail');
+      }
+    } catch(e){
+      toast('Cannot connect to server', 'fail');
+    }
+  }
+
+  // ── LOAD MY REGISTRATIONS FROM API ──
+  async function loadMyRegistrations(){
+    try{
+      const res = await fetch(`${API}/teams/registrations/mine`, {
+        credentials: 'include'
+      });
+      const data = await res.json();
+      if(res.ok){
+        myRegs = data.myregistration || [];
+        renderMyRegs();
+        updateStats();
+      }
+    } catch(e){
+      console.log('Could not load registrations:', e);
+    }
+  }
+
+  // ── RENDER ALL ──
+  function renderAll(){ updateStats(); renderEvents(); renderMyRegs(); }
+
+  // Load registrations first so isRegistered() works when events render
+  await loadMyRegistrations();
+  await loadEvents();
+
+  // ── EXPOSE FUNCTIONS TO GLOBAL SCOPE (needed for HTML onclick) ──
+  window.logout         = logout;
+  window.toggleTheme    = toggleTheme;
+  window.toggleSidebar  = toggleSidebar;
+  window.closeSidebar   = closeSidebar;
+  window.navClick       = navClick;
+  window.switchTab      = switchTab;
+  window.setFilter      = setFilter;
+  window.filterEvents   = filterEvents;
+  window.openRegModal   = openRegModal;
+  window.closeRegModal  = closeRegModal;
+  window.addMember      = addMember;
+  window.removeMember   = removeMember;
+  window.submitRegistration  = submitRegistration;
+  window.loadMyRegistrations = loadMyRegistrations;
+
+})();
+</script>
+</body>
+</html>

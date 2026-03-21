@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EventHub — Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+/* ── LIGHT THEME ── */
+:root{
+  --purple:#5B4FE8;--purple-dark:#3D35C0;--purple-light:#EAE8FD;--purple-faint:#F4F3FE;
+  --teal:#0ABFA3;--teal-light:#E0F8F5;
+  --red:#E84F4F;--red-light:#FDF0F0;
+  --green:#22C55E;--green-light:#F0FDF4;
+  --amber:#F59E0B;--amber-light:#FFFBEB;
+  --bg:#F9FAFB;--surface:#FFFFFF;--surface2:#F3F4F6;
+  --text:#111827;--text2:#6B7280;--text3:#9CA3AF;
+  --border:#E5E7EB;--border2:#D1D5DB;
+  --shadow:rgba(0,0,0,0.06);
+  --sidebar:220px;
+}
+
+/* ── DARK THEME ── */
+[data-theme="dark"]{
+  --bg:#0F1117;--surface:#1A1D27;--surface2:#222636;
+  --text:#F1F5F9;--text2:#94A3B8;--text3:#64748B;
+  --border:#2D3148;--border2:#3D4166;
+  --shadow:rgba(0,0,0,0.3);
+  --purple-faint:#1E1B3A;--purple-light:#2D2860;
+  --teal-light:#0D2E2A;--green-light:#0D2416;
+  --amber-light:#2A1F00;--red-light:#2A0E0E;
+}
+
+html,body{height:100%;font-family:'Plus Jakarta Sans','Inter',sans-serif;background:var(--bg);color:var(--text);font-size:14px;transition:background 0.2s,color 0.2s}
+
+/* ── LAYOUT ── */
+.app{display:flex;min-height:100vh}
+
+/* ── SIDEBAR ── */
+.sidebar{
+  width:var(--sidebar);flex-shrink:0;background:var(--surface);
+  border-right:1px solid var(--border);
+  display:flex;flex-direction:column;
+  position:fixed;top:0;left:0;bottom:0;z-index:200;
+  transition:transform 0.28s ease,background 0.2s,border-color 0.2s
+}
+.sidebar-logo{display:flex;align-items:center;gap:9px;padding:15px 14px;border-bottom:1px solid var(--border);text-decoration:none}
+.logo-icon{width:30px;height:30px;border-radius:8px;background:var(--purple);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.logo-icon svg{width:15px;height:15px}
+.logo-text{font-size:15px;font-weight:700;color:var(--text)}
+.logo-text span{color:var(--purple)}
+.sidebar-nav{flex:1;padding:8px;display:flex;flex-direction:column;gap:1px;overflow-y:auto}
+.nav-label{font-size:10px;font-weight:600;color:var(--text3);letter-spacing:0.8px;text-transform:uppercase;padding:10px 8px 4px}
+.nav-item{
+  display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:7px;
+  font-size:13px;font-weight:500;color:var(--text2);font-family:'Plus Jakarta Sans','Inter',sans-serif;
+  cursor:pointer;border:none;background:none;width:100%;text-align:left;transition:all 0.12s
+}
+.nav-item svg{width:15px;height:15px;flex-shrink:0;opacity:0.65}
+.nav-item:hover{background:var(--surface2);color:var(--text)}
+.nav-item:hover svg{opacity:1}
+.nav-item.active{background:var(--purple-faint);color:var(--purple);font-weight:600}
+.nav-item.active svg{opacity:1}
+.nav-count{margin-left:auto;background:var(--purple);color:#fff;font-size:10px;font-weight:700;border-radius:9px;padding:1px 6px;min-width:16px;text-align:center}
+.sidebar-bottom{padding:8px;border-top:1px solid var(--border)}
+.user-row{display:flex;align-items:center;gap:9px;padding:9px 10px;border-radius:8px;background:var(--surface2)}
+.user-av{width:32px;height:32px;border-radius:50%;background:var(--purple-light);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--purple);flex-shrink:0}
+.user-info{flex:1;min-width:0}
+.user-name{font-size:13px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.user-role{font-size:11px;color:var(--text3)}
+.logout-btn{display:flex;align-items:center;gap:8px;width:100%;padding:8px 10px;margin-top:4px;border-radius:7px;font-size:13px;font-weight:500;color:var(--red);background:none;border:none;cursor:pointer;transition:background 0.12s}
+.logout-btn:hover{background:var(--red-light)}
+.logout-btn svg{width:14px;height:14px}
+
+/* ── MAIN ── */
+.main{margin-left:var(--sidebar);flex:1;display:flex;flex-direction:column;min-width:0}
+
+/* ── TOPBAR ── */
+.topbar{
+  position:sticky;top:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 20px;height:54px;gap:12px;
+  background:var(--surface);border-bottom:1px solid var(--border);
+  transition:background 0.2s,border-color 0.2s
+}
+.topbar-left{display:flex;align-items:center;gap:10px}
+.ham-btn{display:none;background:none;border:none;cursor:pointer;padding:4px;color:var(--text2);border-radius:6px}
+.ham-btn:hover{background:var(--surface2)}
+.ham-btn svg{width:18px;height:18px;display:block}
+.topbar-title{font-size:15px;font-weight:600;color:var(--text)}
+.topbar-right{display:flex;align-items:center;gap:8px}
+.search-box{display:flex;align-items:center;gap:7px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:6px 11px;transition:border-color 0.15s}
+.search-box:focus-within{border-color:var(--purple)}
+.search-box svg{width:14px;height:14px;color:var(--text3);flex-shrink:0}
+.search-box input{border:none;outline:none;font-size:13px;font-family:'Inter',sans-serif;color:var(--text);background:transparent;width:160px}
+.search-box input::placeholder{color:var(--text3)}
+
+/* ── THEME TOGGLE ── */
+.theme-btn{
+  width:34px;height:34px;border-radius:8px;border:1px solid var(--border);
+  background:var(--surface2);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  color:var(--text2);transition:all 0.15s;flex-shrink:0
+}
+.theme-btn:hover{border-color:var(--purple);color:var(--purple)}
+.theme-btn svg{width:15px;height:15px}
+.icon-sun{display:none}
+.icon-moon{display:block}
+[data-theme="dark"] .icon-sun{display:block}
+[data-theme="dark"] .icon-moon{display:none}
+
+/* ── CREATE BUTTON ── */
+.btn-create{
+  display:inline-flex;align-items:center;justify-content:center;gap:7px;
+  padding:0 16px;height:36px;
+  background:var(--purple);color:#fff;
+  border:none;border-radius:8px;
+  font-size:13px;font-weight:600;font-family:'Plus Jakarta Sans','Inter',sans-serif;
+  cursor:pointer;transition:background 0.15s;
+  white-space:nowrap;flex-shrink:0;text-decoration:none;
+  letter-spacing:0.1px
+}
+.btn-create:hover{background:var(--purple-dark)}
+.btn-create .plus-icon{
+  width:16px;height:16px;border-radius:4px;
+  background:rgba(255,255,255,0.2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;line-height:1;font-weight:400;flex-shrink:0;
+  margin-top:-1px
+}
+
+/* ── CONTENT ── */
+.content{padding:20px;flex:1}
+
+/* WELCOME */
+.welcome-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px}
+.welcome-title{font-size:17px;font-weight:700;color:var(--text);margin-bottom:2px}
+.welcome-sub{font-size:13px;color:var(--text2)}
+
+/* STATS */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}
+.scard{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px;transition:background 0.2s,border-color 0.2s}
+.scard-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.scard-icon{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center}
+.scard-icon svg{width:16px;height:16px}
+.i-purple{background:var(--purple-faint)}.i-green{background:var(--green-light)}.i-amber{background:var(--amber-light)}.i-teal{background:var(--teal-light)}
+.scard-pill{font-size:11px;font-weight:600;padding:2px 8px;border-radius:20px}
+.pill-purple{background:var(--purple-faint);color:var(--purple)}
+.pill-green{background:var(--green-light);color:#166534}
+.pill-amber{background:var(--amber-light);color:#92400E}
+.pill-teal{background:var(--teal-light);color:#0F766E}
+[data-theme="dark"] .pill-green{color:#4ade80}
+[data-theme="dark"] .pill-amber{color:#fbbf24}
+[data-theme="dark"] .pill-teal{color:#2dd4bf}
+.scard-num{font-size:24px;font-weight:700;color:var(--text);margin-bottom:2px}
+.scard-label{font-size:12px;color:var(--text3)}
+
+/* SECTION HEAD */
+.sec-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px}
+.sec-title{font-size:14px;font-weight:600;color:var(--text)}
+.filter-row{display:flex;gap:6px;flex-wrap:wrap}
+.fchip{padding:4px 12px;border:1px solid var(--border);border-radius:20px;font-size:12px;font-weight:500;color:var(--text2);cursor:pointer;background:var(--surface);transition:all 0.12s;white-space:nowrap}
+.fchip:hover{border-color:var(--purple);color:var(--purple)}
+.fchip.on{background:var(--purple);border-color:var(--purple);color:#fff}
+
+/* EVENT CARDS */
+.events-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:12px;margin-bottom:20px}
+.ecard{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px;transition:border-color 0.15s,background 0.2s}
+.ecard:hover{border-color:var(--purple)}
+.ecard-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px}
+.ecard-icon{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ec-hack{background:var(--purple-faint)}.ec-quiz{background:var(--amber-light)}.ec-cult{background:#FFE4E6}.ec-tech{background:var(--teal-light)}
+[data-theme="dark"] .ec-cult{background:#2A0D14}
+.ecard-icon svg{width:17px;height:17px}
+.etype-badge{padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600}
+.tb-hack{background:var(--purple-faint);color:var(--purple)}
+.tb-quiz{background:var(--amber-light);color:#92400E}
+.tb-cult{background:#FFE4E6;color:#9F1239}
+.tb-tech{background:var(--teal-light);color:#0F766E}
+[data-theme="dark"] .tb-quiz{color:#fbbf24}
+[data-theme="dark"] .tb-cult{background:#2A0D14;color:#fb7185}
+[data-theme="dark"] .tb-tech{color:#2dd4bf}
+.ecard-name{font-size:14px;font-weight:600;color:var(--text);margin-bottom:6px;line-height:1.3}
+.emeta{display:flex;flex-direction:column;gap:4px;margin-bottom:10px}
+.emeta-row{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text2)}
+.emeta-row svg{width:12px;height:12px;flex-shrink:0;color:var(--text3)}
+.edivider{height:1px;background:var(--border);margin-bottom:10px}
+.ecard-footer{display:flex;align-items:center;justify-content:space-between}
+.estatus{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text2)}
+.sdot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.sdot-live{background:var(--green)}.sdot-up{background:var(--amber)}.sdot-done{background:var(--text3)}
+.ecard-btns{display:flex;gap:5px}
+.ebtn{padding:4px 10px;border-radius:6px;font-size:11px;font-weight:500;cursor:pointer;border:1px solid var(--border);background:var(--surface2);color:var(--text2);font-family:'Inter',sans-serif;transition:all 0.12s}
+.ebtn:hover{border-color:var(--purple);color:var(--purple);background:var(--purple-faint)}
+.ebtn.del:hover{border-color:var(--red);color:var(--red);background:var(--red-light)}
+
+/* BOTTOM ROW */
+.bottom-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.tcard,.qcard{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;transition:background 0.2s,border-color 0.2s}
+.tcard .sec-hd,.qcard .sec-hd{padding:12px 14px;margin-bottom:0;border-bottom:1px solid var(--border)}
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+th{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;padding:9px 14px;text-align:left;background:var(--surface2);white-space:nowrap}
+td{font-size:13px;color:var(--text);padding:9px 14px;border-top:1px solid var(--border);vertical-align:middle}
+tr:hover td{background:var(--surface2)}
+.badge-confirmed{display:inline-flex;align-items:center;padding:2px 8px;border-radius:5px;font-size:11px;font-weight:600;background:var(--green-light);color:#166534}
+[data-theme="dark"] .badge-confirmed{color:#4ade80}
+
+/* QUICK ACTIONS */
+.qcard-body{padding:10px}
+.qaction{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);margin-bottom:8px;cursor:pointer;transition:all 0.12s}
+.qaction:last-child{margin-bottom:0}
+.qaction:hover{border-color:var(--purple);background:var(--purple-faint)}
+.qa-icon{width:30px;height:30px;border-radius:7px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.12s}
+.qa-icon svg{width:13px;height:13px;color:var(--purple)}
+.qaction:hover .qa-icon{background:var(--purple-light);border-color:var(--purple)}
+.qa-title{font-size:13px;font-weight:600;color:var(--text)}
+.qa-sub{font-size:11px;color:var(--text3);margin-top:1px}
+.qa-arrow{color:var(--text3);font-size:16px;margin-left:auto}
+
+/* MODAL */
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:500;align-items:center;justify-content:center;padding:1rem}
+.overlay.open{display:flex}
+.modal{background:var(--surface);border-radius:12px;width:100%;max-width:500px;max-height:90vh;overflow-y:auto;animation:mIn 0.2s ease;border:1px solid var(--border)}
+@keyframes mIn{from{opacity:0;transform:translateY(8px) scale(0.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+.modal-hd{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--surface);z-index:1}
+.modal-hd-title{font-size:15px;font-weight:700;color:var(--text)}
+.modal-x{width:28px;height:28px;border-radius:7px;background:var(--surface2);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text2);transition:background 0.12s}
+.modal-x:hover{background:var(--border)}
+.modal-x svg{width:14px;height:14px}
+.modal-body{padding:16px;display:flex;flex-direction:column;gap:12px}
+.mfield label{display:block;font-size:12px;font-weight:600;color:var(--text2);margin-bottom:5px}
+.mfield input,.mfield select,.mfield textarea{
+  width:100%;padding:9px 11px;border:1px solid var(--border);border-radius:8px;
+  font-size:13px;font-family:'Inter',sans-serif;color:var(--text);
+  background:var(--surface2);outline:none;transition:border-color 0.15s
+}
+.mfield input:focus,.mfield select:focus,.mfield textarea:focus{border-color:var(--purple);background:var(--surface)}
+.mfield textarea{resize:vertical;min-height:72px}
+.mrow{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.modal-ft{display:flex;justify-content:flex-end;gap:8px;padding:12px 16px;border-top:1px solid var(--border)}
+.btn-cancel{padding:8px 16px;border:1px solid var(--border);border-radius:7px;font-size:13px;font-weight:500;color:var(--text2);background:transparent;cursor:pointer;font-family:'Plus Jakarta Sans','Inter',sans-serif;transition:all 0.12s}
+.btn-cancel:hover{border-color:var(--border2);color:var(--text)}
+.btn-save{padding:8px 18px;border:none;border-radius:7px;font-size:13px;font-weight:600;color:#fff;background:var(--purple);cursor:pointer;font-family:'Plus Jakarta Sans','Inter',sans-serif;transition:background 0.15s}
+.btn-save:hover{background:var(--purple-dark)}
+
+/* TOAST */
+.toast{
+  position:fixed;bottom:20px;right:20px;max-width:300px;
+  padding:11px 15px;border-radius:9px;font-size:13px;font-weight:500;
+  display:flex;align-items:center;gap:8px;z-index:9999;
+  opacity:0;transform:translateY(10px);
+  transition:all 0.22s ease;pointer-events:none;
+  box-shadow:0 4px 20px var(--shadow)
+}
+.toast.show{opacity:1;transform:translateY(0)}
+.toast.success{background:var(--green-light);color:#166534;border:1px solid #bbf7d0}
+.toast.fail{background:var(--red-light);color:#991b1b;border:1px solid #fecaca}
+[data-theme="dark"] .toast.success{color:#4ade80}
+[data-theme="dark"] .toast.fail{color:#f87171}
+.toast svg{width:15px;height:15px;flex-shrink:0}
+
+/* EMPTY */
+.empty{text-align:center;padding:36px 16px;grid-column:1/-1}
+.empty svg{width:40px;height:40px;color:var(--text3);margin:0 auto 10px;display:block}
+.empty h3{font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px}
+.empty p{font-size:12px;color:var(--text3);margin-bottom:14px}
+
+/* SIDEBAR OVERLAY */
+.s-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.35);z-index:199}
+.s-overlay.open{display:block}
+
+/* CSV EXPORT BTN */
+.link-btn{font-size:12px;color:var(--purple);background:none;border:none;cursor:pointer;font-weight:500;font-family:'Inter',sans-serif}
+.link-btn:hover{text-decoration:underline}
+
+/* ── RESPONSIVE ── */
+@media(max-width:1024px){.bottom-row{grid-template-columns:1fr}}
+@media(max-width:860px){.stats-row{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%)}
+  .sidebar.open{transform:translateX(0)}
+  .main{margin-left:0}
+  .ham-btn{display:flex}
+  .search-box{display:none}
+}
+@media(max-width:540px){
+  .stats-row{grid-template-columns:1fr 1fr}
+  .scard-num{font-size:20px}
+  .events-grid{grid-template-columns:1fr}
+  .mrow{grid-template-columns:1fr}
+  .toast{right:10px;left:10px;max-width:unset}
+  .content{padding:12px}
+  .topbar{padding:0 12px}
+}
+</style>
+</head>
+<body>
+
+<div class="toast" id="toast">
+  <svg id="ti" viewBox="0 0 20 20" fill="currentColor"></svg>
+  <span id="tm"></span>
+</div>
+
+<div class="s-overlay" id="sOverlay" onclick="closeSidebar()"></div>
+
+<div class="app">
+
+  <!-- ── SIDEBAR ── -->
+  <aside class="sidebar" id="sidebar">
+    <a href="index.html" class="sidebar-logo">
+      <div class="logo-icon">
+        <svg viewBox="0 0 16 16" fill="none">
+          <rect x="1" y="4" width="14" height="10" rx="2" fill="rgba(255,255,255,0.15)" stroke="white" stroke-width="1.2"/>
+          <path d="M5 4V3a3 3 0 016 0v1" stroke="white" stroke-width="1.2" stroke-linecap="round"/>
+          <circle cx="8" cy="9" r="1.5" fill="white"/>
+        </svg>
+      </div>
+      <span class="logo-text">Event<span>Hub</span></span>
+    </a>
+
+    <div class="sidebar-nav">
+      <span class="nav-label">Menu</span>
+      <button class="nav-item active" onclick="navClick(this,'Dashboard')">
+        <svg viewBox="0 0 16 16" fill="none"><rect x="1" y="1" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/><rect x="9" y="1" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/><rect x="1" y="9" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/><rect x="9" y="9" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/></svg>
+        Dashboard
+      </button>
+      <button class="nav-item" onclick="navClick(this,'My Events')">
+        <svg viewBox="0 0 16 16" fill="none"><rect x="1" y="3" width="14" height="11" rx="2" stroke="currentColor" stroke-width="1.3"/><path d="M5 1v4M11 1v4M1 7h14" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+        My Events
+        <span class="nav-count" id="ev-count">0</span>
+      </button>
+      <button class="nav-item" onclick="navClick(this,'Team Registration')">
+        <svg viewBox="0 0 16 16" fill="none"><circle cx="6" cy="5" r="3" stroke="currentColor" stroke-width="1.3"/><path d="M1 14c0-3 2.2-5 5-5s5 2 5 5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M12 7v4M14 9h-4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+        Team Registration
+      </button>
+      <button class="nav-item" onclick="navClick(this,'Schedule')">
+        <svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.3"/><path d="M8 4.5V8l2.5 1.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+        Schedule
+      </button>
+      <button class="nav-item" onclick="navClick(this,'Settings')">
+        <svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="2.5" stroke="currentColor" stroke-width="1.3"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.05 3.05l1.42 1.42M11.53 11.53l1.42 1.42M3.05 12.95l1.42-1.42M11.53 4.47l1.42-1.42" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+        Settings
+      </button>
+    </div>
+
+    <div class="sidebar-bottom">
+      <div class="user-row">
+        <div class="user-av" id="uav">U</div>
+        <div class="user-info">
+          <div class="user-name" id="uname">—</div>
+          <div class="user-role" id="urole">—</div>
+        </div>
+      </div>
+      <button class="logout-btn" onclick="logout()">
+        <svg viewBox="0 0 16 16" fill="none"><path d="M6 2H3a1 1 0 00-1 1v10a1 1 0 001 1h3M10 11l3-3-3-3M13 8H6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Sign out
+      </button>
+    </div>
+  </aside>
+
+  <!-- ── MAIN ── -->
+  <div class="main">
+
+    <!-- TOPBAR -->
+    <div class="topbar">
+      <div class="topbar-left">
+        <button class="ham-btn" onclick="toggleSidebar()">
+          <svg viewBox="0 0 20 20" fill="none"><path d="M3 6h14M3 10h14M3 14h14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </button>
+        <div class="topbar-title" id="page-title">Dashboard</div>
+      </div>
+      <div class="topbar-right">
+        <div class="search-box">
+          <svg viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="4.5" stroke="currentColor" stroke-width="1.3"/><path d="M10 10l3.5 3.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+          <input type="text" placeholder="Search events..." oninput="filterEvents(this.value)">
+        </div>
+
+        <!-- DARK / LIGHT TOGGLE -->
+        <button class="theme-btn" onclick="toggleTheme()" title="Toggle dark mode">
+          <!-- Sun icon (shown in dark mode) -->
+          <svg class="icon-sun" viewBox="0 0 20 20" fill="none">
+            <circle cx="10" cy="10" r="4" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M10 2v2M10 16v2M2 10h2M16 10h2M4.22 4.22l1.42 1.42M14.36 14.36l1.42 1.42M4.22 15.78l1.42-1.42M14.36 5.64l1.42-1.42" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          <!-- Moon icon (shown in light mode) -->
+          <svg class="icon-moon" viewBox="0 0 20 20" fill="none">
+            <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </button>
+
+        <button class="btn-create" onclick="openModal()">
+          <span class="plus-icon">+</span>
+          New Event
+        </button>
+      </div>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content">
+
+      <!-- WELCOME -->
+      <div class="welcome-row">
+        <div>
+          <div class="welcome-title" id="welcome">Welcome back 👋</div>
+          <div class="welcome-sub">Here's what's happening with your events.</div>
+        </div>
+        <button class="btn-create" onclick="openModal()">
+          <span class="plus-icon">+</span>
+          Create Event
+        </button>
+      </div>
+
+      <!-- STATS -->
+      <div class="stats-row">
+        <div class="scard">
+          <div class="scard-top">
+            <div class="scard-icon i-purple"><svg viewBox="0 0 16 16" fill="none"><rect x="1" y="3" width="14" height="11" rx="2" stroke="#5B4FE8" stroke-width="1.3"/><path d="M5 1v4M11 1v4M1 7h14" stroke="#5B4FE8" stroke-width="1.3" stroke-linecap="round"/></svg></div>
+            <span class="scard-pill pill-purple">All time</span>
+          </div>
+          <div class="scard-num" id="s-total">0</div>
+          <div class="scard-label">Total Events</div>
+        </div>
+        <div class="scard">
+          <div class="scard-top">
+            <div class="scard-icon i-green"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="#22C55E" stroke-width="1.3"/><path d="M5 8l2.5 2.5 4-4" stroke="#22C55E" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <span class="scard-pill pill-green">Live</span>
+          </div>
+          <div class="scard-num" id="s-live">0</div>
+          <div class="scard-label">Active Now</div>
+        </div>
+        <div class="scard">
+          <div class="scard-top">
+            <div class="scard-icon i-amber"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="#F59E0B" stroke-width="1.3"/><path d="M8 5v3.5l2 1.5" stroke="#F59E0B" stroke-width="1.3" stroke-linecap="round"/></svg></div>
+            <span class="scard-pill pill-amber">Soon</span>
+          </div>
+          <div class="scard-num" id="s-up">0</div>
+          <div class="scard-label">Upcoming</div>
+        </div>
+        <div class="scard">
+          <div class="scard-top">
+            <div class="scard-icon i-teal"><svg viewBox="0 0 16 16" fill="none"><circle cx="6" cy="5" r="3" stroke="#0ABFA3" stroke-width="1.3"/><path d="M1 14c0-3 2.2-5 5-5s5 2 5 5" stroke="#0ABFA3" stroke-width="1.3" stroke-linecap="round"/></svg></div>
+            <span class="scard-pill pill-teal">Total</span>
+          </div>
+          <div class="scard-num" id="s-teams">0</div>
+          <div class="scard-label">Teams Registered</div>
+        </div>
+      </div>
+
+      <!-- EVENTS -->
+      <div class="sec-hd">
+        <div class="sec-title">Events</div>
+        <div class="filter-row">
+          <div class="fchip on" onclick="setFilter('All',this)">All</div>
+          <div class="fchip" onclick="setFilter('Hackathon',this)">Hackathon</div>
+          <div class="fchip" onclick="setFilter('Quiz',this)">Quiz</div>
+          <div class="fchip" onclick="setFilter('Cultural',this)">Cultural</div>
+          <div class="fchip" onclick="setFilter('Tech Talk',this)">Tech Talk</div>
+        </div>
+      </div>
+      <div class="events-grid" id="egrid"></div>
+
+      <!-- BOTTOM -->
+      <div class="bottom-row">
+
+        <!-- REGISTRATIONS TABLE -->
+        <div class="tcard">
+          <div class="sec-hd">
+            <div class="sec-title">Recent Registrations</div>
+            <button class="link-btn" onclick="exportCSV()">Export CSV</button>
+          </div>
+          <div class="tbl-wrap">
+            <table>
+              <thead><tr><th>Team</th><th>Event</th><th>Members</th><th>Status</th></tr></thead>
+              <tbody id="reg-body">
+                <tr><td colspan="4" style="text-align:center;color:var(--text3);padding:24px">No registrations yet</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- QUICK ACTIONS -->
+        <div class="qcard">
+          <div class="sec-hd"><div class="sec-title">Quick Actions</div></div>
+          <div class="qcard-body">
+            <div class="qaction" onclick="openModal()">
+              <div class="qa-icon"><svg viewBox="0 0 14 14" fill="none"><path d="M7 1v12M1 7h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+              <div><div class="qa-title">Create new event</div><div class="qa-sub">Hackathon, quiz, cultural or talk</div></div>
+              <div class="qa-arrow">›</div>
+            </div>
+            <div class="qaction" onclick="navClick(document.querySelectorAll('.nav-item')[2],'Team Registration')">
+              <div class="qa-icon"><svg viewBox="0 0 14 14" fill="none"><circle cx="5" cy="4" r="2.5" stroke="currentColor" stroke-width="1.3"/><path d="M1 12c0-2.5 1.8-4 4-4s4 1.5 4 4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M10 6v3M11.5 7.5h-3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></div>
+              <div><div class="qa-title">Register a team</div><div class="qa-sub">Add team members to an event</div></div>
+              <div class="qa-arrow">›</div>
+            </div>
+            <div class="qaction" onclick="navClick(document.querySelectorAll('.nav-item')[3],'Schedule')">
+              <div class="qa-icon"><svg viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5.5" stroke="currentColor" stroke-width="1.3"/><path d="M7 4v3.5l2 1" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></div>
+              <div><div class="qa-title">Build a schedule</div><div class="qa-sub">Add timeline for your event</div></div>
+              <div class="qa-arrow">›</div>
+            </div>
+            <div class="qaction" onclick="exportCSV()">
+              <div class="qa-icon"><svg viewBox="0 0 14 14" fill="none"><path d="M2 1h10v12H2z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="M5 5h4M5 8h4M5 11h2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></div>
+              <div><div class="qa-title">Export registrations</div><div class="qa-sub">Download team data as CSV</div></div>
+              <div class="qa-arrow">›</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CREATE EVENT MODAL -->
+<div class="overlay" id="modal" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="modal-hd">
+      <div class="modal-hd-title">Create new event</div>
+      <button class="modal-x" onclick="closeModal()">
+        <svg viewBox="0 0 16 16" fill="none"><path d="M3 3l10 10M13 3L3 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="mfield"><label>Event name *</label><input id="m-name" placeholder="e.g. HackFest 2025"></div>
+      <div class="mrow">
+        <div class="mfield"><label>Type</label>
+          <select id="m-type"><option>Hackathon</option><option>Quiz</option><option>Cultural</option><option>Tech Talk</option><option>Sports</option></select>
+        </div>
+        <div class="mfield"><label>Status</label>
+          <select id="m-status"><option>Upcoming</option><option>Live</option><option>Completed</option></select>
+        </div>
+      </div>
+      <div class="mrow">
+        <div class="mfield"><label>Date *</label><input type="date" id="m-date"></div>
+        <div class="mfield"><label>Time</label><input type="time" id="m-time"></div>
+      </div>
+      <div class="mfield"><label>Venue</label><input id="m-venue" placeholder="e.g. Seminar Hall A"></div>
+      <div class="mrow">
+        <div class="mfield"><label>Max teams</label><input type="number" id="m-maxteams" placeholder="e.g. 30" min="1"></div>
+        <div class="mfield"><label>Prize</label><input id="m-prize" placeholder="e.g. ₹50,000"></div>
+      </div>
+      <div class="mfield"><label>Description</label><textarea id="m-desc" placeholder="Brief description of the event..."></textarea></div>
+    </div>
+    <div class="modal-ft">
+      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="btn-save" onclick="saveEvent()">Create Event</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(async () => {
+  // ── STEP 1: Check logout flag ──
+  if(sessionStorage.getItem('eventhub_logging_out')){
+    sessionStorage.clear();
+    window.location.replace('login-signup.html');
+    return;
+  }
+
+  // ── STEP 2: Get user ──
+  let user = {};
+  try{ user = JSON.parse(sessionStorage.getItem('eventhub_user') || '{}'); }catch(e){}
+
+  // ── STEP 3: If no user in session, verify via cookie ──
+  if(!user._id){
+    try{
+      const r = await fetch('http://localhost:8000/api/v1/auth/me', { credentials:'include' });
+      if(!r.ok) throw new Error();
+      const data = await r.json();
+      user = data.user;
+      sessionStorage.setItem('eventhub_user', JSON.stringify(user));
+    } catch(e){
+      window.location.replace('login-signup.html');
+      return;
+    }
+  }
+
+  // ── STEP 4: Set UI with user info ──
+  const _fn = user.firstname || user.firstName || user.name || 'User';
+  const _in = (((user.firstname||user.firstName||'')[0])||(user.email||'U')[0]).toUpperCase()+((user.lastname||user.lastName||'')[0]||'').toUpperCase();
+  document.getElementById('uav').textContent = _in||'U';
+  document.getElementById('uname').textContent = [user.firstname||user.firstName,user.lastname||user.lastName].filter(Boolean).join(' ')||user.email||'User';
+  document.getElementById('urole').textContent = user.role||'Member';
+  document.getElementById('welcome').textContent = 'Welcome back, '+_fn+' 👋';
+
+// ── THEME ──
+const savedTheme = localStorage.getItem('eventhub_theme') || 'light';
+document.documentElement.setAttribute('data-theme', savedTheme);
+function toggleTheme(){
+  const current = document.documentElement.getAttribute('data-theme');
+  const next = current === 'light' ? 'dark' : 'light';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('eventhub_theme', next);
+}
+
+// ── API BASE ──
+const API = 'http://localhost:8000/api/v1';
+
+// ── STATE ──
+let events = [];
+let activeType = 'All';
+let searchQ = '';
+
+// ── SIDEBAR ──
+function toggleSidebar(){ document.getElementById('sidebar').classList.toggle('open'); document.getElementById('sOverlay').classList.toggle('open'); }
+function closeSidebar(){ document.getElementById('sidebar').classList.remove('open'); document.getElementById('sOverlay').classList.remove('open'); }
+
+// ── NAV ──
+function navClick(el, title){
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('page-title').textContent = title;
+  closeSidebar();
+}
+
+// ── LOGOUT ──
+async function logout(){
+  // Set flag first so auth guard doesn't re-run on redirect
+  sessionStorage.setItem('eventhub_logging_out', '1');
+  try{
+    await fetch('http://localhost:8000/api/v1/auth/logout', { method:'POST', credentials:'include' });
+  } catch(e){}
+  sessionStorage.removeItem('eventhub_user');
+  window.location.replace('login-signup.html');
+}
+
+// ── TOAST ──
+let tt;
+function toast(msg, type = 'success'){
+  clearTimeout(tt);
+  const el = document.getElementById('toast');
+  document.getElementById('tm').textContent = msg;
+  document.getElementById('ti').innerHTML = type === 'success'
+    ? '<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>'
+    : '<path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>';
+  el.className = 'toast ' + type;
+  el.classList.add('show');
+  tt = setTimeout(() => el.classList.remove('show'), 3000);
+}
+
+// ── MODAL ──
+function openModal(){ document.getElementById('modal').classList.add('open'); setTimeout(()=>document.getElementById('m-name').focus(),100); }
+function closeModal(){
+  document.getElementById('modal').classList.remove('open');
+  ['m-name','m-venue','m-prize','m-desc','m-date','m-time','m-maxteams'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('m-type').selectedIndex = 0;
+  document.getElementById('m-status').selectedIndex = 0;
+}
+
+// ── SAVE EVENT ──
+async function saveEvent(){
+  const name = document.getElementById('m-name').value.trim();
+  const date = document.getElementById('m-date').value;
+  if(!name){ toast('Event name is required', 'fail'); return; }
+  if(!date){ toast('Please pick a date', 'fail'); return; }
+
+  const btn = document.querySelector('.btn-save');
+  btn.disabled = true;
+  btn.textContent = 'Creating...';
+
+  try{
+    const res = await fetch(`${API}/events`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({
+        name, date,
+        type: document.getElementById('m-type').value,
+        status: document.getElementById('m-status').value,
+        time: document.getElementById('m-time').value,
+        venue: document.getElementById('m-venue').value.trim(),
+        maxTeams: document.getElementById('m-maxteams').value || '',
+        prize: document.getElementById('m-prize').value.trim(),
+        description: document.getElementById('m-desc').value.trim()
+      })
+    });
+    const data = await res.json();
+    if(res.ok){
+      events.unshift(data.event);
+      closeModal();
+      render();
+      toast(`"${name}" created!`);
+    } else {
+      toast(data.message || 'Failed to create event', 'fail');
+    }
+  } catch(e){
+    toast('Cannot connect to server', 'fail');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Create Event';
+  }
+}
+
+// ── DELETE ──
+async function delEvent(id){
+  if(!confirm('Delete this event?')) return;
+  try{
+    const res = await fetch(`${API}/events/${id}`, {
+      method: 'DELETE',
+      credentials: 'include'
+    });
+    if(res.ok){
+      events = events.filter(e => e._id !== id);
+      render();
+      toast('Event deleted', 'fail');
+    } else {
+      const data = await res.json();
+      toast(data.message || 'Failed to delete', 'fail');
+    }
+  } catch(e){
+    toast('Cannot connect to server', 'fail');
+  }
+}
+
+// ── LOAD EVENTS FROM API ──
+async function loadEvents(){
+  try{
+    const res = await fetch(`${API}/events`, {
+      credentials: 'include'
+    });
+    const data = await res.json();
+    if(res.ok){
+      events = data.events || [];
+      render();
+    } else {
+      toast('Failed to load events', 'fail');
+    }
+  } catch(e){
+    toast('Cannot connect to server', 'fail');
+  }
+}
+
+// ── FILTERS ──
+function setFilter(type, el){
+  activeType = type;
+  document.querySelectorAll('.fchip').forEach(c => c.classList.remove('on'));
+  el.classList.add('on');
+  renderEvents();
+}
+function filterEvents(q){ searchQ = q.toLowerCase(); renderEvents(); }
+
+// ── TYPE CONFIG ──
+const TC = {
+  Hackathon: { ic:'ec-hack', bc:'tb-hack', svg:'<rect x="1" y="3" width="14" height="10" rx="2" stroke="#5B4FE8" stroke-width="1.3"/><path d="M5 3V2a3 3 0 016 0v1" stroke="#5B4FE8" stroke-width="1.3" stroke-linecap="round"/>' },
+  Quiz:      { ic:'ec-quiz', bc:'tb-quiz', svg:'<path d="M8 1l1.8 4.5h4.7l-3.8 2.8 1.5 4.7L8 10.5l-4.2 2.5 1.5-4.7L1.5 5.5h4.7z" stroke="#92400E" stroke-width="1.2" stroke-linejoin="round"/>' },
+  Cultural:  { ic:'ec-cult', bc:'tb-cult', svg:'<circle cx="8" cy="6" r="3.5" stroke="#9F1239" stroke-width="1.3"/><path d="M2 14c0-2.8 2.7-5 6-5s6 2.2 6 5" stroke="#9F1239" stroke-width="1.3" stroke-linecap="round"/>' },
+  'Tech Talk':{ ic:'ec-tech', bc:'tb-tech', svg:'<path d="M2 2h12v9H2z" stroke="#0F766E" stroke-width="1.3" stroke-linejoin="round"/><path d="M6 14h4M8 11v3" stroke="#0F766E" stroke-width="1.3" stroke-linecap="round"/>' },
+  Sports:    { ic:'ec-tech', bc:'tb-tech', svg:'<circle cx="8" cy="8" r="5.5" stroke="#0F766E" stroke-width="1.3"/>' },
+};
+const SC = {
+  Live:      { dot:'sdot-live', label:'Live' },
+  Upcoming:  { dot:'sdot-up',   label:'Upcoming' },
+  Completed: { dot:'sdot-done', label:'Completed' },
+};
+
+// ── RENDER EVENTS ──
+function renderEvents(){
+  const grid = document.getElementById('egrid');
+  const list = events.filter(e => {
+    const matchType = activeType === 'All' || e.type === activeType;
+    const matchSearch = !searchQ || e.name.toLowerCase().includes(searchQ) || (e.venue||'').toLowerCase().includes(searchQ);
+    return matchType && matchSearch;
+  });
+  if(!list.length){
+    grid.innerHTML = `<div class="empty">
+      <svg viewBox="0 0 40 40" fill="none"><rect x="3" y="9" width="34" height="26" rx="4" stroke="currentColor" stroke-width="1.8"/><path d="M13 9V6a7 7 0 0114 0v3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="20" cy="22" r="4" stroke="currentColor" stroke-width="1.8"/></svg>
+      <h3>${activeType !== 'All' ? `No ${activeType} events` : 'No events yet'}</h3>
+      <p>${activeType !== 'All' ? `Try creating a ${activeType} event.` : 'Create your first event to get started.'}</p>
+      <button class="btn-create" onclick="openModal()">
+        <span class="plus-icon">+</span>
+        Create Event
+      </button>
+    </div>`;
+    return;
+  }
+  grid.innerHTML = list.map(e => {
+    const tc = TC[e.type] || TC['Tech Talk'];
+    const sc = SC[e.status] || SC['Upcoming'];
+    const ds = e.date ? new Date(e.date).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}) : 'TBD';
+    return `<div class="ecard">
+      <div class="ecard-top">
+        <div class="ecard-icon ${tc.ic}"><svg viewBox="0 0 16 16" fill="none">${tc.svg}</svg></div>
+        <span class="etype-badge ${tc.bc}">${e.type}</span>
+      </div>
+      <div class="ecard-name">${e.name}</div>
+      <div class="emeta">
+        <div class="emeta-row">
+          <svg viewBox="0 0 12 12" fill="none"><rect x="0.5" y="2" width="11" height="9" rx="1.5" stroke="currentColor" stroke-width="1.1"/><path d="M4 1v2M8 1v2M0.5 5h11" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>
+          ${ds}${e.time ? ' · ' + e.time : ''}
+        </div>
+        ${e.venue ? `<div class="emeta-row"><svg viewBox="0 0 12 12" fill="none"><path d="M6 1a4 4 0 014 4c0 2.8-4 7-4 7S2 7.8 2 5a4 4 0 014-4z" stroke="currentColor" stroke-width="1.1"/><circle cx="6" cy="5" r="1.5" stroke="currentColor" stroke-width="1.1"/></svg>${e.venue}</div>` : ''}
+        ${e.prize ? `<div class="emeta-row"><svg viewBox="0 0 12 12" fill="none"><path d="M6 1l1.2 3.5H11l-3 2.2 1.2 3.5L6 8.5 2.8 10.2 4 6.7 1 4.5h3.8z" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round"/></svg>${e.prize}</div>` : ''}
+      </div>
+      <div class="edivider"></div>
+      <div class="ecard-footer">
+        <div class="estatus">
+          <div class="sdot ${sc.dot}"></div>
+          ${sc.label} &nbsp;·&nbsp; <strong>${e.teams || 0}</strong> teams${e.maxTeams ? ' / ' + e.maxTeams : ''}
+        </div>
+        <div class="ecard-btns">
+          <button class="ebtn del" onclick="delEvent('${e._id}')">Delete</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── STATS ──
+function updateStats(){
+  document.getElementById('s-total').textContent = events.length;
+  document.getElementById('s-live').textContent = events.filter(e => e.status === 'Live').length;
+  document.getElementById('s-up').textContent = events.filter(e => e.status === 'Upcoming').length;
+  document.getElementById('s-teams').textContent = events.reduce((a,e) => a + (parseInt(e.teams) || 0), 0);
+  document.getElementById('ev-count').textContent = events.length;
+}
+
+// ── REGISTRATIONS ──
+function renderRegs(){
+  const regs = JSON.parse(localStorage.getItem('eventhub_regs') || '[]');
+  const tbody = document.getElementById('reg-body');
+  if(!regs.length){
+    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--text3);padding:24px">No registrations yet</td></tr>';
+    return;
+  }
+  tbody.innerHTML = regs.slice(0,6).map(r => `<tr>
+    <td style="font-weight:600">${r.teamName || '—'}</td>
+    <td style="color:var(--text2)">${r.eventName || '—'}</td>
+    <td>${r.members || '—'}</td>
+    <td><span class="badge-confirmed">Confirmed</span></td>
+  </tr>`).join('');
+}
+
+// ── EXPORT CSV ──
+function exportCSV(){
+  const regs = JSON.parse(localStorage.getItem('eventhub_regs') || '[]');
+  if(!regs.length){ toast('No registrations to export', 'fail'); return; }
+  const rows = [['Team Name','Event','Members','Status'], ...regs.map(r => [r.teamName, r.eventName, r.members, 'Confirmed'])];
+  const csv = rows.map(r => r.join(',')).join('\n');
+  const a = document.createElement('a');
+  a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+  a.download = 'registrations.csv';
+  a.click();
+  toast('CSV downloaded!');
+}
+
+// ── INIT ──
+function render(){ updateStats(); renderEvents(); renderRegs(); }
+loadEvents();
+
+  // ── EXPOSE FUNCTIONS TO GLOBAL SCOPE (needed for HTML onclick) ──
+  window.logout        = logout;
+  window.toggleTheme   = toggleTheme;
+  window.toggleSidebar = toggleSidebar;
+  window.closeSidebar  = closeSidebar;
+  window.navClick      = navClick;
+  window.openModal     = openModal;
+  window.closeModal    = closeModal;
+  window.saveEvent     = saveEvent;
+  window.delEvent      = delEvent;
+  window.setFilter     = setFilter;
+  window.filterEvents  = filterEvents;
+  window.exportCSV     = exportCSV;
+  window.loadEvents    = loadEvents;
+
+})();
+</script>
+</body>
+</html>
