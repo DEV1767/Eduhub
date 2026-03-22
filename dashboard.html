@@ -197,12 +197,16 @@ html,body{height:100%;font-family:'Plus Jakarta Sans','Inter',sans-serif;backgro
 .ebtn.del:hover{border-color:var(--red);color:var(--red);background:var(--red-light)}
 
 /* BOTTOM ROW */
-.bottom-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.bottom-row{display:grid;grid-template-columns:2fr 1fr;gap:12px}
 .tcard,.qcard{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;transition:background 0.2s,border-color 0.2s}
-.tcard .sec-hd,.qcard .sec-hd{padding:12px 14px;margin-bottom:0;border-bottom:1px solid var(--border)}
-.tbl-wrap{overflow-x:auto}
-table{width:100%;border-collapse:collapse}
-th{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;padding:9px 14px;text-align:left;background:var(--surface2);white-space:nowrap}
+.tcard .sec-hd,.qcard .sec-hd{padding:12px 14px;margin-bottom:0;border-bottom:1px solid var(--border);flex-shrink:0}
+.tbl-wrap{overflow-x:auto;overflow-y:auto;max-height:320px}
+.tbl-wrap::-webkit-scrollbar{width:5px;height:5px}
+.tbl-wrap::-webkit-scrollbar-track{background:var(--surface2);border-radius:10px}
+.tbl-wrap::-webkit-scrollbar-thumb{background:var(--border2);border-radius:10px}
+.tbl-wrap::-webkit-scrollbar-thumb:hover{background:var(--purple)}
+table{width:100%;border-collapse:collapse;min-width:600px}
+th{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;padding:9px 14px;text-align:left;background:var(--surface2);white-space:nowrap;position:sticky;top:0;z-index:1}
 td{font-size:13px;color:var(--text);padding:9px 14px;border-top:1px solid var(--border);vertical-align:middle}
 tr:hover td{background:var(--surface2)}
 .badge-confirmed{display:inline-flex;align-items:center;padding:2px 8px;border-radius:5px;font-size:11px;font-weight:600;background:var(--green-light);color:#166534}
@@ -275,6 +279,22 @@ tr:hover td{background:var(--surface2)}
 /* CSV EXPORT BTN */
 .link-btn{font-size:12px;color:var(--purple);background:none;border:none;cursor:pointer;font-weight:500;font-family:'Inter',sans-serif}
 .link-btn:hover{text-decoration:underline}
+
+
+/* ── FOOTER ── */
+.dash-footer{
+  padding:14px 20px;border-top:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:8px;background:var(--surface);
+  transition:background 0.2s,border-color 0.2s
+}
+.dash-footer-copy{font-size:12px;color:var(--text3)}
+.dash-footer-crafted{
+  font-size:12px;color:var(--text3);text-decoration:none;
+  display:flex;align-items:center;gap:4px;transition:color 0.2s
+}
+.dash-footer-crafted:hover{color:var(--purple)}
+.dash-footer-crafted strong{color:var(--text2);font-weight:600}
 
 /* ── RESPONSIVE ── */
 @media(max-width:1024px){.bottom-row{grid-template-columns:1fr}}
@@ -457,7 +477,7 @@ tr:hover td{background:var(--surface2)}
           <div class="fchip" onclick="setFilter('Hackathon',this)">Hackathon</div>
           <div class="fchip" onclick="setFilter('Quiz',this)">Quiz</div>
           <div class="fchip" onclick="setFilter('Cultural',this)">Cultural</div>
-          <div class="fchip" onclick="setFilter('Tech Talk',this)">Tech Talk</div>
+          <div class="fchip" onclick="setFilter('Techtalk',this)">Techtalk</div>
         </div>
       </div>
       <div class="events-grid" id="egrid"></div>
@@ -468,14 +488,20 @@ tr:hover td{background:var(--surface2)}
         <!-- REGISTRATIONS TABLE -->
         <div class="tcard">
           <div class="sec-hd">
-            <div class="sec-title">Recent Registrations</div>
-            <button class="link-btn" onclick="exportCSV()">Export CSV</button>
+            <div class="sec-title">All Registrations</div>
+            <div style="display:flex;gap:8px;align-items:center">
+              <div class="search-box" style="min-width:0;width:160px">
+                <svg viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="4.5" stroke="currentColor" stroke-width="1.3"/><path d="M10 10l3.5 3.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+                <input type="text" placeholder="Search teams..." oninput="searchRegs(this.value)" style="width:120px">
+              </div>
+              <button class="link-btn" onclick="exportCSV()">Export CSV</button>
+            </div>
           </div>
           <div class="tbl-wrap">
             <table>
-              <thead><tr><th>Team</th><th>Event</th><th>Members</th><th>Status</th></tr></thead>
+              <thead><tr><th>Team</th><th>Lead</th><th>Event</th><th>Email</th><th>Members</th><th>Status</th><th>Action</th></tr></thead>
               <tbody id="reg-body">
-                <tr><td colspan="4" style="text-align:center;color:var(--text3);padding:24px">No registrations yet</td></tr>
+                <tr><td colspan="7" style="text-align:center;color:var(--text3);padding:24px">No registrations yet</td></tr>
               </tbody>
             </table>
           </div>
@@ -509,6 +535,13 @@ tr:hover td{background:var(--surface2)}
         </div>
 
       </div>
+
+    <!-- FOOTER -->
+    <div class="dash-footer">
+      <span class="dash-footer-copy">© 2025 EventHub College. All rights reserved.</span>
+      <a href="YOUR_PORTFOLIO_LINK_HERE" target="_blank" rel="noopener" class="dash-footer-crafted">
+        Crafted with ❤️ by <strong>Shivam Chaudhary</strong>
+      </a>
     </div>
   </div>
 </div>
@@ -526,7 +559,7 @@ tr:hover td{background:var(--surface2)}
       <div class="mfield"><label>Event name *</label><input id="m-name" placeholder="e.g. HackFest 2025"></div>
       <div class="mrow">
         <div class="mfield"><label>Type</label>
-          <select id="m-type"><option>Hackathon</option><option>Quiz</option><option>Cultural</option><option>Tech Talk</option><option>Sports</option></select>
+          <select id="m-type"><option>Hackathon</option><option>Quiz</option><option>Cultural</option><option>Techtalk</option><option>Sports</option></select>
         </div>
         <div class="mfield"><label>Status</label>
           <select id="m-status"><option>Upcoming</option><option>Live</option><option>Completed</option></select>
@@ -746,7 +779,7 @@ const TC = {
   Hackathon: { ic:'ec-hack', bc:'tb-hack', svg:'<rect x="1" y="3" width="14" height="10" rx="2" stroke="#5B4FE8" stroke-width="1.3"/><path d="M5 3V2a3 3 0 016 0v1" stroke="#5B4FE8" stroke-width="1.3" stroke-linecap="round"/>' },
   Quiz:      { ic:'ec-quiz', bc:'tb-quiz', svg:'<path d="M8 1l1.8 4.5h4.7l-3.8 2.8 1.5 4.7L8 10.5l-4.2 2.5 1.5-4.7L1.5 5.5h4.7z" stroke="#92400E" stroke-width="1.2" stroke-linejoin="round"/>' },
   Cultural:  { ic:'ec-cult', bc:'tb-cult', svg:'<circle cx="8" cy="6" r="3.5" stroke="#9F1239" stroke-width="1.3"/><path d="M2 14c0-2.8 2.7-5 6-5s6 2.2 6 5" stroke="#9F1239" stroke-width="1.3" stroke-linecap="round"/>' },
-  'Tech Talk':{ ic:'ec-tech', bc:'tb-tech', svg:'<path d="M2 2h12v9H2z" stroke="#0F766E" stroke-width="1.3" stroke-linejoin="round"/><path d="M6 14h4M8 11v3" stroke="#0F766E" stroke-width="1.3" stroke-linecap="round"/>' },
+  'Techtalk':{ ic:'ec-tech', bc:'tb-tech', svg:'<path d="M2 2h12v9H2z" stroke="#0F766E" stroke-width="1.3" stroke-linejoin="round"/><path d="M6 14h4M8 11v3" stroke="#0F766E" stroke-width="1.3" stroke-linecap="round"/>' },
   Sports:    { ic:'ec-tech', bc:'tb-tech', svg:'<circle cx="8" cy="8" r="5.5" stroke="#0F766E" stroke-width="1.3"/>' },
 };
 const SC = {
@@ -776,7 +809,7 @@ function renderEvents(){
     return;
   }
   grid.innerHTML = list.map(e => {
-    const tc = TC[e.type] || TC['Tech Talk'];
+    const tc = TC[e.type] || TC['Techtalk'];
     const sc = SC[e.status] || SC['Upcoming'];
     const ds = e.date ? new Date(e.date).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}) : 'TBD';
     return `<div class="ecard">
@@ -797,7 +830,7 @@ function renderEvents(){
       <div class="ecard-footer">
         <div class="estatus">
           <div class="sdot ${sc.dot}"></div>
-          ${sc.label} &nbsp;·&nbsp; <strong>${e.teams || 0}</strong> teams${e.maxTeams ? ' / ' + e.maxTeams : ''}
+          ${sc.label} &nbsp;·&nbsp; <strong>${e.teams || e.team || 0}</strong> teams${e.maxTeams ? ' / ' + e.maxTeams : ''}
         </div>
         <div class="ecard-btns">
           <button class="ebtn del" onclick="delEvent('${e._id}')">Delete</button>
@@ -812,32 +845,112 @@ function updateStats(){
   document.getElementById('s-total').textContent = events.length;
   document.getElementById('s-live').textContent = events.filter(e => e.status === 'Live').length;
   document.getElementById('s-up').textContent = events.filter(e => e.status === 'Upcoming').length;
-  document.getElementById('s-teams').textContent = events.reduce((a,e) => a + (parseInt(e.teams) || 0), 0);
+  document.getElementById('s-teams').textContent = allRegs.length;
   document.getElementById('ev-count').textContent = events.length;
 }
 
 // ── REGISTRATIONS ──
+// ── ALL REGISTRATIONS STATE ──
+let allRegs = [];
+let filteredRegs = [];
+
+// ── LOAD ALL REGISTRATIONS FOR ALL MY EVENTS ──
+async function loadAllRegistrations(){
+  try{
+    // Get registrations for each event
+    const regPromises = events.map(e =>
+      fetch(`${API}/teams/${e._id}/teams`, { credentials:'include' })
+        .then(r => r.ok ? r.json() : { teams: [] })
+        .then(data => (data.teams || []).map(t => ({ ...t, eventName: e.name, eventId: e._id })))
+    );
+    const results = await Promise.all(regPromises);
+    allRegs = results.flat();
+    filteredRegs = [...allRegs];
+    renderRegs();
+    updateStats();
+  } catch(e){
+    console.log('Could not load registrations:', e);
+  }
+}
+
+// ── SEARCH REGISTRATIONS ──
+function searchRegs(q){
+  const query = q.toLowerCase();
+  filteredRegs = !query
+    ? [...allRegs]
+    : allRegs.filter(r =>
+        (r.teamname||'').toLowerCase().includes(query) ||
+        (r.email||'').toLowerCase().includes(query) ||
+        (r.eventName||'').toLowerCase().includes(query)
+      );
+  renderRegs();
+}
+
+// ── RENDER REGISTRATIONS TABLE ──
 function renderRegs(){
-  const regs = JSON.parse(localStorage.getItem('eventhub_regs') || '[]');
   const tbody = document.getElementById('reg-body');
-  if(!regs.length){
-    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--text3);padding:24px">No registrations yet</td></tr>';
+  if(!filteredRegs.length){
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--text3);padding:24px">No registrations yet</td></tr>';
     return;
   }
-  tbody.innerHTML = regs.slice(0,6).map(r => `<tr>
-    <td style="font-weight:600">${r.teamName || '—'}</td>
-    <td style="color:var(--text2)">${r.eventName || '—'}</td>
-    <td>${r.members || '—'}</td>
-    <td><span class="badge-confirmed">Confirmed</span></td>
-  </tr>`).join('');
+  tbody.innerHTML = filteredRegs.map(r => {
+    const membersCount = Array.isArray(r.members) ? r.members.join(', ') : (r.members || '—');
+    return `<tr>
+      <td style="font-weight:600">${r.teamname || r.teamName || '—'}</td>
+      <td style="color:var(--text2)">${r.leadname || r.leadName || '—'}</td>
+      <td style="color:var(--text2)">${r.eventName || '—'}</td>
+      <td style="color:var(--text2);font-size:12px">${r.email || '—'}</td>
+      <td>${membersCount}</td>
+      <td><span class="badge-confirmed">Confirmed</span></td>
+      <td>
+        <button class="ebtn del" onclick="cancelReg('${r._id}')" title="Cancel registration">
+          Cancel
+        </button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+// ── CANCEL REGISTRATION ──
+async function cancelReg(tid){
+  if(!confirm('Cancel this team registration?')) return;
+  try{
+    const res = await fetch(`${API}/teams/${tid}`, {
+      method: 'DELETE',
+      credentials: 'include'
+    });
+    const data = await res.json();
+    if(res.ok){
+      allRegs = allRegs.filter(r => r._id !== tid);
+      filteredRegs = filteredRegs.filter(r => r._id !== tid);
+      renderRegs();
+      updateStats();
+      // Also update event teams count in UI
+      await loadEvents();
+      toast('Registration cancelled');
+    } else {
+      toast(data.message || 'Failed to cancel', 'fail');
+    }
+  } catch(e){
+    toast('Cannot connect to server', 'fail');
+  }
 }
 
 // ── EXPORT CSV ──
 function exportCSV(){
-  const regs = JSON.parse(localStorage.getItem('eventhub_regs') || '[]');
-  if(!regs.length){ toast('No registrations to export', 'fail'); return; }
-  const rows = [['Team Name','Event','Members','Status'], ...regs.map(r => [r.teamName, r.eventName, r.members, 'Confirmed'])];
-  const csv = rows.map(r => r.join(',')).join('\n');
+  if(!allRegs.length){ toast('No registrations to export', 'fail'); return; }
+  const rows = [
+    ['Team Name','Lead Name','Event','Email','Members','Status'],
+    ...allRegs.map(r => [
+      r.teamname || r.teamName || '',
+      r.leadname || r.leadName || '',
+      r.eventName || '',
+      r.email || '',
+      Array.isArray(r.members) ? r.members.join(' | ') : (r.members || ''),
+      'Confirmed'
+    ])
+  ];
+  const csv = rows.map(r => r.map(v => `"${v}"`).join(',')).join('\n');
   const a = document.createElement('a');
   a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
   a.download = 'registrations.csv';
@@ -846,8 +959,12 @@ function exportCSV(){
 }
 
 // ── INIT ──
-function render(){ updateStats(); renderEvents(); renderRegs(); }
-loadEvents();
+function render(){ updateStats(); renderEvents(); }
+async function initPage(){
+  await loadEvents();
+  await loadAllRegistrations();
+}
+initPage();
 
   // ── EXPOSE FUNCTIONS TO GLOBAL SCOPE (needed for HTML onclick) ──
   window.logout        = logout;
@@ -861,8 +978,11 @@ loadEvents();
   window.delEvent      = delEvent;
   window.setFilter     = setFilter;
   window.filterEvents  = filterEvents;
-  window.exportCSV     = exportCSV;
-  window.loadEvents    = loadEvents;
+  window.exportCSV          = exportCSV;
+  window.loadEvents         = loadEvents;
+  window.cancelReg          = cancelReg;
+  window.searchRegs         = searchRegs;
+  window.loadAllRegistrations = loadAllRegistrations;
 
 })();
 </script>

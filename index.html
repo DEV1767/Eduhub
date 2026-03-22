@@ -341,7 +341,6 @@ footer{
   display:flex;align-items:flex-start;justify-content:space-between;
   gap:2rem;flex-wrap:wrap;margin-bottom:2rem
 }
-.footer-brand{}
 .footer-logo{display:flex;align-items:center;gap:10px;margin-bottom:10px}
 .footer-logo-icon{
   width:32px;height:32px;border-radius:8px;background:var(--purple);
@@ -361,6 +360,9 @@ footer{
   flex-wrap:wrap;gap:1rem
 }
 .footer-copy{font-size:12px;color:rgba(255,255,255,0.3)}
+.footer-crafted{font-size:12px;color:rgba(255,255,255,0.4);text-decoration:none;transition:color 0.2s;display:flex;align-items:center;gap:4px}
+.footer-crafted:hover{color:rgba(255,255,255,0.9)}
+.footer-crafted strong{color:#fff;font-weight:600}
 .footer-tags{display:flex;gap:8px}
 .footer-tag{
   padding:4px 10px;border-radius:6px;font-size:11px;font-weight:600;
@@ -746,6 +748,9 @@ footer{
   </div>
   <div class="footer-bottom">
     <span class="footer-copy">© 2025 EventHub College. All rights reserved.</span>
+    <a href="YOUR_PORTFOLIO_LINK_HERE" target="_blank" rel="noopener" class="footer-crafted">
+      Crafted with ❤️ by <strong>Shivam</strong>
+    </a>
     <div class="footer-tags">
       <span class="footer-tag">Hackathon</span>
       <span class="footer-tag">Quiz</span>
