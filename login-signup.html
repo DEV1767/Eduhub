@@ -731,10 +731,272 @@
         max-width: unset
       }
     }
+
+    /* OTP MODAL */
+    .otp-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(26, 26, 46, 0.55);
+      backdrop-filter: blur(4px);
+      z-index: 8000;
+      align-items: center;
+      justify-content: center;
+      animation: fadeIn 0.2s ease
+    }
+
+    .otp-overlay.show {
+      display: flex
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0 }
+      to   { opacity: 1 }
+    }
+
+    .otp-box {
+      background: var(--white);
+      border-radius: 20px;
+      padding: 2.4rem 2rem 2rem;
+      width: 100%;
+      max-width: 400px;
+      margin: 1rem;
+      box-shadow: 0 20px 60px rgba(91, 79, 232, 0.18);
+      text-align: center;
+      animation: slideUp 0.3s cubic-bezier(.34,1.56,.64,1)
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(24px) scale(0.97) }
+      to   { opacity: 1; transform: translateY(0) scale(1) }
+    }
+
+    .otp-icon {
+      width: 64px;
+      height: 64px;
+      border-radius: 18px;
+      background: var(--purple-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.2rem
+    }
+
+    .otp-icon svg {
+      width: 30px;
+      height: 30px
+    }
+
+    .otp-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 6px
+    }
+
+    .otp-sub {
+      font-size: 13px;
+      color: var(--text2);
+      line-height: 1.6;
+      margin-bottom: 1.8rem
+    }
+
+    .otp-sub strong {
+      color: var(--text);
+      font-weight: 600
+    }
+
+    .otp-inputs {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin-bottom: 1.6rem
+    }
+
+    .otp-input {
+      width: 48px;
+      height: 56px;
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      font-size: 22px;
+      font-weight: 700;
+      font-family: 'Syne', sans-serif;
+      text-align: center;
+      color: var(--text);
+      background: var(--bg);
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+      caret-color: var(--purple)
+    }
+
+    .otp-input:focus {
+      border-color: var(--purple);
+      background: var(--white);
+      box-shadow: 0 0 0 3px var(--purple-light)
+    }
+
+    .otp-input.filled {
+      border-color: var(--purple-mid);
+      background: var(--white)
+    }
+
+    .otp-input.err-state {
+      border-color: var(--red) !important;
+      background: #fffafa !important;
+      box-shadow: 0 0 0 3px #fde8e8 !important
+    }
+
+    .otp-err {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      font-size: 12px;
+      color: var(--red);
+      font-weight: 500;
+      margin: -0.8rem 0 1rem
+    }
+
+    .otp-err.show { display: flex }
+
+    .otp-err svg { width: 13px; height: 13px; flex-shrink: 0 }
+
+    .otp-timer {
+      font-size: 12px;
+      color: var(--text3);
+      margin-bottom: 1.2rem
+    }
+
+    .otp-timer span {
+      color: var(--purple);
+      font-weight: 600
+    }
+
+    .otp-resend {
+      font-size: 13px;
+      color: var(--text2);
+      margin-bottom: 1.4rem
+    }
+
+    .otp-resend button {
+      background: none;
+      border: none;
+      color: var(--purple);
+      font-weight: 600;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      cursor: pointer;
+      padding: 0;
+      text-decoration: underline
+    }
+
+    .otp-resend button:disabled {
+      color: var(--text3);
+      cursor: not-allowed;
+      text-decoration: none
+    }
+
+    .otp-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px
+    }
+
+    .btn-otp-verify {
+      width: 100%;
+      padding: 12px;
+      background: var(--purple);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 600;
+      font-family: 'Syne', sans-serif;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 46px
+    }
+
+    .btn-otp-verify:hover:not(:disabled) {
+      background: var(--purple-dark);
+      transform: translateY(-1px)
+    }
+
+    .btn-otp-verify:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+      transform: none
+    }
+
+    .btn-otp-cancel {
+      width: 100%;
+      padding: 11px;
+      background: transparent;
+      color: var(--text2);
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 500;
+      font-family: 'DM Sans', sans-serif;
+      cursor: pointer;
+      transition: all 0.15s
+    }
+
+    .btn-otp-cancel:hover {
+      background: var(--bg);
+      border-color: #ccc;
+      color: var(--text)
+    }
   </style>
 </head>
 
 <body>
+
+  <!-- OTP MODAL -->
+  <div class="otp-overlay" id="otp-overlay">
+    <div class="otp-box">
+      <div class="otp-icon">
+        <svg viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="3" y="10" width="24" height="16" rx="3.5" fill="rgba(91,79,232,0.15)" stroke="#5B4FE8" stroke-width="1.5"/>
+          <path d="M9 10V8a6 6 0 0 1 12 0v2" stroke="#5B4FE8" stroke-width="1.5" stroke-linecap="round"/>
+          <circle cx="15" cy="18" r="2.5" fill="#5B4FE8"/>
+          <path d="M15 20.5v2" stroke="#5B4FE8" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="otp-title">Verify your email</div>
+      <div class="otp-sub">We've sent a 6-digit code to<br><strong id="otp-email-display">your email</strong></div>
+
+      <div class="otp-inputs">
+        <input class="otp-input" id="otp-0" type="text" inputmode="numeric" maxlength="1" autocomplete="off">
+        <input class="otp-input" id="otp-1" type="text" inputmode="numeric" maxlength="1" autocomplete="off">
+        <input class="otp-input" id="otp-2" type="text" inputmode="numeric" maxlength="1" autocomplete="off">
+        <input class="otp-input" id="otp-3" type="text" inputmode="numeric" maxlength="1" autocomplete="off">
+        <input class="otp-input" id="otp-4" type="text" inputmode="numeric" maxlength="1" autocomplete="off">
+        <input class="otp-input" id="otp-5" type="text" inputmode="numeric" maxlength="1" autocomplete="off">
+      </div>
+
+      <div class="otp-err" id="otp-err">
+        <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
+        <span id="otp-err-msg">Incorrect OTP. Please try again.</span>
+      </div>
+
+      <div class="otp-timer" id="otp-timer-wrap">Code expires in <span id="otp-countdown">02:00</span></div>
+
+      <div class="otp-resend">
+        Didn't receive it? <button id="otp-resend-btn" disabled onclick="resendOtp()">Resend code</button>
+      </div>
+
+      <div class="otp-actions">
+        <button class="btn-otp-verify" id="otp-verify-btn" onclick="verifyOtp()">Verify &amp; Continue</button>
+        <button class="btn-otp-cancel" onclick="closeOtp()">Cancel</button>
+      </div>
+    </div>
+  </div>
 
   <!-- PAGE LOADER -->
   <div class="page-loader" id="page-loader">
@@ -1107,6 +1369,177 @@
         : label;
     }
 
+
+    // ── OTP STATE ──
+    let otpContext = null;
+    let otpTimer = null;
+
+    function openOtp(email, context) {
+      otpContext = context;
+      document.getElementById('otp-email-display').textContent = email;
+      document.getElementById('otp-err').classList.remove('show');
+      for (let i = 0; i < 6; i++) {
+        const inp = document.getElementById('otp-' + i);
+        inp.value = '';
+        inp.classList.remove('filled', 'err-state');
+      }
+      document.getElementById('otp-overlay').classList.add('show');
+      document.getElementById('otp-0').focus();
+      startOtpTimer();
+      setupOtpInputs();
+    }
+
+    function closeOtp() {
+      document.getElementById('otp-overlay').classList.remove('show');
+      clearInterval(otpTimer);
+      otpContext = null;
+    }
+
+    function setupOtpInputs() {
+      for (let i = 0; i < 6; i++) {
+        const inp = document.getElementById('otp-' + i);
+        inp.oninput = function () {
+          this.value = this.value.replace(/\D/g, '').slice(0, 1);
+          this.classList.toggle('filled', this.value !== '');
+          this.classList.remove('err-state');
+          document.getElementById('otp-err').classList.remove('show');
+          if (this.value && i < 5) document.getElementById('otp-' + (i + 1)).focus();
+        };
+        inp.onkeydown = function (e) {
+          if (e.key === 'Backspace' && !this.value && i > 0) document.getElementById('otp-' + (i - 1)).focus();
+          if (e.key === 'ArrowLeft' && i > 0) document.getElementById('otp-' + (i - 1)).focus();
+          if (e.key === 'ArrowRight' && i < 5) document.getElementById('otp-' + (i + 1)).focus();
+        };
+        inp.onpaste = function (e) {
+          e.preventDefault();
+          const paste = (e.clipboardData || window.clipboardData).getData('text').replace(/\D/g, '').slice(0, 6);
+          for (let j = 0; j < paste.length; j++) {
+            const target = document.getElementById('otp-' + (i + j));
+            if (target) { target.value = paste[j]; target.classList.add('filled'); }
+          }
+          const next = document.getElementById('otp-' + Math.min(i + paste.length, 5));
+          if (next) next.focus();
+        };
+      }
+    }
+
+    function getOtpValue() {
+      return Array.from({ length: 6 }, (_, i) => document.getElementById('otp-' + i).value).join('');
+    }
+
+    function startOtpTimer() {
+      clearInterval(otpTimer);
+      let secs = 120;
+      const countdown = document.getElementById('otp-countdown');
+      const resendBtn = document.getElementById('otp-resend-btn');
+      resendBtn.disabled = true;
+      const tick = () => {
+        const m = String(Math.floor(secs / 60)).padStart(2, '0');
+        const s = String(secs % 60).padStart(2, '0');
+        countdown.textContent = m + ':' + s;
+        if (secs <= 0) { clearInterval(otpTimer); countdown.textContent = '00:00'; resendBtn.disabled = false; }
+        secs--;
+      };
+      tick();
+      otpTimer = setInterval(tick, 1000);
+    }
+
+    function resendOtp() {
+      showToast('A new OTP has been sent to your email.', 'success');
+      for (let i = 0; i < 6; i++) {
+        const inp = document.getElementById('otp-' + i);
+        inp.value = ''; inp.classList.remove('filled', 'err-state');
+      }
+      document.getElementById('otp-err').classList.remove('show');
+      document.getElementById('otp-0').focus();
+      startOtpTimer();
+    }
+
+    async function verifyOtp() {
+      const otp = getOtpValue();
+      if (otp.length < 6) {
+        document.getElementById('otp-err-msg').textContent = 'Please enter all 6 digits.';
+        document.getElementById('otp-err').classList.add('show');
+        for (let i = 0; i < 6; i++) document.getElementById('otp-' + i).classList.add('err-state');
+        return;
+      }
+      const btn = document.getElementById('otp-verify-btn');
+      btn.disabled = true;
+      btn.innerHTML = '<div class="spinner"></div>';
+
+      try {
+        // ── Step 1: verify-otp ──
+        const email = otpContext.payload.email;
+        const verifyRes = await fetch(`${API_BASE}/verify-otp`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, otp })
+        });
+        const verifyData = await verifyRes.json();
+        if (!verifyRes.ok) {
+          document.getElementById('otp-err-msg').textContent = verifyData.message || 'Incorrect OTP. Please try again.';
+          document.getElementById('otp-err').classList.add('show');
+          for (let i = 0; i < 6; i++) document.getElementById('otp-' + i).classList.add('err-state');
+          return;
+        }
+
+        // ── Step 2: proceed to login or signup ──
+        if (otpContext.type === 'login') {
+          const { email, pass } = otpContext.payload;
+          const res = await fetch(`${API_BASE}/login`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include',
+            body: JSON.stringify({ email, password: pass })
+          });
+          const data = await res.json();
+          if (res.ok) {
+            const userData = data.user || { email };
+            sessionStorage.setItem('eventhub_user', JSON.stringify(userData));
+            closeOtp();
+            showToast('Signed in successfully!', 'success');
+            setTimeout(() => {
+              showLoader(`Welcome back, ${userData.firstname || userData.name || ''}! Loading your dashboard...`);
+              setTimeout(() => redirectByRole(userData.role), 900);
+            }, 600);
+          } else {
+            document.getElementById('otp-err-msg').textContent = data.message || 'Login failed. Please try again.';
+            document.getElementById('otp-err').classList.add('show');
+          }
+
+        } else if (otpContext.type === 'signup') {
+          const { payload } = otpContext;
+          const res = await fetch(`${API_BASE}/signup`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include',
+            body: JSON.stringify(payload)
+          });
+          const data = await res.json();
+          if (res.ok) {
+            if (data.user) sessionStorage.setItem('eventhub_user', JSON.stringify(data.user));
+            closeOtp();
+            showToast('Account created successfully!', 'success');
+            const userData = data.user || { email: payload.email, firstName: payload.firstname };
+            if (data.token) {
+              setTimeout(() => {
+                showLoader(`Welcome, ${userData.firstName || payload.firstname}! Setting up your dashboard...`);
+                setTimeout(() => redirectByRole(userData.role || payload.role), 900);
+              }, 600);
+            } else {
+              setTimeout(() => { switchTab('login'); }, 1500);
+            }
+          } else {
+            document.getElementById('otp-err-msg').textContent = data.message || 'Registration failed. Please try again.';
+            document.getElementById('otp-err').classList.add('show');
+          }
+        }
+
+      } catch (e) {
+        document.getElementById('otp-err-msg').textContent = 'Cannot connect to server.';
+        document.getElementById('otp-err').classList.add('show');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = 'Verify &amp; Continue';
+      }
+    }
+
     async function doLogin() {
       hideServerErr('l-server-err');
       let ok = true;
@@ -1117,33 +1550,11 @@
       if (!pass) { showErr('l-pass', 'l-pass-err', 'Password is required'); ok = false; }
       else if (pass.length < 8) { showErr('l-pass', 'l-pass-err', 'Password must be at least 8 characters'); ok = false; }
       if (!ok) return;
-
       setLoading('l-btn', true);
-      try {
-        const res = await fetch(`${API_BASE}/login`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          credentials: 'include',
-          body: JSON.stringify({ email, password: pass })
-        });
-        const data = await res.json();
-        if (res.ok) {
-          // Store only non-sensitive user info for UI display
-          const userData = data.user || { email };
-          sessionStorage.setItem('eventhub_user', JSON.stringify(userData));
-          showToast('Signed in successfully!', 'success');
-          setTimeout(() => {
-            showLoader(`Welcome back, ${userData.firstname || userData.name || ''}! Loading your dashboard...`);
-            setTimeout(() => redirectByRole(userData.role), 900);
-          }, 600);
-        } else {
-          showServerErr('l-server-err', 'l-server-err-msg', data.message || 'Invalid email or password');
-        }
-      } catch (e) {
-        showServerErr('l-server-err', 'l-server-err-msg', 'Cannot connect to server. Make sure your backend is running on port 8000.');
-      } finally {
-        setLoading('l-btn', false, 'Sign in');
-      }
+      try { await fetch(`${API_BASE}/send-otp`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email }) }); } catch (e) {}
+      setLoading('l-btn', false, 'Sign in');
+      openOtp(email, { type: 'login', payload: { email, pass } });
+      showToast('OTP sent to your email!', 'success');
     }
 
     async function doSignup() {
@@ -1156,7 +1567,6 @@
       const pass = document.getElementById('s-pass').value;
       const cpass = document.getElementById('s-cpass').value;
       const roleEl = document.querySelector('#role-chips .chip.sel');
-
       if (!fname) { showErr('s-fname', 's-fname-err', 'First name is required'); ok = false; }
       if (!lname) { showErr('s-lname', 's-lname-err', 'Last name is required'); ok = false; }
       if (!email) { showErr('s-email', 's-email-err', 'Email is required'); ok = false; }
@@ -1168,46 +1578,11 @@
       if (!cpass) { showErr('s-cpass', 's-cpass-err', 'Please confirm your password'); ok = false; }
       else if (pass && cpass !== pass) { showErr('s-cpass', 's-cpass-err', 'Passwords do not match'); ok = false; }
       if (!ok) return;
-
       setLoading('s-btn', true);
-      try {
-        const res = await fetch(`${API_BASE}/signup`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          credentials: 'include',
-          body: JSON.stringify({
-            firstname: fname,
-            lastname: lname,
-            email,
-            collegename: college,
-            role: roleEl.textContent.trim(),
-            password: pass
-          })
-        });
-        const data = await res.json();
-        if (res.ok) {
-          if (data.user) {
-            // Store only non-sensitive user info for UI display
-            sessionStorage.setItem('eventhub_user', JSON.stringify(data.user));
-          }
-          showToast('Account created successfully!', 'success');
-          if (data.token) {
-            const userData = data.user || { email, firstName: fname };
-            setTimeout(() => {
-              showLoader(`Welcome, ${userData.firstName || fname}! Setting up your dashboard...`);
-              setTimeout(() => redirectByRole(userData.role || roleEl.textContent.trim()), 900);
-            }, 600);
-          } else {
-            setTimeout(() => { switchTab('login'); }, 1500);
-          }
-        } else {
-          showServerErr('s-server-err', 's-server-err-msg', data.message || 'Registration failed. Please try again.');
-        }
-      } catch (e) {
-        showServerErr('s-server-err', 's-server-err-msg', 'Cannot connect to server. Make sure your backend is running on port 8000.');
-      } finally {
-        setLoading('s-btn', false, 'Create account');
-      }
+      try { await fetch(`${API_BASE}/send-otp`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email }) }); } catch (e) {}
+      setLoading('s-btn', false, 'Create account');
+      openOtp(email, { type: 'signup', payload: { firstname: fname, lastname: lname, email, collegename: college, role: roleEl.textContent.trim(), password: pass } });
+      showToast('OTP sent to your email!', 'success');
     }
 
     // ── ROLE BASED REDIRECT ──

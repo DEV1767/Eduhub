@@ -191,10 +191,15 @@ html,body{height:100%;font-family:'Plus Jakarta Sans','Inter',sans-serif;backgro
 .estatus{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text2)}
 .sdot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
 .sdot-live{background:var(--green)}.sdot-up{background:var(--amber)}.sdot-done{background:var(--text3)}
-.ecard-btns{display:flex;gap:5px}
+.ecard-btns{display:flex;gap:5px;flex-wrap:wrap}
 .ebtn{padding:4px 10px;border-radius:6px;font-size:11px;font-weight:500;cursor:pointer;border:1px solid var(--border);background:var(--surface2);color:var(--text2);font-family:'Inter',sans-serif;transition:all 0.12s}
 .ebtn:hover{border-color:var(--purple);color:var(--purple);background:var(--purple-faint)}
 .ebtn.del:hover{border-color:var(--red);color:var(--red);background:var(--red-light)}
+.ebtn.schedule{border-color:var(--teal);color:var(--teal)}
+.ebtn.schedule:hover{background:var(--teal-light)}
+
+/* SCHEDULE MODAL & TIMELINE */
+.timeline{display:flex;flex-direction:column;gap:0;margin-bottom:16px}.timeline-item{display:flex;gap:12px;padding:12px 0;border-left:2px solid var(--border);padding-left:16px;margin-left:0;position:relative}.timeline-item::before{content:'';width:10px;height:10px;background:var(--purple);border-radius:50%;border:3px solid var(--surface);position:absolute;left:-7px;top:14px}.timeline-item-time{font-size:12px;font-weight:600;color:var(--text);min-width:100px}.timeline-item-meta{display:flex;flex-direction:column;gap:2px;flex:1}.timeline-item-title{font-size:13px;font-weight:600;color:var(--text)}.timeline-item-desc{font-size:12px;color:var(--text2)}.timeline-item-actions{display:flex;gap:6px;margin-top:8px}.slot-btn{padding:4px 10px;border-radius:6px;font-size:10px;font-weight:500;border:1px solid var(--border);background:var(--surface2);color:var(--text2);cursor:pointer;transition:all 0.12s}.slot-btn:hover{border-color:var(--purple);color:var(--purple);background:var(--purple-faint)}.slot-btn.delete:hover{border-color:var(--red);color:var(--red);background:var(--red-light)}
 
 /* BOTTOM ROW */
 .bottom-row{display:grid;grid-template-columns:2fr 1fr;gap:12px}
@@ -295,6 +300,9 @@ tr:hover td{background:var(--surface2)}
 }
 .dash-footer-crafted:hover{color:var(--purple)}
 .dash-footer-crafted strong{color:var(--text2);font-weight:600}
+
+/* ── SCHEDULE MODAL FORM ── */
+.schedule-form{display:flex;flex-direction:column;gap:10px;padding:12px;background:var(--surface2);border-radius:10px;border:1px solid var(--border)}.schedule-form .mfield{margin-bottom:0}.slot-order-info{font-size:11px;color:var(--text3)}
 
 /* ── RESPONSIVE ── */
 @media(max-width:1024px){.bottom-row{grid-template-columns:1fr}}
@@ -539,7 +547,7 @@ tr:hover td{background:var(--surface2)}
     <!-- FOOTER -->
     <div class="dash-footer">
       <span class="dash-footer-copy">© 2025 EventHub College. All rights reserved.</span>
-      <a href="YOUR_PORTFOLIO_LINK_HERE" target="_blank" rel="noopener" class="dash-footer-crafted">
+      <a href="https://my-portfoliyo-nine.vercel.app/" target="_blank" rel="noopener" class="dash-footer-crafted">
         Crafted with ❤️ by <strong>Shivam Chaudhary</strong>
       </a>
     </div>
@@ -579,6 +587,40 @@ tr:hover td{background:var(--surface2)}
     <div class="modal-ft">
       <button class="btn-cancel" onclick="closeModal()">Cancel</button>
       <button class="btn-save" onclick="saveEvent()">Create Event</button>
+    </div>
+  </div>
+</div>
+
+<!-- SCHEDULE MODAL - Organiser -->
+<div class="overlay" id="schedule-modal" onclick="if(event.target===this)closeScheduleModal()">
+  <div class="modal">
+    <div class="modal-hd">
+      <div class="modal-hd-title">Manage Schedule - <span id="sched-event-name">Event</span></div>
+      <button class="modal-x" onclick="closeScheduleModal()">
+        <svg viewBox="0 0 16 16" fill="none"><path d="M3 3l10 10M13 3L3 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <!-- Timeline of Slots -->
+      <div id="schedule-timeline" style="margin-bottom:16px"></div>
+      
+      <!-- Add Slot Form -->
+      <div style="border-top:1px solid var(--border);padding-top:12px">
+        <div class="modal-hd-title" style="font-size:13px;margin-bottom:10px">Add Time Slot</div>
+        <div class="schedule-form">
+          <div class="mfield"><label>Title *</label><input id="slot-title" placeholder="e.g. Opening Ceremony" maxlength="100"></div>
+          <div class="mrow">
+            <div class="mfield"><label>Start Time *</label><input type="time" id="slot-start"></div>
+            <div class="mfield"><label>End Time *</label><input type="time" id="slot-end"></div>
+          </div>
+          <div class="mfield"><label>Description</label><textarea id="slot-desc" placeholder="Optional details..." style="min-height:60px"></textarea></div>
+          <div class="mfield">
+            <label>Order <span class="slot-order-info">(number for sorting)</span></label>
+            <input type="number" id="slot-order" value="1" min="1">
+          </div>
+          <button class="btn-save" style="width:100%;margin-top:8px" onclick="addSlot()">Add Slot</button>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -833,6 +875,7 @@ function renderEvents(){
           ${sc.label} &nbsp;·&nbsp; <strong>${e.teams || e.team || 0}</strong> teams${e.maxTeams ? ' / ' + e.maxTeams : ''}
         </div>
         <div class="ecard-btns">
+          <button class="ebtn schedule" onclick="openScheduleModal('${e._id}')">Schedule</button>
           <button class="ebtn del" onclick="delEvent('${e._id}')">Delete</button>
         </div>
       </div>
@@ -958,7 +1001,196 @@ function exportCSV(){
   toast('CSV downloaded!');
 }
 
+// ── SCHEDULE MANAGEMENT ──
+let currentScheduleEventId = null;
+let scheduleSlots = [];
+
+async function openScheduleModal(eventId){
+  currentScheduleEventId = eventId;
+  const event = events.find(e => e._id === eventId);
+  if(!event) return;
+  document.getElementById('sched-event-name').textContent = event.name;
+  document.getElementById('schedule-modal').classList.add('open');
+  await loadSchedule(eventId);
+  ['slot-title','slot-start','slot-end','slot-desc'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('slot-order').value = '1';
+  setTimeout(() => document.getElementById('slot-title').focus(), 100);
+}
+
+function closeScheduleModal(){
+  document.getElementById('schedule-modal').classList.remove('open');
+  currentScheduleEventId = null;
+  scheduleSlots = [];
+}
+
+async function loadSchedule(eventId){
+  try{
+    const res = await fetch(`${API}/schedule/${eventId}`, {
+      credentials: 'include'
+    });
+    const data = await res.json();
+    if(res.ok){
+      scheduleSlots = data.slots || [];
+      renderScheduleTimeline();
+    } else {
+      scheduleSlots = [];
+      renderScheduleTimeline();
+    }
+  } catch(e){
+    scheduleSlots = [];
+    renderScheduleTimeline();
+  }
+}
+
+function renderScheduleTimeline(){
+  const container = document.getElementById('schedule-timeline');
+  if(!scheduleSlots.length){
+    container.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text3)">No time slots yet. Add one to get started.</div>';
+    return;
+  }
+  container.innerHTML = scheduleSlots
+    .sort((a,b) => (a.order||0) - (b.order||0))
+    .map(slot => `
+      <div class="timeline-item">
+        <div class="timeline-item-time">${slot.startTime || 'TBD'} - ${slot.endTime || 'TBD'}</div>
+        <div class="timeline-item-meta">
+          <div class="timeline-item-title">${slot.title}</div>
+          ${slot.description ? `<div class="timeline-item-desc">${slot.description}</div>` : ''}
+          <div class="timeline-item-actions">
+            <button class="slot-btn" onclick="editSlot('${slot._id}')">Edit</button>
+            <button class="slot-btn delete" onclick="deleteSlot('${slot._id}')">Delete</button>
+          </div>
+        </div>
+      </div>
+    `).join('');
+}
+
+async function addSlot(){
+  const title = document.getElementById('slot-title').value.trim();
+  const startTime = document.getElementById('slot-start').value;
+  const endTime = document.getElementById('slot-end').value;
+  const description = document.getElementById('slot-desc').value.trim();
+  const order = parseInt(document.getElementById('slot-order').value) || 1;
+  
+  if(!title){ toast('Slot title is required', 'fail'); return; }
+  if(!startTime){ toast('Start time is required', 'fail'); return; }
+  if(!endTime){ toast('End time is required', 'fail'); return; }
+  
+  const btn = event.target;
+  btn.disabled = true;
+  btn.textContent = 'Adding...';
+  
+  try{
+    const res = await fetch(`${API}/schedule/${currentScheduleEventId}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({
+        title, startTime, endTime, description, order
+      })
+    });
+    const data = await res.json();
+    if(res.ok){
+      scheduleSlots.push(data.slot);
+      renderScheduleTimeline();
+      document.getElementById('slot-title').value = '';
+      document.getElementById('slot-start').value = '';
+      document.getElementById('slot-end').value = '';
+      document.getElementById('slot-desc').value = '';
+      document.getElementById('slot-order').value = '1';
+      toast('Time slot added!');
+    } else {
+      toast(data.message || 'Failed to add slot', 'fail');
+    }
+  } catch(e){
+    toast('Cannot connect to server', 'fail');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Add Slot';
+  }
+}
+
+async function editSlot(slotId){
+  const slot = scheduleSlots.find(s => s._id === slotId);
+  if(!slot) return;
+  // Fill form with slot data for editing
+  document.getElementById('slot-title').value = slot.title || '';
+  document.getElementById('slot-start').value = slot.startTime || '';
+  document.getElementById('slot-end').value = slot.endTime || '';
+  document.getElementById('slot-desc').value = slot.description || '';
+  document.getElementById('slot-order').value = slot.order || 1;
+  
+  // Change button text/function temporarily to update
+  const addBtn = document.querySelector('.schedule-form .btn-save');
+  const originalText = addBtn.textContent;
+  addBtn.textContent = 'Update Slot';
+  addBtn.onclick = async () => {
+    const title = document.getElementById('slot-title').value.trim();
+    const startTime = document.getElementById('slot-start').value;
+    const endTime = document.getElementById('slot-end').value;
+    const description = document.getElementById('slot-desc').value.trim();
+    const order = parseInt(document.getElementById('slot-order').value) || 1;
+    
+    if(!title){ toast('Slot title is required', 'fail'); return; }
+    if(!startTime){ toast('Start time is required', 'fail'); return; }
+    if(!endTime){ toast('End time is required', 'fail'); return; }
+    
+    addBtn.disabled = true;
+    try{
+      const res = await fetch(`${API}/schedule/${currentScheduleEventId}/${slotId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          title, startTime, endTime, description, order
+        })
+      });
+      const data = await res.json();
+      if(res.ok){
+        const idx = scheduleSlots.findIndex(s => s._id === slotId);
+        if(idx >= 0) scheduleSlots[idx] = data.slot;
+        renderScheduleTimeline();
+        document.getElementById('slot-title').value = '';
+        document.getElementById('slot-start').value = '';
+        document.getElementById('slot-end').value = '';
+        document.getElementById('slot-desc').value = '';
+        document.getElementById('slot-order').value = '1';
+        addBtn.textContent = originalText;
+        addBtn.onclick = addSlot;
+        toast('Slot updated!');
+      } else {
+        toast(data.message || 'Failed to update slot', 'fail');
+      }
+    } catch(e){
+      toast('Cannot connect to server', 'fail');
+    } finally {
+      addBtn.disabled = false;
+    }
+  };
+}
+
+async function deleteSlot(slotId){
+  if(!confirm('Delete this time slot?')) return;
+  try{
+    const res = await fetch(`${API}/schedule/${currentScheduleEventId}/${slotId}`, {
+      method: 'DELETE',
+      credentials: 'include'
+    });
+    if(res.ok){
+      scheduleSlots = scheduleSlots.filter(s => s._id !== slotId);
+      renderScheduleTimeline();
+      toast('Slot deleted');
+    } else {
+      const data = await res.json();
+      toast(data.message || 'Failed to delete slot', 'fail');
+    }
+  } catch(e){
+    toast('Cannot connect to server', 'fail');
+  }
+}
+
 // ── INIT ──
+
 function render(){ updateStats(); renderEvents(); }
 async function initPage(){
   await loadEvents();
@@ -983,6 +1215,12 @@ initPage();
   window.cancelReg          = cancelReg;
   window.searchRegs         = searchRegs;
   window.loadAllRegistrations = loadAllRegistrations;
+  window.openScheduleModal = openScheduleModal;
+  window.closeScheduleModal = closeScheduleModal;
+  window.loadSchedule = loadSchedule;
+  window.addSlot = addSlot;
+  window.editSlot = editSlot;
+  window.deleteSlot = deleteSlot;
 
 })();
 </script>
