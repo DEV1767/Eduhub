@@ -14,6 +14,13 @@
   --text:#1A1A2E;--text2:#6B7280;--text3:#9CA3AF;
   --border:#E5E7EB;--white:#FFFFFF;--bg:#F8F7FF;
 }
+html.dark-mode{
+  --purple:#6B5FED;--purple-dark:#4A42D4;--purple-light:#2D2654;
+  --purple-mid:#8B82F5;--purple-faint:#1F1A3F;
+  --teal:#00D4B0;--teal-light:#0D3D35;
+  --text:#E5E7EB;--text2:#9CA3AF;--text3:#6B7280;
+  --border:#374151;--white:#1F2937;--bg:#111827;
+}
 html{scroll-behavior:smooth}
 body{font-family:'DM Sans',sans-serif;background:var(--white);color:var(--text);overflow-x:hidden}
 
@@ -24,6 +31,10 @@ nav{
   padding:0 4%;height:64px;gap:12px;min-width:0;
   background:rgba(255,255,255,0.95);backdrop-filter:blur(12px);
   border-bottom:1px solid var(--border);
+  transition:background 0.3s,border-color 0.3s;
+}
+html.dark-mode nav{
+  background:rgba(31,41,55,0.95);
 }
 .nav-logo{display:flex;align-items:center;gap:8px;text-decoration:none;flex-shrink:0;min-width:0}
 .nav-logo-icon{width:34px;height:34px;border-radius:10px;background:var(--purple);display:flex;align-items:center;justify-content:center;flex-shrink:0}
@@ -49,6 +60,13 @@ nav{
   transition:all 0.2s;white-space:nowrap;flex-shrink:0
 }
 .btn-solid:hover{background:var(--purple-dark)}
+.theme-toggle{
+  display:flex;align-items:center;justify-content:center;gap:6px;height:36px;
+  padding:0 10px;border:1.5px solid var(--border);border-radius:8px;
+  background:transparent;cursor:pointer;color:var(--text);flex-shrink:0;
+  transition:all 0.2s;font-size:18px;
+}
+.theme-toggle:hover{border-color:var(--purple);color:var(--purple)}
 .nav-toggle{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:6px;flex-shrink:0}
 .nav-toggle span{display:block;width:22px;height:2px;background:var(--text);border-radius:2px;transition:all 0.3s}
 .mobile-menu{
@@ -82,7 +100,10 @@ nav{
 .hero-grid{
   position:absolute;inset:0;
   background-image:radial-gradient(circle,#e5e7eb 1px,transparent 1px);
-  background-size:32px 32px;opacity:0.5
+  background-size:32px 32px;opacity:0.5;transition:opacity 0.3s
+}
+html.dark-mode .hero-grid{
+  background-image:radial-gradient(circle,#374151 1px,transparent 1px);opacity:0.3
 }
 .hero-inner{
   position:relative;z-index:1;
@@ -132,15 +153,22 @@ nav{
 .event-card-demo{
   background:var(--white);border-radius:20px;
   border:1px solid var(--border);padding:1.5rem;
-  box-shadow:0 20px 60px rgba(91,79,232,0.12)
+  box-shadow:0 20px 60px rgba(91,79,232,0.12);transition:all 0.3s
+}
+html.dark-mode .event-card-demo{
+  box-shadow:0 20px 60px rgba(91,79,232,0.3)
 }
 .ecd-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.2rem}
 .ecd-title{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:var(--text)}
-.badge{padding:4px 12px;border-radius:20px;font-size:11px;font-weight:600;letter-spacing:0.3px}
+.badge{padding:4px 12px;border-radius:20px;font-size:11px;font-weight:600;letter-spacing:0.3px;transition:all 0.3s}
 .badge-hack{background:#EAE8FD;color:var(--purple)}
+html.dark-mode .badge-hack{background:#2D2654;color:#A5B4FC}
 .badge-live{background:#DCFCE7;color:#166534}
+html.dark-mode .badge-live{background:#064E3B;color:#86EFAC}
 .badge-quiz{background:#FEF9C3;color:#854D0E}
+html.dark-mode .badge-quiz{background:#3D3A1F;color:#FCD34D}
 .badge-cult{background:#FFE4E6;color:#9F1239}
+html.dark-mode .badge-cult{background:#3F1F24;color:#FB7185}
 .ecd-event-list{display:flex;flex-direction:column;gap:10px;margin-bottom:1.2rem}
 .ecd-event{
   display:flex;align-items:center;gap:12px;
@@ -153,7 +181,8 @@ nav{
 }
 .icon-purple{background:var(--purple-light)}
 .icon-teal{background:var(--teal-light)}
-.icon-amber{background:#FEF9C3}
+.icon-amber{background:#FEF9C3;transition:all 0.3s}
+html.dark-mode .icon-amber{background:#3D3A1F}
 .ecd-event-icon svg{width:18px;height:18px}
 .ecd-event-info{flex:1;min-width:0}
 .ecd-event-name{font-size:13px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -177,7 +206,7 @@ nav{
   background:var(--teal);color:#fff;
   padding:8px 14px;border-radius:12px;
   font-size:12px;font-weight:700;font-family:'Syne',sans-serif;
-  box-shadow:0 8px 20px rgba(10,191,163,0.3)
+  box-shadow:0 8px 20px rgba(10,191,163,0.3);transition:all 0.3s
 }
 .float-badge2{
   position:absolute;bottom:-16px;left:-16px;
@@ -185,7 +214,10 @@ nav{
   padding:10px 14px;border-radius:12px;
   font-size:12px;font-weight:600;color:var(--text);
   display:flex;align-items:center;gap:8px;
-  box-shadow:0 8px 20px rgba(0,0,0,0.08)
+  box-shadow:0 8px 20px rgba(0,0,0,0.08);transition:all 0.3s
+}
+html.dark-mode .float-badge2{
+  box-shadow:0 8px 20px rgba(0,0,0,0.4)
 }
 .fb2-dot{width:8px;height:8px;border-radius:50%;background:#22C55E;flex-shrink:0}
 
@@ -203,7 +235,7 @@ nav{
 .feat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px}
 .feat-card{
   background:var(--white);border-radius:16px;padding:1.8rem;
-  border:1px solid var(--border);transition:all 0.2s;position:relative;overflow:hidden
+  border:1px solid var(--border);transition:all 0.3s;position:relative;overflow:hidden
 }
 .feat-card:hover{border-color:var(--purple-mid);transform:translateY(-3px);box-shadow:0 12px 32px rgba(91,79,232,0.1)}
 .feat-card-icon{
@@ -212,33 +244,43 @@ nav{
 }
 .fc-purple{background:var(--purple-light)}
 .fc-teal{background:var(--teal-light)}
-.fc-amber{background:#FEF9C3}
-.fc-pink{background:#FFE4E6}
+.fc-amber{background:#FEF9C3;transition:all 0.3s}
+html.dark-mode .fc-amber{background:#3D3A1F}
+.fc-pink{background:#FFE4E6;transition:all 0.3s}
+html.dark-mode .fc-pink{background:#3F1F24}
 .feat-card-icon svg{width:22px;height:22px}
 .feat-card-title{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:var(--text);margin-bottom:8px}
 .feat-card-desc{font-size:14px;color:var(--text2);line-height:1.65}
 .feat-card-tag{
   display:inline-block;margin-top:14px;
   padding:4px 10px;border-radius:6px;font-size:11px;font-weight:600;
-  background:var(--purple-faint);color:var(--purple)
+  background:var(--purple-faint);color:var(--purple);transition:all 0.3s
 }
 
 /* EVENT TYPES */
-.event-types{padding:80px 5%;background:var(--white)}
+.event-types{padding:80px 5%;background:var(--white);transition:background 0.3s}
+html.dark-mode .event-types{background:var(--bg)}
 .type-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-top:3rem}
 .type-card{
   border-radius:16px;padding:1.8rem 1.5rem;
   border:1px solid var(--border);text-align:center;
-  transition:all 0.2s;cursor:default
+  transition:all 0.3s;cursor:default
 }
 .type-card:hover{transform:translateY(-4px)}
 .type-card-icon{font-size:36px;margin-bottom:1rem;display:block}
 .type-card-name{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;margin-bottom:6px}
 .type-card-desc{font-size:13px;color:var(--text2);line-height:1.6}
 .tc-hack{background:#F4F3FE;border-color:#C4BFF8}.tc-hack .type-card-name{color:var(--purple)}
+html.dark-mode .tc-hack{background:#2D2654;border-color:#3D35C0}
 .tc-quiz{background:#FFFBEB;border-color:#FDE68A}.tc-quiz .type-card-name{color:#92400E}
+html.dark-mode .tc-quiz{background:#3D3A1F;border-color:#6B4E0F}
+html.dark-mode .tc-quiz .type-card-name{color:#FCD34D}
 .tc-cult{background:#FFF1F2;border-color:#FECDD3}.tc-cult .type-card-name{color:#9F1239}
+html.dark-mode .tc-cult{background:#3F1F24;border-color:#7D1C3F}
+html.dark-mode .tc-cult .type-card-name{color:#FB7185}
 .tc-tech{background:#F0FDF4;border-color:#BBF7D0}.tc-tech .type-card-name{color:#166534}
+html.dark-mode .tc-tech{background:#0F2818;border-color:#166534}
+html.dark-mode .tc-tech .type-card-name{color:#86EFAC}
 
 /* HOW IT WORKS */
 .how{padding:80px 5%;background:var(--bg)}
@@ -326,7 +368,8 @@ nav{
 .chat-send svg{width:13px;height:13px}
 
 /* CTA */
-.cta{padding:80px 5%;background:var(--white);text-align:center}
+.cta{padding:80px 5%;background:var(--white);text-align:center;transition:background 0.3s}
+html.dark-mode .cta{background:var(--bg)}
 .cta-inner{max-width:600px;margin:0 auto}
 .cta-title{font-family:'Syne',sans-serif;font-size:clamp(28px,4vw,44px);font-weight:800;color:var(--text);margin-bottom:1rem;line-height:1.2}
 .cta-title span{color:var(--purple)}
@@ -335,7 +378,10 @@ nav{
 
 /* FOOTER */
 footer{
-  background:var(--text);padding:40px 5% 24px;
+  background:var(--text);padding:40px 5% 24px;transition:background 0.3s
+}
+html.dark-mode footer{
+  background:#111827;
 }
 .footer-inner{
   display:flex;align-items:flex-start;justify-content:space-between;
@@ -441,6 +487,9 @@ footer{
     <a href="#ai">AI Assistant</a>
   </div>
   <div class="nav-cta" id="nav-cta">
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode" title="Dark mode">
+      <span id="theme-icon">🌙</span>
+    </button>
     <a href="login-signup.html" class="btn-outline">Sign in</a>
     <a href="login-signup.html" class="btn-solid">Get started</a>
   </div>
@@ -811,6 +860,22 @@ document.addEventListener('click',function(e){
     menu.classList.remove('open');
   }
 });
+
+// Dark mode theme toggle
+function initTheme(){
+  const saved=localStorage.getItem('eventhub_theme')||'light';
+  if(saved==='dark'){
+    document.documentElement.classList.add('dark-mode');
+    document.getElementById('theme-icon').textContent='☀️';
+  }
+}
+function toggleTheme(){
+  const html=document.documentElement;
+  const isDark=html.classList.toggle('dark-mode');
+  localStorage.setItem('eventhub_theme',isDark?'dark':'light');
+  document.getElementById('theme-icon').textContent=isDark?'☀️':'🌙';
+}
+initTheme();
 </script>
 </body>
 </html>
