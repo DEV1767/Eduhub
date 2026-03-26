@@ -679,7 +679,7 @@ window.closeSidebar = function() {
 window.logout = function() {
   sessionStorage.setItem('eventhub_logging_out', '1');
   sessionStorage.removeItem('eventhub_user');
-  fetch('http://localhost:8000/api/v1/auth/logout', { method: 'POST', credentials: 'include' })
+  fetch('https://eduhub-backend-pj8h.onrender.com/api/v1/auth/logout', { method: 'POST', credentials: 'include' })
     .catch(function() {})
     .finally(function() { window.location.replace('login-signup.html'); });
 };
@@ -749,7 +749,7 @@ function _esc(text) {
     return;
   }
 
-  var API     = 'http://localhost:8000/api/v1';
+  var API     = 'https://eduhub-backend-pj8h.onrender.com/api/v1';
   var params  = new URLSearchParams(location.search);
   var eventId = params.get('event') || '';
 
