@@ -35,13 +35,32 @@
       --white: #FFFFFF;
       --bg: #F8F7FF;
     }
+    html.dark-mode {
+      --purple: #6B5FED;
+      --purple-dark: #4A42D4;
+      --purple-light: #2D2654;
+      --purple-mid: #8B82F5;
+      --teal: #00D4B0;
+      --teal-light: #0D3D35;
+      --red: #FF6B6B;
+      --red-light: #3F1F1F;
+      --green: #10B981;
+      --green-light: #0F2818;
+      --text: #E5E7EB;
+      --text2: #9CA3AF;
+      --text3: #6B7280;
+      --border: #374151;
+      --white: #1F2937;
+      --bg: #111827;
+    }
 
     html,
     body {
       height: 100%;
       font-family: 'DM Sans', sans-serif;
       background: var(--bg);
-      color: var(--text)
+      color: var(--text);
+      transition: background 0.3s, color 0.3s
     }
 
     .page {
@@ -210,7 +229,12 @@
       align-items: center;
       justify-content: center;
       flex-direction: column;
-      gap: 0
+      gap: 0;
+      transition: background 0.3s
+    }
+
+    html.dark-mode .page-loader {
+      background: rgba(17, 24, 39, 0.96)
     }
 
     .page-loader.show {
@@ -233,7 +257,14 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 4px 20px rgba(91, 79, 232, 0.12)
+      box-shadow: 0 4px 20px rgba(91, 79, 232, 0.12);
+      transition: all 0.3s
+    }
+
+    html.dark-mode .loader-logo {
+      background: #1F2937;
+      border-color: #374151;
+      box-shadow: 0 4px 20px rgba(91, 79, 232, 0.3)
     }
 
     .loader-ring {
@@ -243,6 +274,11 @@
       border: 3px solid #EAE8FD;
       border-top-color: #5B4FE8;
       animation: loaderSpin 0.75s linear infinite
+    }
+
+    html.dark-mode .loader-ring {
+      border-color: #2D2654;
+      border-top-color: #6B5FED
     }
 
     @keyframes loaderSpin {
@@ -255,7 +291,12 @@
       font-size: 14px;
       font-weight: 500;
       color: #6B7280;
-      font-family: 'DM Sans', sans-serif
+      font-family: 'DM Sans', sans-serif;
+      transition: color 0.3s
+    }
+
+    html.dark-mode .loader-text {
+      color: #9CA3AF
     }
 
     /* RIGHT */
@@ -265,12 +306,38 @@
       align-items: center;
       justify-content: center;
       padding: 2rem 1.5rem;
-      background: var(--white)
+      background: var(--white);
+      transition: background 0.3s;
+      position: relative
+    }
+
+    .theme-toggle-btn {
+      position: absolute;
+      top: 1.5rem;
+      right: 1.5rem;
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      border: 1.5px solid var(--border);
+      background: transparent;
+      cursor: pointer;
+      color: var(--text);
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s
+    }
+
+    .theme-toggle-btn:hover {
+      border-color: var(--purple);
+      color: var(--purple)
     }
 
     .form-box {
       width: 100%;
-      max-width: 420px
+      max-width: 420px;
+      position: relative
     }
 
     /* TABS */
@@ -897,6 +964,28 @@
       text-decoration: none
     }
 
+    .otp-spam-check {
+      font-size: 12px;
+      color: var(--text3);
+      text-align: center;
+      margin: 0.8rem 0 1.2rem;
+      padding: 8px 12px;
+      background: var(--bg);
+      border-radius: 8px;
+      border-left: 3px solid var(--purple);
+      line-height: 1.5;
+      display: none;
+    }
+
+    .otp-spam-check.show {
+      display: block;
+    }
+
+    .otp-spam-check strong {
+      color: var(--text2);
+      font-weight: 600
+    }
+
     .otp-actions {
       display: flex;
       flex-direction: column;
@@ -988,7 +1077,11 @@
       <div class="otp-timer" id="otp-timer-wrap">Code expires in <span id="otp-countdown">02:00</span></div>
 
       <div class="otp-resend">
-        Didn't receive it? <button id="otp-resend-btn" disabled onclick="resendOtp()">Resend code</button>
+        <span onclick="toggleSpamCheck()" style="cursor:pointer">Didn't receive it?</span> <button id="otp-resend-btn" disabled onclick="resendOtp()">Resend code</button>
+      </div>
+
+      <div class="otp-spam-check" id="otp-spam-check">
+        <strong>Still can't find it?</strong> Check your spam or promotions folder
       </div>
 
       <div class="otp-actions">
@@ -1074,6 +1167,9 @@
 
     <!-- RIGHT -->
     <div class="right">
+      <button class="theme-toggle-btn" onclick="toggleTheme()" aria-label="Toggle dark mode" title="Dark mode">
+        <span id="theme-icon">🌙</span>
+      </button>
       <div class="form-box">
 
         <div class="tabs">
@@ -1373,11 +1469,14 @@
     // ── OTP STATE ──
     let otpContext = null;
     let otpTimer = null;
+    let resendCount = 0;
 
     function openOtp(email, context) {
       otpContext = context;
+      resendCount = 0;
       document.getElementById('otp-email-display').textContent = email;
       document.getElementById('otp-err').classList.remove('show');
+      document.getElementById('otp-spam-check').classList.remove('show');
       for (let i = 0; i < 6; i++) {
         const inp = document.getElementById('otp-' + i);
         inp.value = '';
@@ -1445,6 +1544,7 @@
     }
 
     function resendOtp() {
+      resendCount++;
       showToast('A new OTP has been sent to your email.', 'success');
       for (let i = 0; i < 6; i++) {
         const inp = document.getElementById('otp-' + i);
@@ -1452,7 +1552,17 @@
       }
       document.getElementById('otp-err').classList.remove('show');
       document.getElementById('otp-0').focus();
+      
+      if (resendCount >= 1) {
+        document.getElementById('otp-spam-check').classList.add('show');
+        document.getElementById('otp-resend-btn').disabled = true;
+      }
+      
       startOtpTimer();
+    }
+
+    function toggleSpamCheck() {
+      document.getElementById('otp-spam-check').classList.toggle('show');
     }
 
     async function verifyOtp() {
@@ -1551,7 +1661,7 @@
       else if (pass.length < 8) { showErr('l-pass', 'l-pass-err', 'Password must be at least 8 characters'); ok = false; }
       if (!ok) return;
       setLoading('l-btn', true);
-      try { await fetch(`${API_BASE}/send-otp`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email }) }); } catch (e) {}
+      try { await fetch(`${API_BASE}/send-otp/login`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email }) }); } catch (e) {}
       setLoading('l-btn', false, 'Sign in');
       openOtp(email, { type: 'login', payload: { email, pass } });
       showToast('OTP sent to your email!', 'success');
@@ -1579,7 +1689,7 @@
       else if (pass && cpass !== pass) { showErr('s-cpass', 's-cpass-err', 'Passwords do not match'); ok = false; }
       if (!ok) return;
       setLoading('s-btn', true);
-      try { await fetch(`${API_BASE}/send-otp`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email }) }); } catch (e) {}
+      try { await fetch(`${API_BASE}/send-otp/signup`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email }) }); } catch (e) {}
       setLoading('s-btn', false, 'Create account');
       openOtp(email, { type: 'signup', payload: { firstname: fname, lastname: lname, email, collegename: college, role: roleEl.textContent.trim(), password: pass } });
       showToast('OTP sent to your email!', 'success');
@@ -1631,6 +1741,22 @@
         // Not logged in, stay on login page
       }
     })();
+
+    // Dark mode theme toggle
+    function initTheme(){
+      const saved=localStorage.getItem('eventhub_theme')||'light';
+      if(saved==='dark'){
+        document.documentElement.classList.add('dark-mode');
+        document.getElementById('theme-icon').textContent='☀️';
+      }
+    }
+    function toggleTheme(){
+      const html=document.documentElement;
+      const isDark=html.classList.toggle('dark-mode');
+      localStorage.setItem('eventhub_theme',isDark?'dark':'light');
+      document.getElementById('theme-icon').textContent=isDark?'☀️':'🌙';
+    }
+    initTheme();
   </script>
 </body>
 

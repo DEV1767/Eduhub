@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EventHub &mdash; Event Details</title>
+<!-- Apply theme synchronously before paint: fixes dark/light toggle on load -->
+<script>
+(function(){
+  var t = localStorage.getItem('eventhub_theme') || 'light';
+  document.documentElement.setAttribute('data-theme', t);
+})();
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+/* LIGHT THEME */
+:root{
+  --purple:#5B4FE8;--purple-dark:#3D35C0;--purple-light:#EAE8FD;--purple-faint:#F4F3FE;
+  --teal:#0ABFA3;--teal-light:#E0F8F5;
+  --red:#E84F4F;--red-light:#FDF0F0;
+  --green:#22C55E;--green-light:#F0FDF4;
+  --amber:#F59E0B;--amber-light:#FFFBEB;
+  --orange:#F97316;--orange-light:#FFF7ED;
+  --blue:#3B82F6;--blue-light:#EFF6FF;
+  --bg:#F9FAFB;--surface:#FFFFFF;--surface2:#F3F4F6;--surface3:#E9EAEC;
+  --text:#111827;--text2:#6B7280;--text3:#9CA3AF;
+  --border:#E5E7EB;--border2:#D1D5DB;
+  --shadow:rgba(0,0,0,0.06);--shadow-md:rgba(0,0,0,0.10);
+  --sidebar:220px;--topbar:54px;
+}
+
+/* DARK THEME */
+[data-theme="dark"]{
+  --bg:#0F1117;--surface:#1A1D27;--surface2:#222636;--surface3:#2D3148;
+  --text:#F1F5F9;--text2:#94A3B8;--text3:#64748B;
+  --border:#2D3148;--border2:#3D4166;
+  --shadow:rgba(0,0,0,0.3);--shadow-md:rgba(0,0,0,0.45);
+  --purple-faint:#1E1B3A;--purple-light:#2D2860;
+  --teal-light:#0D2E2A;--green-light:#0D2416;
+  --amber-light:#2A1F00;--red-light:#2A0E0E;
+  --orange-light:#2A1500;--blue-light:#0D1E3A;
+}
+
+html,body{
+  height:100%;
+  font-family:'Plus Jakarta Sans','Inter',sans-serif;
+  background:var(--bg);color:var(--text);
+  font-size:14px;transition:background .2s,color .2s
+}
+
+/* LAYOUT */
+.app{display:flex;min-height:100vh}
+
+/* SIDEBAR */
+.sidebar{
+  width:var(--sidebar);flex-shrink:0;
+  background:var(--surface);border-right:1px solid var(--border);
+  display:flex;flex-direction:column;
+  position:fixed;top:0;left:0;bottom:0;z-index:200;
+  overflow:hidden;
+  transition:transform .28s ease,background .2s,border-color .2s
+}
+.sidebar-logo{display:flex;align-items:center;gap:9px;padding:15px 14px;border-bottom:1px solid var(--border);text-decoration:none}
+.logo-icon{width:30px;height:30px;border-radius:8px;background:var(--purple);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.logo-icon svg{width:15px;height:15px}
+.logo-text{font-size:15px;font-weight:800;color:var(--text);letter-spacing:-0.3px}
+.logo-text span{color:var(--purple)}
+.sidebar-nav{flex:1;padding:8px;display:flex;flex-direction:column;gap:1px;overflow-y:auto}
+.nav-label{font-size:10px;font-weight:700;color:var(--text3);letter-spacing:1px;text-transform:uppercase;padding:10px 8px 4px}
+.nav-item{
+  display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:7px;
+  font-size:13px;font-weight:500;color:var(--text2);
+  cursor:pointer;border:none;background:none;width:100%;text-align:left;
+  transition:all .12s;text-decoration:none;font-family:'Plus Jakarta Sans','Inter',sans-serif
+}
+.nav-item svg{width:15px;height:15px;flex-shrink:0;opacity:.65}
+.nav-item:hover{background:var(--surface2);color:var(--text)}
+.nav-item:hover svg{opacity:1}
+.nav-item.active{background:var(--purple-faint);color:var(--purple);font-weight:600}
+.nav-item.active svg{opacity:1}
+.sidebar-bottom{padding:8px;border-top:1px solid var(--border);margin-top:auto}
+.user-row{display:flex;align-items:center;gap:9px;padding:9px 10px;border-radius:8px;background:var(--surface2)}
+.user-av{width:32px;height:32px;border-radius:50%;background:var(--purple-light);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--purple);flex-shrink:0}
+.user-info{flex:1;min-width:0}
+.user-name{font-size:13px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.user-role{font-size:11px;color:var(--text3)}
+.logout-btn{display:flex;align-items:center;gap:8px;width:100%;padding:8px 10px;margin-top:4px;border-radius:7px;font-size:13px;font-weight:500;color:var(--red);background:none;border:none;cursor:pointer;transition:background .12s;font-family:'Plus Jakarta Sans','Inter',sans-serif}
+.logout-btn:hover{background:var(--red-light)}
+.logout-btn svg{width:14px;height:14px}
+
+/* MAIN */
+.main{margin-left:var(--sidebar);flex:1;display:flex;flex-direction:column;min-width:0}
+
+/* TOPBAR */
+.topbar{
+  position:sticky;top:0;z-index:100;height:var(--topbar);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 20px;gap:12px;
+  background:var(--surface);border-bottom:1px solid var(--border);
+  transition:background .2s,border-color .2s
+}
+.topbar-left{display:flex;align-items:center;gap:10px}
+.ham-btn{display:none;background:none;border:none;cursor:pointer;padding:4px;color:var(--text2);border-radius:6px}
+.ham-btn:hover{background:var(--surface2)}
+.ham-btn svg{width:18px;height:18px;display:block}
+.breadcrumb{display:flex;align-items:center;gap:5px;font-size:13px;color:var(--text3)}
+.breadcrumb a{color:var(--text2);text-decoration:none;font-weight:500;transition:color .15s}
+.breadcrumb a:hover{color:var(--purple)}
+.breadcrumb-sep{color:var(--text3)}
+.breadcrumb-cur{color:var(--text);font-weight:600}
+.topbar-right{display:flex;align-items:center;gap:8px}
+.back-btn{display:flex;align-items:center;gap:6px;padding:6px 12px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);font-size:13px;font-weight:500;color:var(--text2);cursor:pointer;transition:all .15s;text-decoration:none;font-family:'Plus Jakarta Sans','Inter',sans-serif}
+.back-btn:hover{border-color:var(--purple);color:var(--purple);background:var(--purple-faint)}
+.back-btn svg{width:14px;height:14px}
+
+/* THEME TOGGLE */
+.theme-btn{width:34px;height:34px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text2);transition:all .15s;flex-shrink:0}
+.theme-btn:hover{border-color:var(--purple);color:var(--purple)}
+.theme-btn svg{width:15px;height:15px}
+.icon-sun{display:none}.icon-moon{display:block}
+[data-theme="dark"] .icon-sun{display:block}
+[data-theme="dark"] .icon-moon{display:none}
+
+/* CONTENT */
+.content{padding:22px 24px;flex:1;max-width:960px;width:100%;margin:0 auto}
+
+/* PAGE HEADER */
+.page-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:22px;flex-wrap:wrap;gap:14px;padding-bottom:20px;border-bottom:1px solid var(--border)}
+.event-meta-tag{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;background:var(--purple-faint);color:var(--purple);margin-bottom:8px}
+.event-meta-tag svg{width:11px;height:11px}
+.page-title{font-size:22px;font-weight:800;color:var(--text);letter-spacing:-0.4px;line-height:1.2;margin-bottom:5px}
+.page-subtitle{font-size:13px;color:var(--text2)}
+.page-header-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:7px;padding:9px 16px;border-radius:8px;font-size:13px;font-weight:600;font-family:'Plus Jakarta Sans','Inter',sans-serif;cursor:pointer;border:none;transition:all .15s;white-space:nowrap}
+.btn svg{width:14px;height:14px;flex-shrink:0}
+.btn-primary{background:var(--purple);color:#fff}
+.btn-primary:hover{background:var(--purple-dark);box-shadow:0 4px 12px rgba(91,79,232,.3)}
+.btn-secondary{background:var(--surface2);color:var(--text2);border:1px solid var(--border)}
+.btn-secondary:hover{border-color:var(--purple);color:var(--purple);background:var(--purple-faint)}
+.btn-success{background:var(--green);color:#fff}
+.btn-success:hover{background:#16a34a;box-shadow:0 4px 12px rgba(34,197,94,.3)}
+.btn-lg{padding:11px 22px;font-size:14px;font-weight:700}
+
+/* INFO GRID */
+.info-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}
+.info-item{padding:14px;background:var(--surface);border-radius:10px;border:1px solid var(--border);transition:background .2s,border-color .2s}
+.info-label{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+.info-value{font-size:14px;color:var(--text);font-weight:600;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+
+/* STATUS BADGES */
+.status-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;font-size:12px;font-weight:600}
+.status-badge.live{background:var(--green-light);color:var(--green);border:1px solid #86efac}
+.status-badge.upcoming{background:var(--amber-light);color:var(--amber);border:1px solid #fcd34d}
+.status-badge.completed{background:var(--surface2);color:var(--text3);border:1px solid var(--border)}
+[data-theme="dark"] .status-badge.live{color:#4ade80}
+[data-theme="dark"] .status-badge.upcoming{color:#fbbf24}
+.sdot{width:6px;height:6px;border-radius:50%;display:inline-block;flex-shrink:0}
+.sdot-live{background:var(--green)}.sdot-up{background:var(--amber)}.sdot-done{background:var(--text3)}
+
+/* CARDS */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;transition:background .2s,border-color .2s;margin-bottom:16px}
+.card-hd{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--border)}
+.card-hd-left{display:flex;align-items:center;gap:10px}
+.card-icon{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.card-icon svg{width:15px;height:15px}
+.card-title{font-size:14px;font-weight:700;color:var(--text)}
+.card-subtitle{font-size:12px;color:var(--text3);margin-top:1px}
+.card-body{padding:18px}
+
+/* TIMELINE */
+.timeline-wrap{display:flex;flex-direction:column}
+.tl-item{display:flex;position:relative;animation:fadeIn .25s ease both}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.tl-line-col{display:flex;flex-direction:column;align-items:center;width:32px;flex-shrink:0;padding-top:14px}
+.tl-dot{width:11px;height:11px;border-radius:50%;background:var(--purple);border:3px solid var(--surface);flex-shrink:0;position:relative;z-index:1;box-shadow:0 0 0 2px var(--purple-faint)}
+.tl-line{flex:1;width:2px;background:var(--border);margin-top:3px}
+.tl-item:last-child .tl-line{display:none}
+.tl-card{flex:1;margin-bottom:12px;padding:13px 15px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;transition:border-color .15s,box-shadow .15s}
+.tl-card:hover{border-color:var(--purple-light);box-shadow:0 2px 10px var(--shadow)}
+.tl-time{font-size:11px;font-weight:700;color:var(--purple);font-family:'JetBrains Mono',monospace;letter-spacing:.3px;margin-bottom:5px;display:flex;align-items:center;gap:6px}
+.tl-time-badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;background:var(--purple-faint);border-radius:20px}
+.tl-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:3px}
+.tl-desc{font-size:12px;color:var(--text2);line-height:1.5}
+.tl-empty{text-align:center;padding:36px 16px;color:var(--text3)}
+.tl-empty svg{width:40px;height:40px;margin:0 auto 10px;display:block;opacity:.4}
+.tl-empty p{font-size:13px}
+
+/* RULES - clean redesign */
+.rules-sections{display:flex;flex-direction:column;gap:12px}
+.rule-section{border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.rule-section-hd{
+  display:flex;align-items:center;gap:10px;
+  padding:11px 14px;
+  background:var(--surface2);
+  border-bottom:1px solid var(--border)
+}
+.rule-section-icon{width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.rule-section-icon svg{width:12px;height:12px}
+.rule-section-title{font-size:13px;font-weight:700;color:var(--text)}
+.rule-section-body{padding:12px 14px;background:var(--surface)}
+.rules-list{padding:0;list-style:none;display:flex;flex-direction:column;gap:6px}
+.rules-list li{
+  display:flex;align-items:flex-start;gap:10px;
+  padding:10px 12px;
+  background:var(--surface2);
+  border:1px solid var(--border);
+  border-radius:8px;
+  font-size:13px;line-height:1.6;color:var(--text2)
+}
+.rule-num{
+  width:20px;height:20px;min-width:20px;border-radius:50%;
+  background:var(--purple-faint);color:var(--purple);
+  font-size:10px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;margin-top:2px
+}
+.rules-list li.rules-empty{
+  background:none;border:none;
+  padding:14px 0 4px;justify-content:center;
+  font-style:italic;color:var(--text3)
+}
+.rules-list li.rules-empty .rule-num{display:none}
+
+/* CAPACITY BAR */
+.capacity-bar{margin-top:18px;padding-top:16px;border-top:1px solid var(--border)}
+.capacity-label{display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px}
+.capacity-label span:first-child{color:var(--text3);font-weight:500}
+.capacity-label span:last-child{color:var(--text);font-weight:700}
+.bar-track{height:7px;background:var(--surface2);border-radius:20px;overflow:hidden;border:1px solid var(--border)}
+.bar-fill{height:100%;border-radius:20px;background:var(--purple);transition:width .4s ease}
+
+/* REGISTER CTA */
+.register-section{
+  padding:28px 24px;
+  background:linear-gradient(135deg,var(--purple-faint) 0%,var(--teal-light) 100%);
+  border:1.5px solid var(--purple-light);
+  border-radius:12px;text-align:center;
+  margin-bottom:16px
+}
+.register-section h3{font-size:18px;font-weight:800;color:var(--text);margin-bottom:6px}
+.register-section p{font-size:13px;color:var(--text2);margin-bottom:18px}
+
+/* TOAST */
+.toast{
+  position:fixed;bottom:20px;right:20px;max-width:320px;
+  padding:11px 15px;border-radius:9px;font-size:13px;font-weight:500;
+  display:flex;align-items:center;gap:8px;z-index:10000;
+  opacity:0;transform:translateY(10px);
+  transition:all .22s ease;pointer-events:none;
+  box-shadow:0 4px 20px var(--shadow-md)
+}
+.toast.show{opacity:1;transform:translateY(0)}
+.toast.success{background:var(--green-light);color:#166534;border:1px solid #bbf7d0}
+.toast.fail{background:var(--red-light);color:#991b1b;border:1px solid #fecaca}
+.toast.info{background:var(--blue-light);color:#1e40af;border:1px solid #93c5fd}
+[data-theme="dark"] .toast.success{color:#4ade80}
+[data-theme="dark"] .toast.fail{color:#f87171}
+[data-theme="dark"] .toast.info{color:#60a5fa}
+.toast svg{width:15px;height:15px;flex-shrink:0}
+
+/* PAGE FOOTER -- matches student dashboard .dash-footer */
+.page-footer{
+  padding:14px 20px;
+  border-top:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:8px;
+  background:var(--surface);
+  transition:background 0.2s,border-color 0.2s;
+  margin-top:auto;
+}
+.footer-copy{font-size:12px;color:var(--text3)}
+.footer-credit{
+  font-size:12px;color:var(--text3);text-decoration:none;
+  display:flex;align-items:center;gap:4px;transition:color 0.2s
+}
+.footer-credit:hover{color:var(--purple)}
+.footer-credit strong{color:var(--text2);font-weight:600}
+@media(max-width:600px){
+  .page-footer{flex-direction:column;align-items:flex-start;gap:6px}
+}
+
+/* SIDEBAR OVERLAY */
+.s-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:199}
+.s-overlay.open{display:block}
+
+/* RESPONSIVE */
+@media(max-width:1024px){
+  .info-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%)}
+  .sidebar.open{transform:translateX(0)}
+  .main{margin-left:0}
+  .ham-btn{display:flex}
+  .content{padding:14px 16px}
+  .topbar{padding:0 14px;height:50px}
+  .page-title{font-size:19px}
+  .page-header{flex-direction:column;gap:10px;margin-bottom:16px}
+  .page-header-actions{width:100%;display:flex}
+  .page-header-actions .btn{flex:1;justify-content:center}
+  .info-grid{grid-template-columns:1fr 1fr;gap:8px}
+  .register-section{padding:20px 16px}
+  .toast{right:10px;left:10px;max-width:unset}
+  .card-body{padding:14px}
+  .card-hd{padding:12px 14px}
+  .rule-section-body{padding:10px 12px}
+}
+@media(max-width:480px){
+  .info-grid{grid-template-columns:1fr 1fr}
+  .breadcrumb{font-size:12px}
+  .back-btn .back-label{display:none}
+  .page-title{font-size:17px}
+  .page-header-actions{flex-direction:column}
+  .page-header-actions .btn{width:100%}
+}
+</style>
+</head>
+<body>
+
+<div class="toast" id="toast">
+  <svg id="ti" viewBox="0 0 20 20" fill="currentColor"></svg>
+  <span id="tm"></span>
+</div>
+
+<div class="s-overlay" id="sOverlay" onclick="closeSidebar()"></div>
+
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <a href="dashboard.html" class="sidebar-logo">
+      <div class="logo-icon">
+        <svg viewBox="0 0 16 16" fill="none">
+          <rect x="1" y="4" width="14" height="10" rx="2" fill="rgba(255,255,255,0.15)" stroke="white" stroke-width="1.2"/>
+          <path d="M5 4V3a3 3 0 016 0v1" stroke="white" stroke-width="1.2" stroke-linecap="round"/>
+          <circle cx="8" cy="9" r="1.5" fill="white"/>
+        </svg>
+      </div>
+      <span class="logo-text">Event<span>Hub</span></span>
+    </a>
+    <div class="sidebar-nav">
+      <span class="nav-label">Menu</span>
+      <a class="nav-item" href="dashboard.html">
+        <svg viewBox="0 0 16 16" fill="none">
+          <rect x="1" y="1" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/>
+          <rect x="9" y="1" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/>
+          <rect x="1" y="9" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/>
+          <rect x="9" y="9" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/>
+        </svg>
+        Dashboard
+      </a>
+      <a class="nav-item" href="dashboard.html">
+        <svg viewBox="0 0 16 16" fill="none">
+          <rect x="1" y="3" width="14" height="11" rx="2" stroke="currentColor" stroke-width="1.3"/>
+          <path d="M5 1v4M11 1v4M1 7h14" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+        </svg>
+        My Events
+      </a>
+      <a class="nav-item active" href="#">
+        <svg viewBox="0 0 16 16" fill="none">
+          <circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.3"/>
+          <path d="M8 4.5V8h3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+        </svg>
+        Event Details
+      </a>
+    </div>
+    <div class="sidebar-bottom">
+      <div class="user-row">
+        <div class="user-av" id="uav" style="background:var(--surface3)">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <circle cx="8" cy="5.5" r="2.5" stroke="var(--text3)" stroke-width="1.2"/>
+            <path d="M2.5 13c0-2.5 2.4-4 5.5-4s5.5 1.5 5.5 4" stroke="var(--text3)" stroke-width="1.2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="user-info">
+          <div class="user-name" id="uname" style="color:var(--text3);font-weight:500">Loading...</div>
+          <div class="user-role" id="urole">Member</div>
+        </div>
+      </div>
+      <button class="logout-btn" onclick="logout()">
+        <svg viewBox="0 0 16 16" fill="none">
+          <path d="M6 2H3a1 1 0 00-1 1v10a1 1 0 001 1h3M10 11l3-3-3-3M13 8H6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Sign out
+      </button>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- TOPBAR -->
+    <div class="topbar">
+      <div class="topbar-left">
+        <button class="ham-btn" onclick="toggleSidebar()">
+          <svg viewBox="0 0 20 20" fill="none">
+            <path d="M3 6h14M3 10h14M3 14h14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </button>
+        <div class="breadcrumb">
+          <a href="dashboard.html">Dashboard</a>
+          <span class="breadcrumb-sep">&#8250;</span>
+          <a href="dashboard.html">Events</a>
+          <span class="breadcrumb-sep">&#8250;</span>
+          <span class="breadcrumb-cur" id="bc-event">Event Details</span>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <button class="theme-btn" onclick="toggleTheme()" title="Toggle dark mode">
+          <svg class="icon-sun" viewBox="0 0 20 20" fill="none">
+            <circle cx="10" cy="10" r="4" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M10 2v2M10 16v2M2 10h2M16 10h2M4.22 4.22l1.42 1.42M14.36 14.36l1.42 1.42M4.22 15.78l1.42-1.42M14.36 5.64l1.42-1.42" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          <svg class="icon-moon" viewBox="0 0 20 20" fill="none">
+            <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </button>
+        <a href="dashboard.html" class="back-btn">
+          <svg viewBox="0 0 16 16" fill="none">
+            <path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span class="back-label">Back to Dashboard</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content">
+
+      <!-- PAGE HEADER -->
+      <div class="page-header">
+        <div>
+          <div class="event-meta-tag">
+            <svg viewBox="0 0 12 12" fill="none">
+              <rect x=".5" y="2" width="11" height="9" rx="1.5" stroke="currentColor" stroke-width="1.1"/>
+              <path d="M4 1v2M8 1v2M.5 5h11" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/>
+            </svg>
+            <span id="event-type-label">Loading...</span>
+          </div>
+          <div class="page-title" id="event-name-title">Loading event...</div>
+          <div class="page-subtitle"><span id="event-date-text">&#8212;</span></div>
+        </div>
+        <div class="page-header-actions">
+          <button class="btn btn-secondary" onclick="exportEventPDF()">
+            <svg viewBox="0 0 16 16" fill="none">
+              <path d="M3 2h7l3 3v9H3z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/>
+              <path d="M10 2v3h3M6 8h4M6 11h2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+            </svg>
+            Export PDF
+          </button>
+          <button class="btn btn-primary btn-lg" onclick="registerForEvent()">
+            <svg viewBox="0 0 16 16" fill="none">
+              <path d="M8 2v12M2 8h12" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            Register Now
+          </button>
+        </div>
+      </div>
+
+      <!-- INFO GRID -->
+      <div class="info-grid">
+        <div class="info-item">
+          <div class="info-label">Status</div>
+          <div class="info-value" id="ei-status">&#8212;</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Date &amp; Time</div>
+          <div class="info-value" id="ei-datetime">&#8212;</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Venue</div>
+          <div class="info-value" id="ei-venue">&#8212;</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Prize Pool</div>
+          <div class="info-value" id="ei-prize">&#8212;</div>
+        </div>
+      </div>
+
+      <!-- ABOUT CARD -->
+      <div class="card">
+        <div class="card-hd">
+          <div class="card-hd-left">
+            <div class="card-icon" style="background:var(--purple-faint)">
+              <svg viewBox="0 0 16 16" fill="none">
+                <path d="M2 3h12M2 8h12M2 13h8" stroke="#5B4FE8" stroke-width="1.3" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="card-title">About This Event</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <p id="event-description" style="font-size:13px;line-height:1.7;color:var(--text2)">Loading...</p>
+          <div class="capacity-bar">
+            <div class="capacity-label">
+              <span>Teams Registered</span>
+              <span id="ei-teams">0 / 0</span>
+            </div>
+            <div class="bar-track">
+              <div class="bar-fill" id="ei-bar" style="width:0%"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SCHEDULE CARD -->
+      <div class="card">
+        <div class="card-hd">
+          <div class="card-hd-left">
+            <div class="card-icon" style="background:var(--teal-light)">
+              <svg viewBox="0 0 16 16" fill="none">
+                <circle cx="8" cy="8" r="6.5" stroke="#0ABFA3" stroke-width="1.3"/>
+                <path d="M8 4.5V8l2.5 1.5" stroke="#0ABFA3" stroke-width="1.3" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div>
+              <div class="card-title">Event Schedule</div>
+              <div class="card-subtitle" id="slot-count-label">Loading...</div>
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="timeline-wrap" id="timeline-wrap">
+            <div class="tl-empty">
+              <svg viewBox="0 0 40 40" fill="none">
+                <circle cx="20" cy="20" r="16" stroke="currentColor" stroke-width="1.5"/>
+                <path d="M20 12v8l5 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+              <p>Loading schedule...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RULES CARD -->
+      <div class="card">
+        <div class="card-hd">
+          <div class="card-hd-left">
+            <div class="card-icon" style="background:var(--amber-light)">
+              <svg viewBox="0 0 16 16" fill="none">
+                <path d="M3 3h10M3 6h10M3 9h6" stroke="#F59E0B" stroke-width="1.3" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div>
+              <div class="card-title">Rules &amp; Regulations</div>
+              <div class="card-subtitle">Important guidelines for all participants</div>
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="rules-sections">
+
+            <div class="rule-section">
+              <div class="rule-section-hd">
+                <div class="rule-section-icon" style="background:var(--purple-faint)">
+                  <svg viewBox="0 0 14 14" fill="none"><path d="M2 2h10M2 5h10M2 8h6" stroke="#5B4FE8" stroke-width="1.2" stroke-linecap="round"/></svg>
+                </div>
+                <div class="rule-section-title">General Rules</div>
+              </div>
+              <div class="rule-section-body">
+                <ul class="rules-list" id="general-rules">
+                  <li class="rules-empty"><span>Loading...</span></li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="rule-section">
+              <div class="rule-section-hd">
+                <div class="rule-section-icon" style="background:var(--green-light)">
+                  <svg viewBox="0 0 14 14" fill="none"><circle cx="7" cy="4.5" r="2.5" stroke="#22C55E" stroke-width="1.2"/><path d="M2 12c0-2.5 2.2-4 5-4s5 1.5 5 4" stroke="#22C55E" stroke-width="1.2" stroke-linecap="round"/></svg>
+                </div>
+                <div class="rule-section-title">Eligibility Criteria</div>
+              </div>
+              <div class="rule-section-body">
+                <ul class="rules-list" id="eligibility-rules">
+                  <li class="rules-empty"><span>Loading...</span></li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="rule-section">
+              <div class="rule-section-hd">
+                <div class="rule-section-icon" style="background:var(--amber-light)">
+                  <svg viewBox="0 0 14 14" fill="none"><path d="M2 1.5h7l3 3v8h-10z" stroke="#F59E0B" stroke-width="1.2" stroke-linejoin="round"/><path d="M9 1.5v3h3" stroke="#F59E0B" stroke-width="1.2" stroke-linecap="round"/></svg>
+                </div>
+                <div class="rule-section-title">Submission Guidelines</div>
+              </div>
+              <div class="rule-section-body">
+                <ul class="rules-list" id="submission-rules">
+                  <li class="rules-empty"><span>Loading...</span></li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="rule-section">
+              <div class="rule-section-hd">
+                <div class="rule-section-icon" style="background:var(--teal-light)">
+                  <svg viewBox="0 0 14 14" fill="none"><path d="M7 1l1.5 3.8h4l-3.3 2.4 1.3 3.9L7 9l-3.5 2.1 1.3-3.9L1.5 4.8h4z" stroke="#0ABFA3" stroke-width="1.1" stroke-linejoin="round"/></svg>
+                </div>
+                <div class="rule-section-title">Judging Criteria</div>
+              </div>
+              <div class="rule-section-body">
+                <ul class="rules-list" id="judging-rules">
+                  <li class="rules-empty"><span>Loading...</span></li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="rule-section">
+              <div class="rule-section-hd">
+                <div class="rule-section-icon" style="background:var(--red-light)">
+                  <svg viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5.5" stroke="#E84F4F" stroke-width="1.2"/><path d="M7 4.5v3M7 9.5h.01" stroke="#E84F4F" stroke-width="1.3" stroke-linecap="round"/></svg>
+                </div>
+                <div class="rule-section-title">Important Notes</div>
+              </div>
+              <div class="rule-section-body">
+                <ul class="rules-list" id="notes-rules">
+                  <li class="rules-empty"><span>Loading...</span></li>
+                </ul>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- REGISTER CTA -->
+      <div class="register-section">
+        <h3>Ready to Participate?</h3>
+        <p>Join this exciting event and showcase your skills!</p>
+        <button class="btn btn-success btn-lg" onclick="registerForEvent()">
+          <svg viewBox="0 0 16 16" fill="none">
+            <circle cx="8" cy="8" r="6.5" stroke="white" stroke-width="1.3"/>
+            <path d="M5 8l2 2 4-4" stroke="white" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Register for This Event
+        </button>
+      </div>
+
+    </div><!-- /content -->
+
+    <!-- PAGE FOOTER -- matches student dashboard footer -->
+    <footer class="page-footer">
+      <span class="footer-copy">&copy; 2025 EventHub College. All rights reserved.</span>
+      <a href="https://my-portfoliyo-nine.vercel.app/" target="_blank" rel="noopener" class="footer-credit">
+        Crafted with &#10084;&#65039; by <strong>Shivam Chaudhary</strong>
+      </a>
+    </footer>
+
+  </div><!-- /main -->
+</div><!-- /app -->
+
+<script type="text/javascript">
+// -- ALL GLOBAL HANDLERS defined synchronously (before any async work) --
+// This ensures onclick="..." attributes work instantly on page load.
+
+// THEME
+window.toggleTheme = function() {
+  var next = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('eventhub_theme', next);
+};
+
+// SIDEBAR
+window.toggleSidebar = function() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sOverlay').classList.toggle('open');
+};
+window.closeSidebar = function() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sOverlay').classList.remove('open');
+};
+
+// LOGOUT -- mirrors student dashboard pattern exactly
+window.logout = function() {
+  sessionStorage.setItem('eventhub_logging_out', '1');
+  sessionStorage.removeItem('eventhub_user');
+  fetch('http://localhost:8000/api/v1/auth/logout', { method: 'POST', credentials: 'include' })
+    .catch(function() {})
+    .finally(function() { window.location.replace('login-signup.html'); });
+};
+
+// REGISTER CTA
+window.registerForEvent = function() { showToast('Registration coming soon!', 'info'); };
+
+// EXPORT PDF
+window.exportEventPDF = function() {
+  if (!window._currentEvent) { showToast('Event not loaded yet.', 'fail'); return; }
+  var ev  = window._currentEvent;
+  var win = window.open('', '_blank');
+  if (!win) { showToast('Pop-up blocked. Please allow pop-ups.', 'fail'); return; }
+  win.document.write(
+    '<html><head><title>' + _esc(ev.name || '') + '<' + '/title>' +
+    '<style>body{font-family:sans-serif;max-width:700px;margin:40px auto;color:#111;line-height:1.6}' +
+    'h1{font-size:22px;margin-bottom:4px}' +
+    'h2{font-size:16px;border-bottom:2px solid #5B4FE8;padding-bottom:6px;margin:20px 0 10px;color:#5B4FE8}' +
+    '.meta{font-size:13px;color:#555;margin-bottom:20px}' +
+    'li{margin-bottom:6px;font-size:13px}' +
+    '@media print{body{margin:20px}}' +
+    '<' + '/style><' + '/head><body>' +
+    '<h1>' + _esc(ev.name || '') + '<' + '/h1>' +
+    '<div class="meta">' + _esc(ev.type || '') + ' \u00B7 ' + _esc(ev.venue || '') + '<' + '/div>' +
+    '<h2>Description<' + '/h2><p>' + _esc(ev.description || 'No description.') + '<' + '/p>' +
+    '<' + '/body><' + '/html>'
+  );
+  win.document.close();
+  win.print();
+};
+
+// TOAST (global)
+var _toastTimer;
+function showToast(msg, type) {
+  type = type || 'success';
+  clearTimeout(_toastTimer);
+  var t  = document.getElementById('toast');
+  var ti = document.getElementById('ti');
+  var tm = document.getElementById('tm');
+  if (!t) return;
+  var icons = {
+    success: '<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>',
+    info:    '<path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>',
+    fail:    '<path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>'
+  };
+  if (ti) ti.innerHTML = icons[type] || icons.info;
+  t.className = 'toast ' + type + ' show';
+  if (tm) tm.textContent = msg;
+  _toastTimer = setTimeout(function() { t.classList.remove('show'); }, 3000);
+}
+
+// HTML ESCAPE helper (global, used by exportEventPDF above)
+function _esc(text) {
+  if (!text) return '';
+  var d = document.createElement('div');
+  d.textContent = text;
+  return d.innerHTML;
+}
+
+// -- ASYNC DATA LOADING (non-blocking, mirrors student dashboard auth pattern) --
+(function() {
+
+  // Step 1: Handle logout flag (matches student dashboard)
+  if (sessionStorage.getItem('eventhub_logging_out')) {
+    sessionStorage.clear();
+    window.location.replace('login-signup.html');
+    return;
+  }
+
+  var API     = 'http://localhost:8000/api/v1';
+  var params  = new URLSearchParams(location.search);
+  var eventId = params.get('event') || '';
+
+  var rulesState = { general: [], eligibility: [], submission: [], judging: [], notes: [] };
+
+  // Step 2: Load user (non-blocking -- never redirects if API is down)
+  function loadUser() {
+    var user = {};
+    try { user = JSON.parse(sessionStorage.getItem('eventhub_user') || '{}'); } catch(e) {}
+    if (user._id || user.email) { renderUser(user); return; }
+    fetch(API + '/auth/me', { credentials: 'include' })
+      .then(function(r) { return r.ok ? r.json() : null; })
+      .then(function(data) {
+        if (data && data.user) {
+          sessionStorage.setItem('eventhub_user', JSON.stringify(data.user));
+          renderUser(data.user);
+        } else {
+          renderUser({ email: 'Guest', role: 'Viewer' });
+        }
+      })
+      .catch(function() { renderUser({ email: 'Guest', role: 'Viewer' }); });
+  }
+
+  function renderUser(user) {
+    var fName    = user.firstname || user.firstName || '';
+    var lName    = user.lastname  || user.lastName  || '';
+    var initials = ((fName[0] || (user.email || 'G')[0]) + (lName[0] || '')).toUpperCase();
+    var uav      = document.getElementById('uav');
+    var uname    = document.getElementById('uname');
+    var urole    = document.getElementById('urole');
+    if (uav)   uav.textContent   = initials || 'G';
+    if (uname) uname.textContent = ([fName, lName].filter(Boolean).join(' ')) || user.email || 'Guest';
+    if (urole) urole.textContent = user.role || 'Viewer';
+  }
+
+  // Step 3: Load event details
+  function loadEvent() {
+    if (!eventId) {
+      var el = document.getElementById('event-name-title');
+      if (el) el.textContent = 'No event selected';
+      return;
+    }
+    fetch(API + '/events/' + eventId, { credentials: 'include' })
+      .then(function(r) { return r.ok ? r.json() : Promise.reject('bad'); })
+      .then(function(data) {
+        var ev = data.event || data;
+        window._currentEvent = ev;
+        function el(id) { return document.getElementById(id); }
+        if (el('bc-event'))         el('bc-event').textContent         = ev.name || 'Event';
+        if (el('event-name-title')) el('event-name-title').textContent = ev.name || 'Event';
+        if (el('event-type-label')) el('event-type-label').textContent = ev.type || 'Event';
+        var dateStr = ev.date
+          ? new Date(ev.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })
+          : '';
+        var metaParts = [dateStr, ev.time, ev.venue].filter(Boolean);
+        if (el('event-date-text')) el('event-date-text').textContent = metaParts.join(' \u00B7 ');
+        var statusMap = {
+          'Live':      '<span class="status-badge live"><span class="sdot sdot-live"></span> Live</span>',
+          'Upcoming':  '<span class="status-badge upcoming"><span class="sdot sdot-up"></span> Upcoming</span>',
+          'Completed': '<span class="status-badge completed"><span class="sdot sdot-done"></span> Completed</span>'
+        };
+        if (el('ei-status')) el('ei-status').innerHTML = statusMap[ev.status] || ('<span class="status-badge">' + _esc(ev.status || '') + '</span>');
+        var dtShort = [
+          ev.date ? new Date(ev.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }) : '',
+          ev.time
+        ].filter(Boolean).join(' ');
+        if (el('ei-datetime'))       el('ei-datetime').textContent       = dtShort || '--';
+        if (el('ei-venue'))          el('ei-venue').textContent          = ev.venue || '--';
+        if (el('ei-prize'))          el('ei-prize').textContent          = ev.prize || '--';
+        if (el('event-description')) el('event-description').textContent = ev.description || 'No description provided.';
+        var teams = ev.teams != null ? ev.teams : 0;
+        var max   = ev.maxTeams || 0;
+        if (el('ei-teams')) el('ei-teams').textContent = max ? (teams + ' / ' + max) : String(teams);
+        if (el('ei-bar'))   el('ei-bar').style.width   = max ? Math.min(100, Math.round((teams / max) * 100)) + '%' : '0%';
+      })
+      .catch(function() {
+        var el = document.getElementById('event-name-title');
+        if (el) el.textContent = 'Could not load event';
+        var sub = document.getElementById('event-date-text');
+        if (sub) sub.textContent = 'Check your backend connection';
+      });
+  }
+
+  // Step 4: Load schedule
+  function loadSchedule() {
+    if (!eventId) {
+      var w = document.getElementById('timeline-wrap');
+      if (w) w.innerHTML = '<div class="tl-empty"><p>No event selected.</p></div>';
+      return;
+    }
+    fetch(API + '/schedule/' + eventId, { credentials: 'include' })
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        var slots   = data.slots || [];
+        var wrap    = document.getElementById('timeline-wrap');
+        var countEl = document.getElementById('slot-count-label');
+        var sorted  = slots.slice().sort(function(a, b) { return (a.order || 0) - (b.order || 0); });
+        if (countEl) countEl.textContent = sorted.length + (sorted.length === 1 ? ' slot' : ' slots');
+        if (!sorted.length) {
+          wrap.innerHTML = '<div class="tl-empty"><svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="16" stroke="currentColor" stroke-width="1.5"/><path d="M20 12v8l5 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg><p>No schedule added yet.</p></div>';
+          return;
+        }
+        var html = '';
+        for (var i = 0; i < sorted.length; i++) {
+          var slot     = sorted[i];
+          var timeText = _esc(slot.starttime || slot.startTime || 'TBD') + ' - ' + _esc(slot.endtime || slot.endTime || 'TBD');
+          html +=
+            '<div class="tl-item" style="animation-delay:' + (i * 0.05) + 's">' +
+              '<div class="tl-line-col"><div class="tl-dot"></div><div class="tl-line"></div></div>' +
+              '<div class="tl-card">' +
+                '<div class="tl-time"><span class="tl-time-badge">' +
+                  '<svg width="10" height="10" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.1"/><path d="M6 3.5V6l1.5 1" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>' +
+                  timeText + '</span></div>' +
+                '<div class="tl-title">' + _esc(slot.title) + '</div>' +
+                (slot.description ? '<div class="tl-desc">' + _esc(slot.description) + '</div>' : '') +
+              '</div>' +
+            '</div>';
+        }
+        wrap.innerHTML = html;
+      })
+      .catch(function() {
+        var w = document.getElementById('timeline-wrap');
+        if (w) w.innerHTML = '<div class="tl-empty"><p>No schedule available.</p></div>';
+        var c = document.getElementById('slot-count-label');
+        if (c) c.textContent = '0 slots';
+      });
+  }
+
+  // Step 5: Load rules from localStorage
+  function loadRules() {
+    var saved = localStorage.getItem('eventhub_rules_' + eventId);
+    if (saved) {
+      try {
+        var r    = JSON.parse(saved);
+        var keys = Object.keys(rulesState);
+        for (var i = 0; i < keys.length; i++) {
+          if (r[keys[i]]) rulesState[keys[i]] = r[keys[i]];
+        }
+      } catch(e) {}
+    }
+    var mapping = {
+      'general-rules':     rulesState.general,
+      'eligibility-rules': rulesState.eligibility,
+      'submission-rules':  rulesState.submission,
+      'judging-rules':     rulesState.judging,
+      'notes-rules':       rulesState.notes
+    };
+    Object.keys(mapping).forEach(function(id) {
+      var container = document.getElementById(id);
+      if (!container) return;
+      var active = (mapping[id] || []).filter(function(rule) { return rule && rule.trim(); });
+      container.innerHTML = active.length
+        ? active.map(function(rule, n) {
+            return '<li><span class="rule-num">' + (n + 1) + '</span><span>' + _esc(rule) + '</span></li>';
+          }).join('')
+        : '<li class="rules-empty"><span>No rules defined yet.</span></li>';
+    });
+  }
+
+  // -- INIT: fire all loads in parallel, nothing blocks the UI --
+  loadUser();
+  loadEvent();
+  loadSchedule();
+  loadRules();
+
+}());
+</script>
+</body>
+</html>

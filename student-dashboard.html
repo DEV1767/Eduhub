@@ -166,7 +166,7 @@ html,body{height:100%;font-family:'Plus Jakarta Sans',sans-serif;background:var(
 
 /* EVENT CARDS */
 .events-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:12px}
-.ecard{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px;transition:border-color 0.15s,background 0.2s;position:relative}
+.ecard{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px;transition:border-color 0.15s,background 0.2s;position:relative;display:flex;flex-direction:column;height:100%}
 .ecard:hover{border-color:var(--teal)}
 .ecard.registered{border-color:var(--purple);background:var(--purple-faint)}
 .registered-tag{
@@ -185,23 +185,24 @@ html,body{height:100%;font-family:'Plus Jakarta Sans',sans-serif;background:var(
 .tb-cult{background:#FFE4E6;color:#9F1239}
 .tb-tech{background:var(--teal-light);color:#0F766E}
 [data-theme="dark"] .tb-quiz{color:#fbbf24}[data-theme="dark"] .tb-cult{background:#2A0D14;color:#fb7185}[data-theme="dark"] .tb-tech{color:#2dd4bf}
-.emeta{display:flex;flex-direction:column;gap:4px;margin-bottom:10px}
+.emeta{display:flex;flex-direction:column;gap:4px;margin-bottom:10px;flex-grow:1}
 .emeta-row{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text2)}
 .emeta-row svg{width:12px;height:12px;flex-shrink:0;color:var(--text3)}
 .edivider{height:1px;background:var(--border);margin-bottom:10px}
-.ecard-footer{display:flex;align-items:center;justify-content:space-between;gap:8px}
-.estatus{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text2)}
+.ecard-footer{display:flex;flex-direction:column;gap:8px;margin-top:auto}
+.ecard-footer > div:last-child{display:flex;gap:6px;flex-wrap:nowrap;justify-content:flex-end;width:100%}
+.estatus{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text2);width:100%}
 .sdot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
 .sdot-live{background:var(--green)}.sdot-up{background:var(--amber)}.sdot-done{background:var(--text3)}
 .btn-register{
   display:inline-flex;align-items:center;gap:5px;
-  padding:5px 12px;border:none;border-radius:7px;
-  font-size:12px;font-weight:600;color:#fff;background:var(--purple);
-  cursor:pointer;transition:all 0.15s;font-family:'Plus Jakarta Sans',sans-serif;white-space:nowrap
+  padding:6px 12px;border:none;border-radius:7px;
+  font-size:11px;font-weight:600;color:#fff;background:var(--purple);
+  cursor:pointer;transition:all 0.15s;font-family:'Plus Jakarta Sans',sans-serif;white-space:nowrap;flex-shrink:0
 }
 .btn-register:hover{background:var(--purple-dark)}
 .btn-register.registered{background:var(--surface2);color:var(--text3);border:1px solid var(--border);cursor:default}
-.btn-view{padding:5px 12px;border:1px solid var(--border);border-radius:7px;font-size:12px;font-weight:500;color:var(--text2);background:transparent;cursor:pointer;transition:all 0.12s;font-family:'Plus Jakarta Sans',sans-serif}
+.btn-view{padding:6px 10px;border:1px solid var(--border);border-radius:7px;font-size:11px;font-weight:500;color:var(--text2);background:transparent;cursor:pointer;transition:all 0.12s;font-family:'Plus Jakarta Sans',sans-serif;white-space:nowrap;flex-shrink:0}
 .btn-view:hover{border-color:var(--teal);color:var(--teal)}
 
 /* STUDENT SCHEDULE TIMELINE VIEW */
@@ -761,7 +762,7 @@ html,body{height:100%;font-family:'Plus Jakarta Sans',sans-serif;background:var(
         <div class="edivider"></div>
         <div class="ecard-footer">
           <div class="estatus"><div class="sdot ${sc.dot}"></div>${sc.label} · <strong>${e.teams||e.team||0}</strong> teams${e.maxTeams?' / '+e.maxTeams:''}</div>
-          <div style="display:flex;gap:6px">
+          <div>
             ${reg
               ? `<button class="btn-view" onclick="openStudentScheduleModal('${e._id}')">View Schedule</button><button class="btn-register registered">✓ Registered</button>`
               : isCompleted
@@ -1001,6 +1002,23 @@ html,body{height:100%;font-family:'Plus Jakarta Sans',sans-serif;background:var(
   // Load registrations first so isRegistered() works when events render
   await loadMyRegistrations();
   await loadEvents();
+
+  // ── AUTO-REFRESH ON PAGE FOCUS ──
+  // This ensures fresh data when user switches back to the tab
+  document.addEventListener('visibilitychange', async () => {
+    if (!document.hidden) {
+      // Page is now visible - refresh data
+      await loadMyRegistrations();
+      await loadEvents();
+    }
+  });
+
+  // ── PERIODIC REFRESH (every 30 seconds) ──
+  // This keeps data fresh even if page stays open
+  setInterval(async () => {
+    await loadMyRegistrations();
+    await loadEvents();
+  }, 30000); // 30 seconds
 
   // ── EXPOSE TO GLOBAL SCOPE ──
   window.logout                    = logout;
