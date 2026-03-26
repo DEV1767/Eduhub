@@ -645,7 +645,7 @@ tr:hover td{background:var(--surface2)}
   // ── STEP 3: If no user in session, verify via cookie ──
   if(!user._id){
     try{
-      const r = await fetch('https://eduhub-backend-pj8h.onrender.com/api/v1/auth/me', { credentials:'include' });
+      const r = await fetch('https://eduhub-backend-eight.vercel.app/api/v1/auth/me', { credentials:'include' });
       if(!r.ok) throw new Error();
       const data = await r.json();
       user = data.user;
@@ -675,7 +675,7 @@ function toggleTheme(){
 }
 
 // ── API BASE ──
-const API = 'https://eduhub-backend-pj8h.onrender.com/api/v1';
+const API = 'https://eduhub-backend-eight.vercel.app/api/v1';
 
 // ── STATE ──
 let events = [];
@@ -699,7 +699,7 @@ async function logout(){
   // Set flag first so auth guard doesn't re-run on redirect
   sessionStorage.setItem('eventhub_logging_out', '1');
   try{
-    await fetch('https://eduhub-backend-pj8h.onrender.com/api/v1/auth/logout', { method:'POST', credentials:'include' });
+    await fetch('https://eduhub-backend-eight.vercel.app/api/v1/auth/logout', { method:'POST', credentials:'include' });
   } catch(e){}
   sessionStorage.removeItem('eventhub_user');
   window.location.replace('login-signup.html');
