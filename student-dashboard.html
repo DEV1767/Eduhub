@@ -764,7 +764,7 @@ html,body{height:100%;font-family:'Plus Jakarta Sans',sans-serif;background:var(
           <div class="estatus"><div class="sdot ${sc.dot}"></div>${sc.label} · <strong>${e.teams||e.team||0}</strong> teams${e.maxTeams?' / '+e.maxTeams:''}</div>
           <div>
             ${reg
-              ? `<button class="btn-view" onclick="openStudentScheduleModal('${e._id}')">View Schedule</button><button class="btn-register registered">✓ Registered</button>`
+              ? `<a class="btn-view" href="schedule.html?eventId=${e._id}" style="text-decoration:none;display:inline-flex;align-items:center;">📅 Schedule</a><button class="btn-register registered">✓ Registered</button>`
               : isCompleted
                 ? `<button class="btn-register registered">Closed</button>`
                 : `<button class="btn-register" onclick="openRegModal('${e._id}')">Register</button>`
@@ -803,7 +803,7 @@ html,body{height:100%;font-family:'Plus Jakarta Sans',sans-serif;background:var(
         </div>
         <div class="reg-status" style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
           <span class="${statusCls}">${ev.status||'Confirmed'}</span>
-          ${ev._id ? `<button class="btn-view" style="font-size:11px;padding:4px 10px" onclick="openScheduleModal('${ev._id}')">📅 Schedule</button>` : ''}
+          ${ev._id ? `<a class="btn-view" href="schedule.html?eventId=${ev._id}" style="font-size:11px;padding:4px 10px;text-decoration:none;display:inline-block">📅 Schedule</a>` : ''}
         </div>
       </div>`;
     };
@@ -909,6 +909,11 @@ html,body{height:100%;font-family:'Plus Jakarta Sans',sans-serif;background:var(
   async function loadEvents(){
     try{
       const res = await fetch(`${API}/events`, { credentials:'include' });
+      if(res.status === 401){
+        sessionStorage.removeItem('eventhub_user');
+        window.location.replace('login-signup.html');
+        return; // ← stop, don't retry
+      }
       const data = await res.json();
       if(res.ok){
         events = data.events || [];
@@ -926,6 +931,11 @@ html,body{height:100%;font-family:'Plus Jakarta Sans',sans-serif;background:var(
   async function loadMyRegistrations(){
     try{
       const res = await fetch(`${API}/teams/registrations/mine`, { credentials:'include' });
+      if(res.status === 401){
+        sessionStorage.removeItem('eventhub_user');
+        window.location.replace('login-signup.html');
+        return; // ← stop, don't retry
+      }
       const data = await res.json();
       if(res.ok){
         myRegs = data.myregistration || [];
@@ -1003,22 +1013,7 @@ html,body{height:100%;font-family:'Plus Jakarta Sans',sans-serif;background:var(
   await loadMyRegistrations();
   await loadEvents();
 
-  // ── AUTO-REFRESH ON PAGE FOCUS ──
-  // This ensures fresh data when user switches back to the tab
-  document.addEventListener('visibilitychange', async () => {
-    if (!document.hidden) {
-      // Page is now visible - refresh data
-      await loadMyRegistrations();
-      await loadEvents();
-    }
-  });
 
-  // ── PERIODIC REFRESH (every 30 seconds) ──
-  // This keeps data fresh even if page stays open
-  setInterval(async () => {
-    await loadMyRegistrations();
-    await loadEvents();
-  }, 30000); // 30 seconds
 
   // ── EXPOSE TO GLOBAL SCOPE ──
   window.logout                    = logout;

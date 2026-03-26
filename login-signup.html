@@ -1593,29 +1593,8 @@
           return;
         }
 
-        // ── Step 2: proceed to login or signup ──
-        if (otpContext.type === 'login') {
-          const { email, pass } = otpContext.payload;
-          const res = await fetch(`${API_BASE}/login`, {
-            method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include',
-            body: JSON.stringify({ email, password: pass })
-          });
-          const data = await res.json();
-          if (res.ok) {
-            const userData = data.user || { email };
-            sessionStorage.setItem('eventhub_user', JSON.stringify(userData));
-            closeOtp();
-            showToast('Signed in successfully!', 'success');
-            setTimeout(() => {
-              showLoader(`Welcome back, ${userData.firstname || userData.name || ''}! Loading your dashboard...`);
-              setTimeout(() => redirectByRole(userData.role), 900);
-            }, 600);
-          } else {
-            document.getElementById('otp-err-msg').textContent = data.message || 'Login failed. Please try again.';
-            document.getElementById('otp-err').classList.add('show');
-          }
-
-        } else if (otpContext.type === 'signup') {
+        // ── Step 2: proceed to signup ──
+        if (otpContext.type === 'signup') {
           const { payload } = otpContext;
           const res = await fetch(`${API_BASE}/signup`, {
             method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include',
@@ -1623,17 +1602,39 @@
           });
           const data = await res.json();
           if (res.ok) {
-            if (data.user) sessionStorage.setItem('eventhub_user', JSON.stringify(data.user));
             closeOtp();
-            showToast('Account created successfully!', 'success');
-            const userData = data.user || { email: payload.email, firstName: payload.firstname };
-            if (data.token) {
+            showToast('Account created! Signing you in...', 'success');
+            const userData = data.user || { email: payload.email, firstname: payload.firstname };
+
+            // If signup already returned a token/session, go straight to dashboard
+            if (data.token || data.user) {
+              if (data.user) sessionStorage.setItem('eventhub_user', JSON.stringify(data.user));
               setTimeout(() => {
-                showLoader(`Welcome, ${userData.firstName || payload.firstname}! Setting up your dashboard...`);
-                setTimeout(() => redirectByRole(userData.role || payload.role), 900);
+                showLoader(`Welcome, ${userData.firstname || payload.firstname}! Setting up your dashboard...`);
+                setTimeout(() => redirectByRole((data.user || {}).role || payload.role), 900);
               }, 600);
             } else {
-              setTimeout(() => { switchTab('login'); }, 1500);
+              // No session from signup — auto-login now
+              try {
+                const loginRes = await fetch(`${API_BASE}/login`, {
+                  method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include',
+                  body: JSON.stringify({ email: payload.email, password: payload.password })
+                });
+                const loginData = await loginRes.json();
+                if (loginRes.ok) {
+                  const loggedUser = loginData.user || { email: payload.email };
+                  sessionStorage.setItem('eventhub_user', JSON.stringify(loggedUser));
+                  setTimeout(() => {
+                    showLoader(`Welcome, ${loggedUser.firstname || payload.firstname}! Setting up your dashboard...`);
+                    setTimeout(() => redirectByRole(loggedUser.role || payload.role), 900);
+                  }, 600);
+                } else {
+                  // Login after signup failed — fall back to login tab
+                  setTimeout(() => { switchTab('login'); }, 1000);
+                }
+              } catch (e) {
+                setTimeout(() => { switchTab('login'); }, 1000);
+              }
             }
           } else {
             document.getElementById('otp-err-msg').textContent = data.message || 'Registration failed. Please try again.';
@@ -1661,10 +1662,28 @@
       else if (pass.length < 8) { showErr('l-pass', 'l-pass-err', 'Password must be at least 8 characters'); ok = false; }
       if (!ok) return;
       setLoading('l-btn', true);
-      try { await fetch(`${API_BASE}/send-otp/login`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email }) }); } catch (e) {}
-      setLoading('l-btn', false, 'Sign in');
-      openOtp(email, { type: 'login', payload: { email, pass } });
-      showToast('OTP sent to your email!', 'success');
+      try {
+        const res = await fetch(`${API_BASE}/login`, {
+          method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include',
+          body: JSON.stringify({ email, password: pass })
+        });
+        const data = await res.json();
+        if (res.ok) {
+          const userData = data.user || { email };
+          sessionStorage.setItem('eventhub_user', JSON.stringify(userData));
+          showToast('Signed in successfully!', 'success');
+          setTimeout(() => {
+            showLoader(`Welcome back, ${userData.firstname || userData.name || ''}! Loading your dashboard...`);
+            setTimeout(() => redirectByRole(userData.role), 900);
+          }, 600);
+        } else {
+          showServerErr('l-server-err', data.message || 'Invalid email or password. Please try again.');
+        }
+      } catch (e) {
+        showServerErr('l-server-err', 'Cannot connect to server. Please try again.');
+      } finally {
+        setLoading('l-btn', false, 'Sign in');
+      }
     }
 
     async function doSignup() {
