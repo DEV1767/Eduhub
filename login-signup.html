@@ -1409,6 +1409,7 @@
     </div>
   </div>
 
+  <script src="auth-client.js"></script>
   <script>
     const API_BASE = 'https://eduhub-backend-eight.vercel.app/api/v1/auth';
 
@@ -1589,11 +1590,7 @@
       try {
         // ── Step 1: verify-otp ──
         const email = otpContext.payload.email;
-        const verifyRes = await fetch(`${API_BASE}/verify-otp`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, otp })
-        });
+        const verifyRes = await AuthAPI.verifyOtp({ email, otp });
         const verifyData = await verifyRes.json();
         if (!verifyRes.ok) {
           document.getElementById('otp-err-msg').textContent = verifyData.message || 'Incorrect OTP. Please try again.';
@@ -1605,10 +1602,7 @@
         // ── Step 2: proceed to signup ──
         if (otpContext.type === 'signup') {
           const { payload } = otpContext;
-          const res = await fetch(`${API_BASE}/signup`, {
-            method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include',
-            body: JSON.stringify(payload)
-          });
+          const res = await AuthAPI.signup(payload);
           const data = await res.json();
           if (res.ok) {
             closeOtp();
@@ -1625,10 +1619,7 @@
             } else {
               // No session from signup — auto-login now
               try {
-                const loginRes = await fetch(`${API_BASE}/login`, {
-                  method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include',
-                  body: JSON.stringify({ email: payload.email, password: payload.password })
-                });
+                const loginRes = await AuthAPI.login({ email: payload.email, password: payload.password });
                 const loginData = await loginRes.json();
                 if (loginRes.ok) {
                   const loggedUser = loginData.user || { email: payload.email };
@@ -1672,10 +1663,7 @@
       if (!ok) return;
       setLoading('l-btn', true);
       try {
-        const res = await fetch(`${API_BASE}/login`, {
-          method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include',
-          body: JSON.stringify({ email, password: pass })
-        });
+        const res = await AuthAPI.login({ email, password: pass });
         const data = await res.json();
         if (res.ok) {
           const userData = data.user || { email };
@@ -1717,7 +1705,7 @@
       else if (pass && cpass !== pass) { showErr('s-cpass', 's-cpass-err', 'Passwords do not match'); ok = false; }
       if (!ok) return;
       setLoading('s-btn', true);
-      try { await fetch(`${API_BASE}/send-otp/signup`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email }) }); } catch (e) {}
+      try { await AuthAPI.sendSignupOtp({ email }); } catch (e) {}
       setLoading('s-btn', false, 'Create account');
       openOtp(email, { type: 'signup', payload: { firstname: fname, lastname: lname, email, collegename: college, role: roleEl.textContent.trim(), password: pass } });
       showToast('OTP sent to your email!', 'success');
@@ -1759,16 +1747,8 @@
         return; // stay on login page
       }
 
-      // If sessionStorage has no user — don't bother calling /me
-      // This prevents redirect loop after logout when cookie is still being cleared
-      const hasSession = sessionStorage.getItem('eventhub_user');
-      if (!hasSession) return;
-
       try {
-        const res = await fetch(`${API_BASE}/me`, {
-          method: 'GET',
-          credentials: 'include'
-        });
+        const res = await AuthAPI.me();
         if (res.ok) {
           const data = await res.json();
           sessionStorage.setItem('eventhub_user', JSON.stringify(data.user));

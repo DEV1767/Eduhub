@@ -620,6 +620,7 @@ tr:hover td{background:var(--surface2)}
   </div>
 </div>
 
+<script src="auth-client.js"></script>
 <script>
 (async () => {
   // ── STEP 1: Check logout flag ──
@@ -636,7 +637,7 @@ tr:hover td{background:var(--surface2)}
   // ── STEP 3: If no user in session, verify via cookie ──
   if(!user._id){
     try{
-      const r = await fetch('https://eduhub-backend-eight.vercel.app/api/v1/auth/me', { credentials:'include' });
+      const r = await AuthAPI.me();
       if(!r.ok) throw new Error();
       const data = await r.json();
       user = data.user;
@@ -690,7 +691,7 @@ async function logout(){
   // Set flag first so auth guard doesn't re-run on redirect
   sessionStorage.setItem('eventhub_logging_out', '1');
   try{
-    await fetch('https://eduhub-backend-eight.vercel.app/api/v1/auth/logout', { method:'POST', credentials:'include' });
+    await AuthAPI.logout();
   } catch(e){}
   sessionStorage.removeItem('eventhub_user');
   window.location.replace('login-signup.html');

@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>EventHub — All Events</title>
+<script src="auth-client.js"></script>
 <script>
 (function(){
 	var theme = localStorage.getItem('eventhub_theme') || 'light';
@@ -555,7 +556,7 @@ async function getLoggedInUser(){
 	}catch(error){}
 
 	try{
-		const res = await fetch(`${API}/auth/me`, { credentials:'include' });
+		const res = await AuthAPI.me();
 		if(!res.ok) return null;
 		const data = await res.json();
 		if(data && data.user){

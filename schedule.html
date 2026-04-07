@@ -649,6 +649,7 @@ html,body{
   </div><!-- /main -->
 </div><!-- /app -->
 
+<script src="auth-client.js"></script>
 <script type="text/javascript">
 // -- ALL GLOBAL HANDLERS defined synchronously (before any async work) --
 // This ensures onclick="..." attributes work instantly on page load.
@@ -674,7 +675,7 @@ window.closeSidebar = function() {
 window.logout = function() {
   sessionStorage.setItem('eventhub_logging_out', '1');
   sessionStorage.removeItem('eventhub_user');
-  fetch('https://eduhub-backend-eight.vercel.app/api/v1/auth/logout', { method: 'POST', credentials: 'include' })
+  AuthAPI.logout()
     .catch(function() {})
     .finally(function() { window.location.replace('login-signup.html'); });
 };
@@ -755,7 +756,7 @@ function _esc(text) {
     var user = {};
     try { user = JSON.parse(sessionStorage.getItem('eventhub_user') || '{}'); } catch(e) {}
     if (user._id || user.email) { renderUser(user); return; }
-    fetch(API + '/auth/me', { credentials: 'include' })
+    AuthAPI.me()
       .then(function(r) { return r.ok ? r.json() : null; })
       .then(function(data) {
         if (data && data.user) {
