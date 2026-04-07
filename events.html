@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EventHub — All Events</title>
+<script>
+(function(){
+	var theme = localStorage.getItem('eventhub_theme') || 'light';
+	document.documentElement.setAttribute('data-theme', theme);
+})();
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+*{font-family:'Manrope',sans-serif!important}
+:root{
+	--purple:#5B4FE8;--purple-dark:#3D35C0;--purple-light:#EAE8FD;--purple-faint:#F4F3FE;
+	--teal:#0ABFA3;--teal-light:#E0F8F5;--amber:#F59E0B;--amber-light:#FFFBEB;
+	--green:#22C55E;--green-light:#F0FDF4;--red:#E84F4F;--red-light:#FDF0F0;
+	--bg:#F8FAFF;--surface:#FFFFFF;--surface2:#F3F4F6;--text:#111827;--text2:#6B7280;--text3:#9CA3AF;--border:#E5E7EB;--shadow:rgba(17,24,39,0.08);
+}
+[data-theme="dark"]{
+	--bg:#0F1117;--surface:#1A1D27;--surface2:#222636;--text:#F1F5F9;--text2:#94A3B8;--text3:#64748B;--border:#2D3148;--shadow:rgba(0,0,0,0.28);
+	--purple-faint:#1E1B3A;--purple-light:#2D2860;--teal-light:#0D2E2A;--amber-light:#2A1F00;--green-light:#0D2416;--red-light:#2A0E0E;
+}
+html,body{min-height:100%;background:var(--bg);color:var(--text);scroll-behavior:smooth}
+body{overflow-x:hidden}
+a{text-decoration:none;color:inherit}
+button,input{font:inherit}
+
+.shell{position:relative;min-height:100vh;isolation:isolate}
+.bg-orb{position:fixed;border-radius:50%;filter:blur(8px);pointer-events:none;z-index:-1;opacity:.85}
+.orb-1{width:320px;height:320px;top:-120px;right:-80px;background:radial-gradient(circle, rgba(91,79,232,.18), rgba(91,79,232,0))}
+.orb-2{width:260px;height:260px;left:-90px;top:340px;background:radial-gradient(circle, rgba(10,191,163,.14), rgba(10,191,163,0))}
+.orb-3{width:220px;height:220px;right:12%;bottom:140px;background:radial-gradient(circle, rgba(245,158,11,.10), rgba(245,158,11,0))}
+
+nav{
+	position:fixed;top:16px;left:50%;transform:translateX(-50%);z-index:100;
+	display:flex;align-items:center;justify-content:space-between;
+	width:min(1200px,calc(100% - 32px));
+	padding:0 20px;height:72px;gap:12px;min-width:0;
+	background:rgba(255,255,255,0.92);backdrop-filter:blur(14px);
+	border:1px solid var(--border);border-radius:999px;
+	box-shadow:0 12px 34px rgba(26,26,46,0.10);
+	transition:background 0.3s,border-color 0.3s,box-shadow 0.3s;
+}
+[data-theme="dark"] nav{
+	background:rgba(31,41,55,0.92);
+	box-shadow:0 12px 34px rgba(0,0,0,0.28);
+}
+.nav-logo{display:flex;align-items:center;gap:8px;text-decoration:none;flex-shrink:0;min-width:0}
+.nav-logo-icon{width:34px;height:34px;border-radius:10px;background:var(--purple);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.nav-logo-icon svg{width:17px;height:17px}
+.nav-logo-text{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:var(--text);white-space:nowrap}
+.nav-logo-text span{color:var(--purple)}
+.nav-links{display:flex;align-items:center;gap:1.4rem;flex:1;justify-content:center;min-width:0}
+.nav-links a{font-size:13px;color:var(--text2);text-decoration:none;font-weight:500;transition:color 0.2s;white-space:nowrap}
+.nav-links a:hover{color:var(--purple)}
+.nav-cta{display:flex;align-items:center;gap:8px;flex-shrink:0;min-width:0}
+.btn-outline{
+	padding:7px 14px;border:1.5px solid var(--border);border-radius:8px;
+	font-size:13px;font-weight:500;color:var(--text);background:transparent;
+	cursor:pointer;text-decoration:none;font-family:'DM Sans',sans-serif;
+	transition:all 0.2s;white-space:nowrap;flex-shrink:0
+}
+.btn-outline:hover{border-color:var(--purple);color:var(--purple)}
+.btn-solid{
+	padding:7px 14px;border:none;border-radius:8px;
+	font-size:13px;font-weight:600;color:#fff;background:var(--purple);
+	cursor:pointer;text-decoration:none;font-family:'Syne',sans-serif;
+	transition:all 0.2s;white-space:nowrap;flex-shrink:0
+}
+.btn-solid:hover{background:var(--purple-dark)}
+.theme-toggle{
+	display:flex;align-items:center;justify-content:center;gap:6px;height:36px;
+	padding:0 10px;border:1.5px solid var(--border);border-radius:8px;
+	background:transparent;cursor:pointer;color:var(--text);flex-shrink:0;
+	transition:all 0.2s;font-size:18px;
+}
+.theme-toggle:hover{border-color:var(--purple);color:var(--purple)}
+.nav-toggle{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:6px;flex-shrink:0}
+.nav-toggle span{display:block;width:22px;height:2px;background:var(--text);border-radius:2px;transition:all 0.3s}
+.mobile-menu{
+	display:none;position:fixed;top:78px;left:50%;transform:translateX(-50%);
+	width:min(420px,calc(100% - 24px));
+	background:color-mix(in srgb, var(--surface) 94%, transparent);backdrop-filter:blur(16px);
+	border:1px solid var(--border);border-radius:20px;
+	box-shadow:0 18px 40px rgba(26,26,46,0.14);
+	padding:12px;z-index:99;flex-direction:column;gap:8px;
+	max-height:calc(100vh - 110px);overflow-y:auto
+}
+.mobile-menu.open{display:flex}
+.mobile-menu a{
+	font-size:14px;color:var(--text);text-decoration:none;font-weight:600;
+	padding:12px 14px;border-radius:12px;display:flex;align-items:center;justify-content:space-between;
+	background:var(--surface);border:1px solid color-mix(in srgb, var(--border) 84%, transparent);
+	box-shadow:0 10px 20px var(--shadow)
+}
+.mobile-menu a:hover{border-color:var(--purple);color:var(--purple);background:var(--surface2)}
+
+.hero{padding:136px 5% 18px;display:grid;grid-template-columns:minmax(0,1.3fr) minmax(320px,.9fr);gap:24px;align-items:end}
+.hero-copy{max-width:760px}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border-radius:999px;background:var(--purple-faint);border:1px solid var(--purple-light);color:var(--purple);font-size:11px;font-weight:800;letter-spacing:.9px;text-transform:uppercase;margin-bottom:14px}
+.eyebrow-dot{width:7px;height:7px;border-radius:50%;background:var(--teal)}
+.hero h1{font-family:'Syne',sans-serif;font-size:clamp(34px,5vw,62px);line-height:1.04;letter-spacing:-.04em;margin-bottom:14px}
+.hero h1 span{color:var(--purple)}
+.hero p{font-size:16px;line-height:1.75;color:var(--text2);max-width:640px}
+.hero-panel{background:linear-gradient(135deg, color-mix(in srgb, var(--purple-faint) 88%, white) 0%, color-mix(in srgb, var(--teal-light) 72%, white) 100%);border:1px solid color-mix(in srgb, var(--border) 78%, transparent);border-radius:24px;padding:18px;box-shadow:0 18px 50px var(--shadow)}
+[data-theme="dark"] .hero-panel{background:linear-gradient(135deg, rgba(45,40,96,.72) 0%, rgba(13,61,53,.62) 100%)}
+.panel-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:14px}
+.panel-label{font-size:11px;font-weight:800;letter-spacing:.9px;text-transform:uppercase;color:var(--text3)}
+.panel-stat{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;color:var(--text)}
+.panel-stat small{font-size:12px;font-family:'Manrope',sans-serif;color:var(--text2);font-weight:700}
+.panel-note{font-size:13px;color:var(--text2);line-height:1.6;margin-top:8px}
+.mini-stack{display:grid;gap:10px;margin-top:14px}
+.mini-item{display:flex;align-items:center;gap:12px;padding:12px 13px;border-radius:14px;background:var(--surface);border:1px solid var(--border)}
+.mini-ic{width:34px;height:34px;border-radius:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.mini-ic svg{width:16px;height:16px}
+.mini-title{font-size:13px;font-weight:700;color:var(--text);line-height:1.2}
+.mini-sub{font-size:12px;color:var(--text2);margin-top:2px}
+
+.controls{padding:12px 5% 10px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:14px;align-items:center}
+.search-box{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:14px 16px;box-shadow:0 10px 26px var(--shadow);transition:border-color .15s,box-shadow .15s}
+.search-box:focus-within{border-color:var(--purple);box-shadow:0 12px 30px rgba(91,79,232,.16)}
+.search-box svg{width:18px;height:18px;color:var(--text3);flex-shrink:0}
+.search-box input{border:none;outline:none;background:transparent;width:100%;color:var(--text);font-size:14px}
+.search-box input::placeholder{color:var(--text3)}
+.chips{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.chip{padding:10px 14px;border-radius:999px;border:1px solid var(--border);background:var(--surface);font-size:13px;font-weight:700;color:var(--text2);cursor:pointer;transition:all .15s;white-space:nowrap}
+.chip:hover{border-color:var(--purple);color:var(--purple)}
+.chip.on{background:var(--purple);border-color:var(--purple);color:#fff;box-shadow:0 12px 24px rgba(91,79,232,.18)}
+
+.stats{padding:8px 5% 24px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:18px;box-shadow:0 12px 26px var(--shadow)}
+.stat-label{font-size:12px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:var(--text3);margin-bottom:8px}
+.stat-value{font-family:'Syne',sans-serif;font-size:30px;font-weight:800;color:var(--text);line-height:1}
+.stat-foot{font-size:13px;color:var(--text2);margin-top:8px}
+.stat-card.purple .stat-value{color:var(--purple)}
+.stat-card.teal .stat-value{color:var(--teal)}
+.stat-card.amber .stat-value{color:var(--amber)}
+.stat-card.green .stat-value{color:var(--green)}
+
+.section{padding:0 5% 56px}
+.section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-bottom:18px;flex-wrap:wrap}
+.section-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;letter-spacing:-.03em;color:var(--text)}
+.section-sub{font-size:14px;color:var(--text2);margin-top:6px}
+.sort-note{font-size:13px;color:var(--text3);font-weight:600}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:16px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:22px;overflow:hidden;box-shadow:0 16px 34px var(--shadow);transition:transform .18s,border-color .18s,box-shadow .18s}
+.card:hover{transform:translateY(-4px);border-color:color-mix(in srgb, var(--purple) 40%, var(--border));box-shadow:0 22px 40px rgba(91,79,232,.12)}
+.card-top{padding:18px 18px 0}
+.card-badges{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}
+.type-badge,.status-badge{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:6px 11px;font-size:11px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;white-space:nowrap}
+.type-badge svg,.status-badge svg{width:11px;height:11px;flex-shrink:0}
+.type-hack{background:var(--purple-faint);color:var(--purple)}
+.type-quiz{background:var(--amber-light);color:#92400E}
+.type-cult{background:#FFE4E6;color:#9F1239}
+.type-tech{background:var(--teal-light);color:#0F766E}
+[data-theme="dark"] .type-quiz{color:#fbbf24}
+[data-theme="dark"] .type-cult{background:#2A0D14;color:#fb7185}
+[data-theme="dark"] .type-tech{color:#2dd4bf}
+.status-live{background:var(--green-light);color:#166534}
+.status-upcoming{background:var(--amber-light);color:#92400E}
+.status-completed{background:var(--surface2);color:var(--text3)}
+.status-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.dot-live{background:var(--green)}.dot-upcoming{background:var(--amber)}.dot-completed{background:var(--text3)}
+.card-title{font-family:'Syne',sans-serif;font-size:19px;font-weight:800;line-height:1.14;color:var(--text);margin-bottom:10px}
+.card-desc{font-size:14px;line-height:1.65;color:var(--text2);min-height:68px}
+.meta{display:grid;gap:8px;padding:0 18px 16px}
+.meta-row{display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--text2);line-height:1.4}
+.meta-row svg{width:14px;height:14px;color:var(--text3);flex-shrink:0;margin-top:2px}
+.divider{height:1px;background:var(--border);margin:0 18px}
+.card-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 18px 18px;flex-wrap:wrap}
+.teams{font-size:13px;color:var(--text2)}
+.teams strong{color:var(--text);font-weight:800}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+.action{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:9px 12px;border-radius:11px;font-size:13px;font-weight:700;border:1px solid var(--border);background:var(--surface2);color:var(--text2);transition:all .15s}
+.action:hover{border-color:var(--purple);color:var(--purple);background:var(--purple-faint)}
+.action.primary{background:var(--purple);border-color:var(--purple);color:#fff}
+.action.primary:hover{background:var(--purple-dark);border-color:var(--purple-dark);color:#fff}
+.action svg{width:14px;height:14px}
+
+.empty{grid-column:1/-1;background:var(--surface);border:1px dashed var(--border);border-radius:22px;padding:44px 18px;text-align:center;box-shadow:0 14px 28px var(--shadow)}
+.empty svg{width:44px;height:44px;color:var(--text3);margin:0 auto 12px;display:block}
+.empty h3{font-size:18px;font-weight:800;color:var(--text);margin-bottom:6px}
+.empty p{font-size:14px;color:var(--text2);max-width:430px;margin:0 auto 18px;line-height:1.6}
+
+footer{
+	background:var(--text);padding:40px 5% 24px;transition:background 0.3s
+}
+[data-theme="dark"] footer{
+	background:#111827;
+}
+.footer-inner{
+	display:flex;align-items:flex-start;justify-content:space-between;
+	gap:2rem;flex-wrap:wrap;margin-bottom:2rem
+}
+.footer-logo{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.footer-logo-icon{
+	width:32px;height:32px;border-radius:8px;background:var(--purple);
+	display:flex;align-items:center;justify-content:center
+}
+.footer-logo-icon svg{width:16px;height:16px}
+.footer-logo-text{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:#fff}
+.footer-logo-text span{color:var(--teal)}
+.footer-desc{font-size:13px;color:rgba(255,255,255,0.4);max-width:220px;line-height:1.6}
+.footer-links{display:flex;gap:3rem;flex-wrap:wrap}
+.footer-col h4{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:#fff;margin-bottom:12px;letter-spacing:0.5px}
+.footer-col a{display:block;font-size:13px;color:rgba(255,255,255,0.4);text-decoration:none;margin-bottom:8px;transition:color 0.2s}
+.footer-col a:hover{color:rgba(255,255,255,0.8)}
+.footer-bottom{
+	border-top:1px solid rgba(255,255,255,0.08);
+	padding-top:20px;display:flex;align-items:center;justify-content:space-between;
+	flex-wrap:wrap;gap:1rem
+}
+.footer-copy{font-size:12px;color:rgba(255,255,255,0.3)}
+.footer-crafted{font-size:12px;color:rgba(255,255,255,0.4);text-decoration:none;transition:color 0.2s;display:flex;align-items:center;gap:4px}
+.footer-crafted:hover{color:rgba(255,255,255,0.9)}
+.footer-crafted strong{color:#fff;font-weight:600}
+.footer-tags{display:flex;gap:8px;flex-wrap:wrap}
+.footer-tag{
+	padding:4px 10px;border-radius:6px;font-size:11px;font-weight:600;
+	background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.4)
+}
+
+@media(max-width:720px){
+	nav{top:12px;width:calc(100% - 24px);padding:0 16px;height:68px}
+	.mobile-menu{top:80px;width:calc(100% - 24px);padding:10px;gap:7px}
+	.hero,.controls,.stats,.section,footer{padding-left:4%;padding-right:4%}
+	.hero{padding-top:118px;grid-template-columns:1fr;align-items:start}
+	.hero-copy{max-width:100%}
+	.hero-panel{width:100%}
+	.stats{gap:10px}
+	.grid{grid-template-columns:1fr}
+	.card-desc{min-height:auto}
+	.footer-links{gap:2rem}
+	.footer-inner{flex-direction:column;gap:1.5rem}
+	.nav-cta{display:none}
+	.nav-links{display:none}
+	.nav-toggle{display:flex}
+}
+@media(max-width:520px){
+	.brand-sub,.sort-note{font-size:11px}
+	.stats{grid-template-columns:1fr}
+	.card-foot{flex-direction:column;align-items:flex-start}
+	.actions{width:100%}
+	.action{width:100%;justify-content:center}
+	.nav-cta .btn-outline{display:none}
+}
+</style>
+</head>
+<body>
+<div class="shell">
+	<div class="bg-orb orb-1"></div>
+	<div class="bg-orb orb-2"></div>
+	<div class="bg-orb orb-3"></div>
+
+	<nav>
+		<a href="index.html" class="nav-logo">
+			<div class="nav-logo-icon">
+				<svg viewBox="0 0 20 20" fill="none">
+					<rect x="2" y="6" width="16" height="11" rx="2.5" fill="rgba(255,255,255,0.2)" stroke="white" stroke-width="1.3"/>
+					<path d="M7 6V5a3 3 0 016 0v1" stroke="white" stroke-width="1.3" stroke-linecap="round"/>
+					<circle cx="10" cy="12" r="2" fill="white"/>
+				</svg>
+			</div>
+			<span class="nav-logo-text">Event<span>Hub</span></span>
+		</a>
+		<div class="nav-links">
+			<a href="index.html#features">Features</a>
+			<a href="index.html#events">Event Types</a>
+			<a href="events.html" style="color:var(--purple)">All Events</a>
+			<a href="index.html#how">How it works</a>
+			<a href="index.html#ai">AI Assistant</a>
+		</div>
+		<div class="nav-cta" id="nav-cta">
+				<a href="login-signup.html" class="btn-outline" id="signinBtn">Sign in</a>
+				<a href="index.html#events" class="btn-solid">Get started</a>
+		</div>
+		<button class="nav-toggle" onclick="toggleMenu()" aria-label="Menu">
+			<span></span><span></span><span></span>
+		</button>
+	</nav>
+
+	<div class="mobile-menu" id="mobileMenu">
+		<a href="index.html#features" onclick="closeMenu()">Features</a>
+		<a href="index.html#events" onclick="closeMenu()">Event Types</a>
+		<a href="events.html" onclick="closeMenu()">All Events</a>
+		<a href="index.html#how" onclick="closeMenu()">How it works</a>
+		<a href="index.html#ai" onclick="closeMenu()">AI Assistant</a>
+		<a href="#" onclick="toggleTheme();closeMenu();return false;">Toggle Theme</a>
+		<a href="index.html#events" onclick="closeMenu()" style="color:var(--purple);font-weight:600">Explore Events</a>
+		<div id="mobile-cta" style="display:contents">
+			<a id="mobileSigninBtn" href="login-signup.html" onclick="closeMenu()" style="color:var(--purple);font-weight:600">Sign in / Get started</a>
+		</div>
+	</div>
+
+	<main>
+		<section class="hero">
+			<div class="hero-copy">
+				<div class="eyebrow"><span class="eyebrow-dot"></span> All Events</div>
+				<h1>Search every <span>hackathon and event</span> from one global page.</h1>
+				<p>
+					Discover hackathons, quizzes, cultural fests, tech talks and more across colleges. Use search to narrow the list instantly, then open the event you want to inspect or register for.
+				</p>
+			</div>
+
+			<aside class="hero-panel" aria-label="Event summary">
+				<div class="panel-top">
+					<div>
+						<div class="panel-label">Live snapshot</div>
+						<div class="panel-stat" id="panelTotal">0 <small>events</small></div>
+					</div>
+					<div class="status-badge status-live"><span class="status-dot dot-live"></span>Updated</div>
+				</div>
+				<div class="panel-note" id="panelNote">Loading current event list...</div>
+				<div class="mini-stack">
+					<div class="mini-item">
+						<div class="mini-ic" style="background:var(--purple-faint);color:var(--purple)"><svg viewBox="0 0 16 16" fill="none"><rect x="1" y="3" width="14" height="11" rx="2" stroke="currentColor" stroke-width="1.3"></rect><path d="M5 1v4M11 1v4M1 7h14" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"></path></svg></div>
+						<div><div class="mini-title">Search by name, venue, or date</div><div class="mini-sub">Find the exact event faster.</div></div>
+					</div>
+					<div class="mini-item">
+						<div class="mini-ic" style="background:var(--teal-light);color:var(--teal)"><svg viewBox="0 0 16 16" fill="none"><path d="M8 1l1.8 4.5h4.7l-3.8 2.8 1.5 4.7L8 10.5 4.3 13l1.5-4.7L2 5.5h4.7z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"></path></svg></div>
+						<div><div class="mini-title">Filter by event type</div><div class="mini-sub">Hackathon, Quiz, Cultural, Tech.</div></div>
+					</div>
+				</div>
+			</aside>
+		</section>
+
+		<section class="controls">
+			<label class="search-box" aria-label="Search events">
+				<svg viewBox="0 0 20 20" fill="none"><circle cx="8.5" cy="8.5" r="5.5" stroke="currentColor" stroke-width="1.5"></circle><path d="M12.5 12.5L17 17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path></svg>
+				<input id="searchInput" type="text" placeholder="Search events by name, type, venue, date, or description" oninput="applySearch(this.value)">
+			</label>
+
+			<div class="chips" id="chips"></div>
+		</section>
+
+		<section class="section">
+			<div class="section-head">
+				<div>
+					<div class="section-title">All event listings</div>
+					<div class="section-sub">Cards update as you search or switch categories.</div>
+				</div>
+				<div class="sort-note" id="resultNote">Showing all events</div>
+			</div>
+			<div class="grid" id="eventGrid"></div>
+		</section>
+	</main>
+
+	<footer>
+		<div class="footer-inner">
+			<div class="footer-brand">
+				<div class="footer-logo">
+					<div class="footer-logo-icon">
+						<svg viewBox="0 0 16 16" fill="none"><rect x="1" y="4" width="14" height="10" rx="2" fill="rgba(255,255,255,0.2)" stroke="white" stroke-width="1.2"/><path d="M5 4V3a3 3 0 016 0v1" stroke="white" stroke-width="1.2" stroke-linecap="round"/><circle cx="8" cy="9" r="1.5" fill="white"/></svg>
+					</div>
+					<span class="footer-logo-text">Event<span>Hub</span></span>
+				</div>
+				<p class="footer-desc">The AI-powered college event organiser for students and faculty.</p>
+			</div>
+			<div class="footer-links">
+				<div class="footer-col">
+					<h4>Product</h4>
+					<a href="index.html#features">Features</a>
+					<a href="index.html#events">Event types</a>
+					<a href="index.html#how">How it works</a>
+					<a href="index.html#ai">AI assistant</a>
+				</div>
+				<div class="footer-col">
+					<h4>Account</h4>
+					<a href="login-signup.html">Sign in</a>
+					<a href="student-dashboard.html">Student dashboard</a>
+				</div>
+			</div>
+		</div>
+		<div class="footer-bottom">
+			<span class="footer-copy">© 2026 EventHub College. All rights reserved.</span>
+			<a href="https://my-portfoliyo-nine.vercel.app/" target="_blank" rel="noopener" class="footer-crafted">
+				Crafted with ❤️ by <strong>Shivam</strong>
+			</a>
+			<div class="footer-tags">
+				<span class="footer-tag">Hackathon</span>
+				<span class="footer-tag">Quiz</span>
+				<span class="footer-tag">Cultural</span>
+				<span class="footer-tag">AI</span>
+			</div>
+		</div>
+	</footer>
+</div>
+
+<script>
+const API = 'https://eduhub-backend-eight.vercel.app/api/v1';
+const LOGIN_PAGE = 'login-signup.html';
+const EVENTS_PAGE = 'events.html';
+
+const SAMPLE_EVENTS = [
+	{ _id:'sample-1', name:'HackFest 2025', type:'Hackathon', status:'Live', date:'2026-04-12', time:'09:00 AM', venue:'Seminar Hall A', city:'Bengaluru', college:'RV College of Engineering', prize:'₹50,000', teams:24, maxTeams:30, description:'A 24-hour coding sprint for teams building practical solutions with mentorship and live demos.' },
+	{ _id:'sample-2', name:'Tech Quiz Championship', type:'Quiz', status:'Upcoming', date:'2026-04-18', time:'11:00 AM', venue:'Room 301', city:'Pune', college:'PCCOE', prize:'₹15,000', teams:18, maxTeams:24, description:'Fast-paced rounds covering technology, startups, and current innovation trends.' },
+	{ _id:'sample-3', name:'Culturals Spring Fest', type:'Cultural', status:'Upcoming', date:'2026-04-21', time:'05:00 PM', venue:'Main Auditorium', city:'Delhi', college:'DTU', prize:'₹25,000', teams:32, maxTeams:40, description:'Dance, music, theatre, and stage performances from every department.' },
+	{ _id:'sample-4', name:'AI Builders Workshop', type:'Techtalk', status:'Completed', date:'2026-03-29', time:'02:00 PM', venue:'Innovation Lab', city:'Hyderabad', college:'IIIT Hyderabad', prize:'Certificate', teams:48, maxTeams:60, description:'Hands-on workshop on AI workflows, prompts, and practical product building.' },
+	{ _id:'sample-5', name:'Code Sprint Arena', type:'Hackathon', status:'Upcoming', date:'2026-04-26', time:'10:00 AM', venue:'Computer Block', city:'Chennai', college:'SSN College of Engineering', prize:'₹30,000', teams:20, maxTeams:28, description:'Short-format problem solving challenge with timed rounds and code reviews.' },
+	{ _id:'sample-6', name:'Design & Pitch Expo', type:'Techtalk', status:'Live', date:'2026-04-07', time:'01:00 PM', venue:'Conference Room B', city:'Mumbai', college:'VJTI', prize:'₹10,000', teams:14, maxTeams:20, description:'A presentation showcase for product ideas, design systems, and startup concepts.' }
+];
+
+const TYPE_STYLES = {
+	Hackathon: { cls:'type-hack', icon:'<rect x="1" y="3" width="14" height="10" rx="2" stroke="currentColor" stroke-width="1.3"></rect><path d="M5 3V2a3 3 0 016 0v1" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"></path>' },
+	Quiz: { cls:'type-quiz', icon:'<path d="M8 1l1.8 4.5h4.7l-3.8 2.8 1.5 4.7L8 10.5l-4.2 2.5 1.5-4.7L1.5 5.5h4.7z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"></path>' },
+	Cultural: { cls:'type-cult', icon:'<circle cx="8" cy="5.8" r="3" stroke="currentColor" stroke-width="1.3"></circle><path d="M2 14c0-2.8 2.7-5 6-5s6 2.2 6 5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"></path>' },
+	Techtalk: { cls:'type-tech', icon:'<path d="M2 2h12v9H2z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"></path><path d="M6 14h4M8 11v3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"></path>' },
+	Sports: { cls:'type-tech', icon:'<circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.3"></circle>' }
+};
+
+const STATUS_STYLES = {
+	Live: { cls:'status-live', dot:'dot-live', label:'Live' },
+	Upcoming: { cls:'status-upcoming', dot:'dot-upcoming', label:'Upcoming' },
+	Completed: { cls:'status-completed', dot:'dot-completed', label:'Completed' }
+};
+
+let allEvents = [];
+let filteredEvents = [];
+let activeType = 'All';
+let searchQuery = '';
+
+function toggleTheme(){
+	const current = document.documentElement.getAttribute('data-theme') || 'light';
+	const next = current === 'light' ? 'dark' : 'light';
+	document.documentElement.setAttribute('data-theme', next);
+	localStorage.setItem('eventhub_theme', next);
+	const icon = document.getElementById('theme-icon');
+	if(icon) icon.textContent = next === 'dark' ? '☀️' : '🌙';
+}
+
+function toggleMenu(){
+	document.getElementById('mobileMenu').classList.toggle('open');
+}
+
+function closeMenu(){
+	document.getElementById('mobileMenu').classList.remove('open');
+}
+
+document.addEventListener('click', function(e){
+	const menu = document.getElementById('mobileMenu');
+	const toggle = document.querySelector('.nav-toggle');
+	if(!menu || !toggle) return;
+	if(menu.classList.contains('open') && !menu.contains(e.target) && !toggle.contains(e.target)){
+		menu.classList.remove('open');
+	}
+});
+
+function initThemeIcon(){
+	const mode = document.documentElement.getAttribute('data-theme') || 'light';
+	const icon = document.getElementById('theme-icon');
+	if(icon) icon.textContent = mode === 'dark' ? '☀️' : '🌙';
+}
+
+function formatDate(value){
+	if(!value) return 'Date TBA';
+	const date = new Date(value);
+	if(Number.isNaN(date.getTime())) return String(value);
+	return date.toLocaleDateString('en-IN',{ day:'numeric', month:'short', year:'numeric' });
+}
+
+function normalizeEvent(event){
+	return {
+		_id: event._id || event.id || event.eventId || `event-${Math.random().toString(36).slice(2,8)}`,
+		name: event.name || event.title || 'Untitled Event',
+		type: event.type || event.category || 'Techtalk',
+		status: event.status || 'Upcoming',
+		date: event.date || event.startDate || event.eventDate || '',
+		time: event.time || event.startTime || '',
+		venue: event.venue || event.location || '',
+		city: event.city || event.state || event.eventCity || '',
+		college: event.college || event.collegeName || event.organizer || event.hostInstitute || '',
+		prize: event.prize || event.reward || '',
+		teams: Number(event.teams ?? event.teamCount ?? event.registrations ?? 0) || 0,
+		maxTeams: Number(event.maxTeams ?? event.capacity ?? 0) || 0,
+		description: event.description || event.desc || event.summary || 'No description available.'
+	};
+}
+
+function enrichEvents(events){
+	return events.map(normalizeEvent).sort((a, b) => {
+		const rank = { Live: 0, Upcoming: 1, Completed: 2 };
+		const left = rank[a.status] ?? 9;
+		const right = rank[b.status] ?? 9;
+		if(left !== right) return left - right;
+		const da = new Date(a.date || 0).getTime();
+		const db = new Date(b.date || 0).getTime();
+		return da - db;
+	});
+}
+
+function getTypeOptions(events){
+	const seen = new Set(events.map(event => event.type).filter(Boolean));
+	return ['All', ...Array.from(seen)];
+}
+
+function renderChips(){
+	const types = getTypeOptions(allEvents);
+	document.getElementById('chips').innerHTML = types.map(type => `<button class="chip${type === activeType ? ' on' : ''}" onclick="setType('${type}', this)">${type}</button>`).join('');
+}
+
+function setType(type, element){
+	activeType = type;
+	document.querySelectorAll('.chip').forEach(chip => chip.classList.remove('on'));
+	if(element) element.classList.add('on');
+	renderEvents();
+}
+
+function applySearch(value){
+	searchQuery = value.trim().toLowerCase();
+	renderEvents();
+}
+
+function matchesSearch(event){
+	if(!searchQuery) return true;
+	const haystack = [event.name, event.type, event.status, event.date, event.time, event.venue, event.city, event.college, event.prize, event.description]
+		.filter(Boolean)
+		.join(' ')
+		.toLowerCase();
+	return haystack.includes(searchQuery);
+}
+
+function getLoginRedirectUrl(eventId){
+	const query = new URLSearchParams({ redirect: EVENTS_PAGE, action: 'register' });
+	if(eventId) query.set('eventId', eventId);
+	return `${LOGIN_PAGE}?${query.toString()}`;
+}
+
+async function getLoggedInUser(){
+	try{
+		const raw = sessionStorage.getItem('eventhub_user');
+		if(raw){
+			const parsed = JSON.parse(raw);
+			if(parsed && parsed._id) return parsed;
+		}
+	}catch(error){}
+
+	try{
+		const res = await fetch(`${API}/auth/me`, { credentials:'include' });
+		if(!res.ok) return null;
+		const data = await res.json();
+		if(data && data.user){
+			sessionStorage.setItem('eventhub_user', JSON.stringify(data.user));
+			return data.user;
+		}
+	}catch(error){}
+
+	return null;
+}
+
+async function registerForEvent(eventId){
+	const user = await getLoggedInUser();
+	if(!user){
+		window.location.href = getLoginRedirectUrl(eventId);
+		return;
+	}
+	window.location.href = `student-dashboard.html?eventId=${encodeURIComponent(eventId || '')}`;
+}
+
+async function hydrateAuthButtons(){
+	const user = await getLoggedInUser();
+	if(!user) return;
+	const signinBtn = document.getElementById('signinBtn');
+	if(signinBtn){
+		signinBtn.href = 'student-dashboard.html';
+		signinBtn.textContent = 'Dashboard';
+	}
+	const mobileSigninBtn = document.getElementById('mobileSigninBtn');
+	if(mobileSigninBtn){
+		mobileSigninBtn.href = 'student-dashboard.html';
+		mobileSigninBtn.textContent = 'Dashboard';
+	}
+}
+
+async function continueRegisterAfterLogin(){
+	const params = new URLSearchParams(window.location.search);
+	const action = params.get('action');
+	const eventId = params.get('eventId');
+	if(action !== 'register' || !eventId) return;
+	const user = await getLoggedInUser();
+	if(!user) return;
+	window.location.replace(`student-dashboard.html?eventId=${encodeURIComponent(eventId)}&autoreg=1`);
+}
+
+function matchesType(event){
+	return activeType === 'All' || event.type === activeType;
+}
+
+function renderStats(events){
+	document.getElementById('panelTotal').innerHTML = `${events.length} <small>events</small>`;
+	document.getElementById('panelNote').textContent = events.length
+		? `Showing ${events.length} events across ${new Set(events.map(event => event.type)).size} categories.`
+		: 'No events available right now.';
+}
+
+function renderEvents(){
+	const grid = document.getElementById('eventGrid');
+	filteredEvents = allEvents.filter(event => matchesType(event) && matchesSearch(event));
+
+	document.getElementById('resultNote').textContent = searchQuery || activeType !== 'All'
+		? `Showing ${filteredEvents.length} matching event${filteredEvents.length === 1 ? '' : 's'}`
+		: 'Showing all events';
+
+	if(!filteredEvents.length){
+		grid.innerHTML = `<div class="empty">
+			<svg viewBox="0 0 40 40" fill="none"><rect x="3" y="9" width="34" height="26" rx="4" stroke="currentColor" stroke-width="1.8"></rect><path d="M13 9V6a7 7 0 0114 0v3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path><circle cx="20" cy="22" r="4" stroke="currentColor" stroke-width="1.8"></circle></svg>
+			<h3>No events found</h3>
+			<p>Try a different search term or switch the category filter to see more events.</p>
+			<button class="action primary" onclick="clearFilters()">Clear filters</button>
+		</div>`;
+		return;
+	}
+
+	grid.innerHTML = filteredEvents.map(event => {
+		const type = TYPE_STYLES[event.type] || TYPE_STYLES.Techtalk;
+		const status = STATUS_STYLES[event.status] || STATUS_STYLES.Upcoming;
+		return `<article class="card">
+			<div class="card-top">
+				<div class="card-badges">
+					<span class="type-badge ${type.cls}"><svg viewBox="0 0 16 16" fill="none">${type.icon}</svg>${event.type}</span>
+					<span class="status-badge ${status.cls}"><span class="status-dot ${status.dot}"></span>${status.label}</span>
+				</div>
+				<div class="card-title">${event.name}</div>
+				<div class="card-desc">${event.description}</div>
+			</div>
+			<div class="meta">
+				<div class="meta-row"><svg viewBox="0 0 14 14" fill="none"><rect x="1" y="2.5" width="12" height="10" rx="1.5" stroke="currentColor" stroke-width="1.2"></rect><path d="M4 1v3M10 1v3M1 5.5h12" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"></path></svg>${formatDate(event.date)}${event.time ? ' · ' + event.time : ''}</div>
+				${event.college ? `<div class="meta-row"><svg viewBox="0 0 14 14" fill="none"><path d="M1.5 6.1L7 3l5.5 3.1L7 9.2 1.5 6.1z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"></path><path d="M3 7.3v2.1c0 .9 1.8 1.6 4 1.6s4-.7 4-1.6V7.3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"></path></svg>${event.college}</div>` : ''}
+				${event.venue || event.city ? `<div class="meta-row"><svg viewBox="0 0 14 14" fill="none"><path d="M7 1.5a4.5 4.5 0 014.5 4.5c0 3-4.5 6.5-4.5 6.5S2.5 9 2.5 6a4.5 4.5 0 014.5-4.5z" stroke="currentColor" stroke-width="1.2"></path><circle cx="7" cy="6" r="1.5" stroke="currentColor" stroke-width="1.2"></circle></svg>${event.venue || 'Venue TBA'}${event.city ? `, ${event.city}` : ''}</div>` : ''}
+				${event.prize ? `<div class="meta-row"><svg viewBox="0 0 14 14" fill="none"><path d="M7 1.5l1.4 4h4.2L9.2 8.1l1.4 4L7 9.8l-3.6 2.3 1.4-4L1.4 5.5h4.2z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"></path></svg>${event.prize}</div>` : ''}
+				<div class="meta-row"><svg viewBox="0 0 14 14" fill="none"><circle cx="7" cy="4.5" r="2" stroke="currentColor" stroke-width="1.2"></circle><path d="M2 13c0-2.7 2.3-4.5 5-4.5s5 1.8 5 4.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"></path></svg><span><strong style="color:var(--text)">${event.teams}</strong>${event.maxTeams ? ' / ' + event.maxTeams : ''} teams</span></div>
+			</div>
+			<div class="divider"></div>
+			<div class="card-foot">
+				<div class="teams"><strong>${event.status}</strong> event</div>
+				<div class="actions">
+					<a class="action" href="schedule.html${event._id ? '?eventId=' + encodeURIComponent(event._id) : ''}">
+						<svg viewBox="0 0 16 16" fill="none"><rect x="1.5" y="2.5" width="13" height="11" rx="2" stroke="currentColor" stroke-width="1.3"></rect><path d="M5 5.2h6M5 8h6M5 10.8h3.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"></path></svg>
+						View Details
+					</a>
+					<a class="action" href="schedule.html${event._id ? '?eventId=' + encodeURIComponent(event._id) : ''}">
+						<svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.3"></circle><path d="M8 4.5V8l2.6 1.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"></path></svg>
+						Schedule
+					</a>
+					<button class="action primary" onclick="registerForEvent('${event._id}')">Register</button>
+				</div>
+			</div>
+		</article>`;
+	}).join('');
+}
+
+function clearFilters(){
+	activeType = 'All';
+	searchQuery = '';
+	const searchInput = document.getElementById('searchInput');
+	if(searchInput) searchInput.value = '';
+	renderChips();
+	renderEvents();
+}
+
+async function loadEvents(){
+	try{
+		const response = await fetch(`${API}/events`);
+		if(!response.ok) throw new Error('API unavailable');
+		const data = await response.json();
+		const apiEvents = Array.isArray(data.events) ? data.events : [];
+		allEvents = enrichEvents(apiEvents.length ? apiEvents : SAMPLE_EVENTS);
+	}catch(error){
+		allEvents = enrichEvents(SAMPLE_EVENTS);
+	}
+
+	renderChips();
+	renderStats(allEvents);
+	renderEvents();
+}
+
+hydrateAuthButtons();
+continueRegisterAfterLogin();
+loadEvents();
+initThemeIcon();
+</script>
+</body>
+</html>

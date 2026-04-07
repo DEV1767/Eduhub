@@ -14,6 +14,7 @@
   --teal:#0ABFA3;--teal-light:#E0F8F5;
   --text:#1A1A2E;--text2:#6B7280;--text3:#9CA3AF;
   --border:#E5E7EB;--white:#FFFFFF;--bg:#F8F7FF;
+  --surface:#FFFFFF;--surface2:#F3F4F6;--shadow:rgba(26,26,46,0.10);
 }
 html.dark-mode{
   --purple:#6B5FED;--purple-dark:#4A42D4;--purple-light:#2D2654;
@@ -21,6 +22,7 @@ html.dark-mode{
   --teal:#00D4B0;--teal-light:#0D3D35;
   --text:#E5E7EB;--text2:#9CA3AF;--text3:#6B7280;
   --border:#374151;--white:#1F2937;--bg:#111827;
+  --surface:#1F2937;--surface2:#111827;--shadow:rgba(0,0,0,0.28);
 }
 html{scroll-behavior:smooth}
 body{background:var(--white);color:var(--text);overflow-x:hidden}
@@ -74,13 +76,22 @@ html.dark-mode nav{
 .nav-toggle{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:6px;flex-shrink:0}
 .nav-toggle span{display:block;width:22px;height:2px;background:var(--text);border-radius:2px;transition:all 0.3s}
 .mobile-menu{
-  display:none;position:fixed;top:64px;left:0;right:0;
-  background:var(--white);border-bottom:1px solid var(--border);
-  padding:0 5%;z-index:99;flex-direction:column;
+  display:none;position:fixed;top:78px;left:50%;transform:translateX(-50%);
+  width:min(420px,calc(100% - 24px));
+  background:var(--surface);
+  border:1px solid var(--border);border-radius:20px;
+  box-shadow:0 16px 30px var(--shadow);
+  padding:12px;z-index:99;flex-direction:column;gap:8px;
+  max-height:calc(100vh - 110px);overflow-y:auto
 }
 .mobile-menu.open{display:flex}
-.mobile-menu a{font-size:15px;color:var(--text2);text-decoration:none;font-weight:500;padding:14px 0;border-bottom:1px solid var(--border);display:block}
-.mobile-menu a:last-child{border-bottom:none}
+.mobile-menu a{
+  font-size:14px;color:var(--text);text-decoration:none;font-weight:600;
+  padding:12px 14px;border-radius:12px;display:flex;align-items:center;justify-content:space-between;
+  background:var(--surface);border:1px solid color-mix(in srgb, var(--border) 84%, transparent);
+  box-shadow:0 8px 16px var(--shadow)
+}
+.mobile-menu a:hover{border-color:var(--purple);color:var(--purple);background:var(--surface2)}
 
 /* HERO */
 .hero{
@@ -451,16 +462,18 @@ html.dark-mode footer{
 @media(max-width:640px){
   nav{top:12px;width:calc(100% - 24px);padding:0 16px;height:68px}
   .hero{padding:104px 4% 50px}
-  .mobile-menu{top:84px}
+  .mobile-menu{top:84px;width:calc(100% - 24px)}
   .features,.event-types,.how,.ai-section,.cta{padding:60px 4%}
   .hero-right{flex:none}
   .footer-links{gap:2rem}
   .footer-inner{flex-direction:column;gap:1.5rem}
   .section-title{font-size:clamp(22px,6vw,32px)}
   .type-grid{grid-template-columns:1fr 1fr}
+  .nav-cta{display:none}
 }
 @media(max-width:480px){
   nav{width:calc(100% - 20px);padding:0 14px}
+  .mobile-menu{top:80px;padding:10px;gap:7px}
   .type-grid{grid-template-columns:1fr}
   .feat-grid{grid-template-columns:1fr}
   .steps{grid-template-columns:1fr}
@@ -468,7 +481,6 @@ html.dark-mode footer{
   .stat-num{font-size:20px}
   .cta-actions{flex-direction:column;align-items:stretch}
   .btn-hero,.btn-hero-ghost{justify-content:center}
-  .nav-cta .btn-outline{display:none}
 }
 </style>
 </head>
@@ -489,13 +501,11 @@ html.dark-mode footer{
   <div class="nav-links">
     <a href="#features">Features</a>
     <a href="#events">Event Types</a>
+    <a href="events.html">All Events</a>
     <a href="#how">How it works</a>
     <a href="#ai">AI Assistant</a>
   </div>
   <div class="nav-cta" id="nav-cta">
-    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode" title="Dark mode">
-      <span id="theme-icon">🌙</span>
-    </button>
     <a href="login-signup.html" class="btn-outline">Sign in</a>
     <a href="login-signup.html" class="btn-solid">Get started</a>
   </div>
@@ -507,8 +517,11 @@ html.dark-mode footer{
 <div class="mobile-menu" id="mobileMenu">
   <a href="#features" onclick="closeMenu()">Features</a>
   <a href="#events" onclick="closeMenu()">Event Types</a>
+  <a href="events.html" onclick="closeMenu()">All Events</a>
   <a href="#how" onclick="closeMenu()">How it works</a>
   <a href="#ai" onclick="closeMenu()">AI Assistant</a>
+  <a href="#" onclick="toggleTheme();closeMenu();return false;">Toggle Theme</a>
+  <a href="index.html#events" onclick="closeMenu()" style="color:var(--purple);font-weight:600">Explore Events</a>
   <div id="mobile-cta" style="display:contents">
     <a href="login-signup.html" onclick="closeMenu()" style="color:var(--purple);font-weight:600">Sign in / Get started</a>
   </div>
@@ -872,14 +885,16 @@ function initTheme(){
   const saved=localStorage.getItem('eventhub_theme')||'light';
   if(saved==='dark'){
     document.documentElement.classList.add('dark-mode');
-    document.getElementById('theme-icon').textContent='☀️';
+    const icon=document.getElementById('theme-icon');
+    if(icon) icon.textContent='☀️';
   }
 }
 function toggleTheme(){
   const html=document.documentElement;
   const isDark=html.classList.toggle('dark-mode');
   localStorage.setItem('eventhub_theme',isDark?'dark':'light');
-  document.getElementById('theme-icon').textContent=isDark?'☀️':'🌙';
+  const icon=document.getElementById('theme-icon');
+  if(icon) icon.textContent=isDark?'☀️':'🌙';
 }
 initTheme();
 </script>

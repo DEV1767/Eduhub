@@ -313,25 +313,29 @@
       position: relative
     }
 
-    .theme-toggle-btn {
+    .theme-dropdown-wrap {
       position: absolute;
       top: 1.5rem;
       right: 1.5rem;
-      width: 40px;
+      z-index: 2
+    }
+
+    .theme-dropdown {
+      min-width: 124px;
       height: 40px;
       border-radius: 8px;
       border: 1.5px solid var(--border);
-      background: transparent;
+      background: var(--white);
       cursor: pointer;
       color: var(--text);
-      font-size: 18px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 0 10px;
       transition: all 0.2s
     }
 
-    .theme-toggle-btn:hover {
+    .theme-dropdown:hover,
+    .theme-dropdown:focus {
       border-color: var(--purple);
       color: var(--purple)
     }
@@ -1169,9 +1173,12 @@
 
     <!-- RIGHT -->
     <div class="right">
-      <button class="theme-toggle-btn" onclick="toggleTheme()" aria-label="Toggle dark mode" title="Dark mode">
-        <span id="theme-icon">🌙</span>
-      </button>
+      <div class="theme-dropdown-wrap">
+        <select class="theme-dropdown" id="themeDropdown" onchange="setTheme(this.value)" aria-label="Theme mode">
+          <option value="light">Light mode</option>
+          <option value="dark">Dark mode</option>
+        </select>
+      </div>
       <div class="form-box">
 
         <div class="tabs">
@@ -1716,13 +1723,26 @@
       showToast('OTP sent to your email!', 'success');
     }
 
+    function getPostAuthRedirect(role) {
+      const params = new URLSearchParams(window.location.search);
+      const redirect = (params.get('redirect') || '').trim();
+      const eventId = (params.get('eventId') || '').trim();
+      const action = (params.get('action') || '').trim();
+      const safeRedirect = /^[A-Za-z0-9._\/-]+\.html$/.test(redirect) ? redirect : '';
+
+      if (safeRedirect) {
+        const q = new URLSearchParams();
+        if (eventId) q.set('eventId', eventId);
+        if (action) q.set('action', action);
+        return q.toString() ? `${safeRedirect}?${q.toString()}` : safeRedirect;
+      }
+
+      return role === 'Student' ? 'student-dashboard.html' : 'dashboard.html';
+    }
+
     // ── ROLE BASED REDIRECT ──
     function redirectByRole(role) {
-      if (role === 'Student') {
-        window.location.href = 'student-dashboard.html';
-      } else {
-        window.location.href = 'dashboard.html';
-      }
+      window.location.href = getPostAuthRedirect(role);
     }
 
     function showLoader(text) {
@@ -1763,19 +1783,18 @@
       }
     })();
 
-    // Dark mode theme toggle
-    function initTheme(){
-      const saved=localStorage.getItem('eventhub_theme')||'light';
-      if(saved==='dark'){
-        document.documentElement.classList.add('dark-mode');
-        document.getElementById('theme-icon').textContent='☀️';
-      }
+    // Theme mode via dropdown
+    function setTheme(mode){
+      const html = document.documentElement;
+      if(mode === 'dark') html.classList.add('dark-mode');
+      else html.classList.remove('dark-mode');
+      localStorage.setItem('eventhub_theme', mode);
+      const ddl = document.getElementById('themeDropdown');
+      if(ddl) ddl.value = mode;
     }
-    function toggleTheme(){
-      const html=document.documentElement;
-      const isDark=html.classList.toggle('dark-mode');
-      localStorage.setItem('eventhub_theme',isDark?'dark':'light');
-      document.getElementById('theme-icon').textContent=isDark?'☀️':'🌙';
+    function initTheme(){
+      const saved = localStorage.getItem('eventhub_theme') || 'light';
+      setTheme(saved === 'dark' ? 'dark' : 'light');
     }
     initTheme();
   </script>
