@@ -643,7 +643,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-size:14px;tran
   }
 
   // ── API ──
-  const API = 'https://eduhub-backend-eight.vercel.app/api/v1';
+  const API = (window.AuthAPI && window.AuthAPI.root) || 'https://eduhub-backend-eight.vercel.app/api/v1';
 
   // ── STATE ──
   let events = [];

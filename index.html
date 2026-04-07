@@ -401,7 +401,7 @@ footer{
 </div>
 
 <script>
-const API = 'https://eduhub-backend-eight.vercel.app/api/v1';
+const API = (window.AuthAPI && window.AuthAPI.root) || 'https://eduhub-backend-eight.vercel.app/api/v1';
 const LOGIN_PAGE = 'login-signup.html';
 const EVENTS_PAGE = 'index.html';
 

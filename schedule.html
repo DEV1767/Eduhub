@@ -745,7 +745,7 @@ function _esc(text) {
     return;
   }
 
-  var API     = 'https://eduhub-backend-eight.vercel.app/api/v1';
+  var API     = (window.AuthAPI && window.AuthAPI.root) || 'https://eduhub-backend-eight.vercel.app/api/v1';
   var params  = new URLSearchParams(location.search);
   var eventId = params.get('event') || params.get('eventId') || '';
 

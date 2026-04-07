@@ -1,5 +1,21 @@
 (function () {
-  var API_ROOT = 'https://eduhub-backend-eight.vercel.app/api/v1';
+  var REMOTE_API_ROOT = 'https://eduhub-backend-eight.vercel.app/api/v1';
+  var LOCAL_API_ROOT = 'http://localhost:8000/api/v1';
+
+  function resolveApiRoot() {
+    if (window.EVENTHUB_API_ROOT) {
+      return String(window.EVENTHUB_API_ROOT).replace(/\/$/, '');
+    }
+
+    var host = window.location && window.location.hostname;
+    if (host === 'localhost' || host === '127.0.0.1') {
+      return LOCAL_API_ROOT;
+    }
+
+    return REMOTE_API_ROOT;
+  }
+
+  var API_ROOT = resolveApiRoot();
 
   function buildUrl(path) {
     if (!path) return API_ROOT;

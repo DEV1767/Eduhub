@@ -667,7 +667,7 @@ function toggleTheme(){
 }
 
 // ── API BASE ──
-const API = 'https://eduhub-backend-eight.vercel.app/api/v1';
+const API = (window.AuthAPI && window.AuthAPI.root) || 'https://eduhub-backend-eight.vercel.app/api/v1';
 
 // ── STATE ──
 let events = [];
