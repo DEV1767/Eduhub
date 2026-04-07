@@ -75,6 +75,9 @@ html.dark-mode nav{
 .theme-toggle:hover{border-color:var(--purple);color:var(--purple)}
 .nav-toggle{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:6px;flex-shrink:0}
 .nav-toggle span{display:block;width:22px;height:2px;background:var(--text);border-radius:2px;transition:all 0.3s}
+.nav-toggle.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.nav-toggle.open span:nth-child(2){opacity:0}
+.nav-toggle.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
 .mobile-menu{
   display:none;position:fixed;top:78px;left:50%;transform:translateX(-50%);
   width:min(420px,calc(100% - 24px));
@@ -501,7 +504,7 @@ html.dark-mode footer{
   <div class="nav-links">
     <a href="#features">Features</a>
     <a href="#events">Event Types</a>
-    <a href="events.html">All Events</a>
+    <a href="index.html">All Events</a>
     <a href="#how">How it works</a>
     <a href="#ai">AI Assistant</a>
   </div>
@@ -517,7 +520,7 @@ html.dark-mode footer{
 <div class="mobile-menu" id="mobileMenu">
   <a href="#features" onclick="closeMenu()">Features</a>
   <a href="#events" onclick="closeMenu()">Event Types</a>
-  <a href="events.html" onclick="closeMenu()">All Events</a>
+  <a href="index.html" onclick="closeMenu()">All Events</a>
   <a href="#how" onclick="closeMenu()">How it works</a>
   <a href="#ai" onclick="closeMenu()">AI Assistant</a>
   <a href="#" onclick="toggleTheme();closeMenu();return false;">Toggle Theme</a>
@@ -867,16 +870,24 @@ function logout(){
 }
 
 function toggleMenu(){
-  document.getElementById('mobileMenu').classList.toggle('open');
+  var menu = document.getElementById('mobileMenu');
+  var toggle = document.querySelector('.nav-toggle');
+  if(!menu || !toggle) return;
+  var isOpen = menu.classList.toggle('open');
+  toggle.classList.toggle('open', isOpen);
 }
 function closeMenu(){
-  document.getElementById('mobileMenu').classList.remove('open');
+  var menu = document.getElementById('mobileMenu');
+  var toggle = document.querySelector('.nav-toggle');
+  if(menu) menu.classList.remove('open');
+  if(toggle) toggle.classList.remove('open');
 }
 document.addEventListener('click',function(e){
   const menu=document.getElementById('mobileMenu');
   const toggle=document.querySelector('.nav-toggle');
+  if(!menu || !toggle) return;
   if(menu.classList.contains('open')&&!menu.contains(e.target)&&!toggle.contains(e.target)){
-    menu.classList.remove('open');
+    closeMenu();
   }
 });
 

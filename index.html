@@ -81,6 +81,9 @@ nav{
 .theme-toggle:hover{border-color:var(--purple);color:var(--purple)}
 .nav-toggle{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:6px;flex-shrink:0}
 .nav-toggle span{display:block;width:22px;height:2px;background:var(--text);border-radius:2px;transition:all 0.3s}
+.nav-toggle.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.nav-toggle.open span:nth-child(2){opacity:0}
+.nav-toggle.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
 .mobile-menu{
 	display:none;position:fixed;top:78px;left:50%;transform:translateX(-50%);
 	width:min(420px,calc(100% - 24px));
@@ -229,6 +232,9 @@ footer{
 	nav{top:12px;width:calc(100% - 24px);padding:0 16px;height:68px}
 	.mobile-menu{top:80px;width:calc(100% - 24px);padding:10px;gap:7px}
 	.hero,.controls,.stats,.section,footer{padding-left:4%;padding-right:4%}
+	.controls{grid-template-columns:1fr;gap:10px}
+	.search-box{width:100%}
+	.chips{justify-content:flex-start}
 	.hero{padding-top:118px;grid-template-columns:1fr;align-items:start}
 	.hero-copy{max-width:100%}
 	.hero-panel{width:100%}
@@ -244,6 +250,8 @@ footer{
 @media(max-width:520px){
 	.brand-sub,.sort-note{font-size:11px}
 	.stats{grid-template-columns:1fr}
+	.search-box{padding:12px 14px}
+	.search-box input{font-size:13px}
 	.card-foot{flex-direction:column;align-items:flex-start}
 	.actions{width:100%}
 	.action{width:100%;justify-content:center}
@@ -271,7 +279,7 @@ footer{
 		<div class="nav-links">
 			<a href="index.html#features">Features</a>
 			<a href="index.html#events">Event Types</a>
-			<a href="events.html" style="color:var(--purple)">All Events</a>
+			<a href="index.html" style="color:var(--purple)">All Events</a>
 			<a href="index.html#how">How it works</a>
 			<a href="index.html#ai">AI Assistant</a>
 		</div>
@@ -287,7 +295,7 @@ footer{
 	<div class="mobile-menu" id="mobileMenu">
 		<a href="index.html#features" onclick="closeMenu()">Features</a>
 		<a href="index.html#events" onclick="closeMenu()">Event Types</a>
-		<a href="events.html" onclick="closeMenu()">All Events</a>
+		<a href="index.html" onclick="closeMenu()">All Events</a>
 		<a href="index.html#how" onclick="closeMenu()">How it works</a>
 		<a href="index.html#ai" onclick="closeMenu()">AI Assistant</a>
 		<a href="#" onclick="toggleTheme();closeMenu();return false;">Toggle Theme</a>
@@ -394,7 +402,7 @@ footer{
 <script>
 const API = 'https://eduhub-backend-eight.vercel.app/api/v1';
 const LOGIN_PAGE = 'login-signup.html';
-const EVENTS_PAGE = 'events.html';
+const EVENTS_PAGE = 'index.html';
 
 const SAMPLE_EVENTS = [
 	{ _id:'sample-1', name:'HackFest 2025', type:'Hackathon', status:'Live', date:'2026-04-12', time:'09:00 AM', venue:'Seminar Hall A', city:'Bengaluru', college:'RV College of Engineering', prize:'₹50,000', teams:24, maxTeams:30, description:'A 24-hour coding sprint for teams building practical solutions with mentorship and live demos.' },
@@ -434,11 +442,18 @@ function toggleTheme(){
 }
 
 function toggleMenu(){
-	document.getElementById('mobileMenu').classList.toggle('open');
+	const menu = document.getElementById('mobileMenu');
+	const toggle = document.querySelector('.nav-toggle');
+	if(!menu || !toggle) return;
+	const isOpen = menu.classList.toggle('open');
+	toggle.classList.toggle('open', isOpen);
 }
 
 function closeMenu(){
-	document.getElementById('mobileMenu').classList.remove('open');
+	const menu = document.getElementById('mobileMenu');
+	const toggle = document.querySelector('.nav-toggle');
+	if(menu) menu.classList.remove('open');
+	if(toggle) toggle.classList.remove('open');
 }
 
 document.addEventListener('click', function(e){
@@ -446,7 +461,7 @@ document.addEventListener('click', function(e){
 	const toggle = document.querySelector('.nav-toggle');
 	if(!menu || !toggle) return;
 	if(menu.classList.contains('open') && !menu.contains(e.target) && !toggle.contains(e.target)){
-		menu.classList.remove('open');
+		closeMenu();
 	}
 });
 
