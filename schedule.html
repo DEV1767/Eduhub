@@ -11,9 +11,10 @@
   document.documentElement.setAttribute('data-theme', t);
 })();
 </script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+*{font-family:'Manrope',sans-serif!important}
 
 /* LIGHT THEME */
 :root{
@@ -45,7 +46,6 @@
 
 html,body{
   height:100%;
-  font-family:'Plus Jakarta Sans','Inter',sans-serif;
   background:var(--bg);color:var(--text);
   font-size:14px;transition:background .2s,color .2s
 }
@@ -360,13 +360,13 @@ html,body{
         </svg>
         My Events
       </a>
-      <a class="nav-item active" href="#">
+      <span class="nav-item active" aria-current="page">
         <svg viewBox="0 0 16 16" fill="none">
           <circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.3"/>
           <path d="M8 4.5V8h3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
         </svg>
         Event Details
-      </a>
+      </span>
     </div>
     <div class="sidebar-bottom">
       <div class="user-row">
@@ -751,7 +751,7 @@ function _esc(text) {
 
   var API     = 'https://eduhub-backend-eight.vercel.app/api/v1';
   var params  = new URLSearchParams(location.search);
-  var eventId = params.get('event') || '';
+  var eventId = params.get('event') || params.get('eventId') || '';
 
   var rulesState = { general: [], eligibility: [], submission: [], judging: [], notes: [] };
 

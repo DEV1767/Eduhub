@@ -4,9 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>EventHub — College Event Organiser</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+*{font-family:'Manrope',sans-serif!important}
 :root{
   --purple:#5B4FE8;--purple-dark:#3D35C0;--purple-light:#EAE8FD;
   --purple-mid:#7B72F0;--purple-faint:#F4F3FE;
@@ -22,19 +23,22 @@ html.dark-mode{
   --border:#374151;--white:#1F2937;--bg:#111827;
 }
 html{scroll-behavior:smooth}
-body{font-family:'DM Sans',sans-serif;background:var(--white);color:var(--text);overflow-x:hidden}
+body{background:var(--white);color:var(--text);overflow-x:hidden}
 
 /* NAVBAR */
 nav{
-  position:fixed;top:0;left:0;right:0;z-index:100;
+  position:fixed;top:16px;left:50%;transform:translateX(-50%);z-index:100;
   display:flex;align-items:center;justify-content:space-between;
-  padding:0 4%;height:64px;gap:12px;min-width:0;
-  background:rgba(255,255,255,0.95);backdrop-filter:blur(12px);
-  border-bottom:1px solid var(--border);
-  transition:background 0.3s,border-color 0.3s;
+  width:min(1200px,calc(100% - 32px));
+  padding:0 20px;height:72px;gap:12px;min-width:0;
+  background:rgba(255,255,255,0.92);backdrop-filter:blur(14px);
+  border:1px solid var(--border);border-radius:999px;
+  box-shadow:0 12px 34px rgba(26,26,46,0.10);
+  transition:background 0.3s,border-color 0.3s,box-shadow 0.3s;
 }
 html.dark-mode nav{
-  background:rgba(31,41,55,0.95);
+  background:rgba(31,41,55,0.92);
+  box-shadow:0 12px 34px rgba(0,0,0,0.28);
 }
 .nav-logo{display:flex;align-items:center;gap:8px;text-decoration:none;flex-shrink:0;min-width:0}
 .nav-logo-icon{width:34px;height:34px;border-radius:10px;background:var(--purple);display:flex;align-items:center;justify-content:center;flex-shrink:0}
@@ -81,7 +85,7 @@ html.dark-mode nav{
 /* HERO */
 .hero{
   min-height:100vh;display:flex;align-items:center;
-  padding:84px 5% 60px;position:relative;overflow:hidden;
+  padding:116px 5% 60px;position:relative;overflow:hidden;
   background:var(--white)
 }
 .hero-bg{
@@ -445,8 +449,9 @@ html.dark-mode footer{
 }
 /* MOBILE */
 @media(max-width:640px){
-  nav{padding:0 4%}
-  .hero{padding:84px 4% 50px}
+  nav{top:12px;width:calc(100% - 24px);padding:0 16px;height:68px}
+  .hero{padding:104px 4% 50px}
+  .mobile-menu{top:84px}
   .features,.event-types,.how,.ai-section,.cta{padding:60px 4%}
   .hero-right{flex:none}
   .footer-links{gap:2rem}
@@ -455,6 +460,7 @@ html.dark-mode footer{
   .type-grid{grid-template-columns:1fr 1fr}
 }
 @media(max-width:480px){
+  nav{width:calc(100% - 20px);padding:0 14px}
   .type-grid{grid-template-columns:1fr}
   .feat-grid{grid-template-columns:1fr}
   .steps{grid-template-columns:1fr}
