@@ -602,22 +602,16 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-size:14px;tran
     return;
   }
 
-  // ── STEP 2: Get user from session ──
+  // ── STEP 2: Verify via cookie and get profile ──
   let user = {};
-  try{ user = JSON.parse(sessionStorage.getItem('eventhub_user') || '{}'); }catch(e){}
-
-  // ── STEP 3: Verify via cookie if no session ──
-  if(!user._id){
-    try{
-      const r = await AuthAPI.me();
-      if(!r.ok) throw new Error('not authenticated');
-      const data = await r.json();
-      user = data.user;
-      sessionStorage.setItem('eventhub_user', JSON.stringify(user));
-    } catch(e){
-      window.location.replace('login-signup.html');
-      return;
-    }
+  try{
+    const r = await AuthAPI.me();
+    if(!r.ok) throw new Error('not authenticated');
+    const data = await r.json();
+    user = data.user || {};
+  } catch(e){
+    window.location.replace('login-signup.html');
+    return;
   }
 
   // ── STEP 4: Role check ──
@@ -665,7 +659,6 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-size:14px;tran
   // ── LOGOUT ──
   async function logout(){
     sessionStorage.setItem('eventhub_logging_out', '1');
-    sessionStorage.removeItem('eventhub_user');
     try{ await AuthAPI.logout(); }catch(e){}
     window.location.replace('login-signup.html');
   }
@@ -929,7 +922,6 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-size:14px;tran
     try{
       const res = await fetch(`${API}/events`, { credentials:'include' });
       if(res.status === 401){
-        sessionStorage.removeItem('eventhub_user');
         window.location.replace('login-signup.html');
         return; // ← stop, don't retry
       }
@@ -951,7 +943,6 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-size:14px;tran
     try{
       const res = await fetch(`${API}/teams/registrations/mine`, { credentials:'include' });
       if(res.status === 401){
-        sessionStorage.removeItem('eventhub_user');
         window.location.replace('login-signup.html');
         return; // ← stop, don't retry
       }

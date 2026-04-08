@@ -630,22 +630,16 @@ tr:hover td{background:var(--surface2)}
     return;
   }
 
-  // ── STEP 2: Get user ──
+  // ── STEP 2: Verify via cookie and get user profile ──
   let user = {};
-  try{ user = JSON.parse(sessionStorage.getItem('eventhub_user') || '{}'); }catch(e){}
-
-  // ── STEP 3: If no user in session, verify via cookie ──
-  if(!user._id){
-    try{
-      const r = await AuthAPI.me();
-      if(!r.ok) throw new Error();
-      const data = await r.json();
-      user = data.user;
-      sessionStorage.setItem('eventhub_user', JSON.stringify(user));
-    } catch(e){
-      window.location.replace('login-signup.html');
-      return;
-    }
+  try{
+    const r = await AuthAPI.me();
+    if(!r.ok) throw new Error();
+    const data = await r.json();
+    user = data.user || {};
+  } catch(e){
+    window.location.replace('login-signup.html');
+    return;
   }
 
   // ── STEP 4: Set UI with user info ──
@@ -693,7 +687,6 @@ async function logout(){
   try{
     await AuthAPI.logout();
   } catch(e){}
-  sessionStorage.removeItem('eventhub_user');
   window.location.replace('login-signup.html');
 }
 

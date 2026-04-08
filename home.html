@@ -848,14 +848,9 @@ const API_BASE = ((window.AuthAPI && window.AuthAPI.root) || 'https://eduhub-bac
       const authData = await authRes.json();
       if (authData && authData.user) {
         user = authData.user;
-        sessionStorage.setItem('eventhub_user', JSON.stringify(user));
       }
     }
   } catch (e) {}
-
-  if (!user) {
-    try { user = JSON.parse(sessionStorage.getItem('eventhub_user') || 'null'); } catch (e) { user = null; }
-  }
 
   if(user && (user._id || user.email)){
     const dashboardHref = user.role === 'Student' ? 'student-dashboard.html' : 'dashboard.html';
@@ -881,7 +876,6 @@ const API_BASE = ((window.AuthAPI && window.AuthAPI.root) || 'https://eduhub-bac
 
 function logout(){
   sessionStorage.setItem('eventhub_logging_out', '1');
-  sessionStorage.removeItem('eventhub_user');
   AuthAPI.logout().catch(function(){}).finally(function(){
     window.location.reload();
   });

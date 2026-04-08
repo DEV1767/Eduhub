@@ -1614,7 +1614,6 @@
 
             // If signup already returned a token/session, go straight to dashboard
             if (data.token || data.user) {
-              if (data.user) sessionStorage.setItem('eventhub_user', JSON.stringify(data.user));
               setTimeout(() => {
                 showLoader(`Welcome, ${userData.firstname || payload.firstname}! Setting up your dashboard...`);
                 setTimeout(() => redirectByRole((data.user || {}).role || payload.role), 900);
@@ -1626,7 +1625,6 @@
                 const loginData = await loginRes.json();
                 if (loginRes.ok) {
                   const loggedUser = loginData.user || { email: payload.email };
-                  sessionStorage.setItem('eventhub_user', JSON.stringify(loggedUser));
                   setTimeout(() => {
                     showLoader(`Welcome, ${loggedUser.firstname || payload.firstname}! Setting up your dashboard...`);
                     setTimeout(() => redirectByRole(loggedUser.role || payload.role), 900);
@@ -1670,7 +1668,6 @@
         const data = await res.json();
         if (res.ok) {
           const userData = data.user || { email };
-          sessionStorage.setItem('eventhub_user', JSON.stringify(userData));
           showToast('Signed in successfully!', 'success');
           setTimeout(() => {
             showLoader(`Welcome back, ${userData.firstname || userData.name || ''}! Loading your dashboard...`);
@@ -1754,7 +1751,6 @@
         const res = await AuthAPI.me();
         if (res.ok) {
           const data = await res.json();
-          sessionStorage.setItem('eventhub_user', JSON.stringify(data.user));
           showLoader('Taking you to your dashboard...');
           setTimeout(() => redirectByRole(data.user.role), 800);
         } else {

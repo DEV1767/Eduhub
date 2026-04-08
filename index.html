@@ -548,21 +548,10 @@ function getLoginRedirectUrl(eventId){
 
 async function getLoggedInUser(){
 	try{
-		const raw = sessionStorage.getItem('eventhub_user');
-		if(raw){
-			const parsed = JSON.parse(raw);
-			if(parsed && parsed._id) return parsed;
-		}
-	}catch(error){}
-
-	try{
 		const res = await AuthAPI.me();
 		if(!res.ok) return null;
 		const data = await res.json();
-		if(data && data.user){
-			sessionStorage.setItem('eventhub_user', JSON.stringify(data.user));
-			return data.user;
-		}
+		if(data && data.user) return data.user;
 	}catch(error){}
 
 	return null;
