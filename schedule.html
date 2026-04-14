@@ -317,6 +317,16 @@ html,body{
   .page-header-actions{flex-direction:column}
   .page-header-actions .btn{width:100%}
 }
+
+/* ── SKELETON LOADER ── */
+.skeleton{background:linear-gradient(90deg,var(--surface2) 0%,var(--border) 50%,var(--surface2) 100%);background-size:200% 100%;animation:shimmer 2s infinite;border-radius:8px;height:16px}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.skeleton-line{height:12px;background:var(--surface2);border-radius:4px;margin-bottom:8px;width:100%}
+.skeleton-line:last-child{margin-bottom:0}
+.skeleton-timeline{display:flex;flex-direction:column;gap:16px}
+.skeleton-timeline-item{display:flex;gap:12px;padding:12px 0;border-left:2px solid var(--border);padding-left:16px}
+.skeleton-timeline-time{min-width:100px;height:14px;background:var(--surface2);border-radius:4px}
+.skeleton-timeline-content{flex:1;display:flex;flex-direction:column;gap:8px}
 </style>
 </head>
 <body>
@@ -332,7 +342,7 @@ html,body{
 
   <!-- SIDEBAR -->
   <aside class="sidebar" id="sidebar">
-    <a href="dashboard.html" class="sidebar-logo">
+    <a href="javascript:void(0)" onclick="window.location.href=getDashboardUrl()" class="sidebar-logo">
       <div class="logo-icon">
         <svg viewBox="0 0 16 16" fill="none">
           <rect x="1" y="4" width="14" height="10" rx="2" fill="rgba(255,255,255,0.15)" stroke="white" stroke-width="1.2"/>
@@ -406,15 +416,15 @@ html,body{
           </svg>
         </button>
         <div class="breadcrumb">
-          <a href="dashboard.html">Dashboard</a>
+          <a href="javascript:void(0)" onclick="window.location.href=getDashboardUrl()">Dashboard</a>
           <span class="breadcrumb-sep">&#8250;</span>
-          <a href="dashboard.html">Events</a>
+          <a href="javascript:void(0)" onclick="window.location.href=getDashboardUrl()">Events</a>
           <span class="breadcrumb-sep">&#8250;</span>
           <span class="breadcrumb-cur" id="bc-event">Event Details</span>
         </div>
       </div>
       <div class="topbar-right">
-        <a href="dashboard.html" class="back-btn">
+        <a href="javascript:void(0)" onclick="window.location.href=getDashboardUrl()" class="back-btn">
           <svg viewBox="0 0 16 16" fill="none">
             <path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
@@ -734,6 +744,12 @@ function _esc(text) {
   return d.innerHTML;
 }
 
+// -- GLOBAL STATE FOR ROLE-BASED ROUTING --
+var userRole = 'Viewer';
+function getDashboardUrl(){
+  return userRole === 'Student' ? 'student-dashboard.html' : 'dashboard.html';
+}
+
 // -- ASYNC DATA LOADING (non-blocking, mirrors student dashboard auth pattern) --
 (function() {
 
@@ -744,7 +760,7 @@ function _esc(text) {
     return;
   }
 
-  var API     = (window.AuthAPI && window.AuthAPI.root) || 'https://eduhub-backend-eight.vercel.app/api/v1';
+  var API     = 'http://localhost:8000/api/v1';
   var params  = new URLSearchParams(location.search);
   var eventId = params.get('event') || params.get('eventId') || '';
 
@@ -756,6 +772,8 @@ function _esc(text) {
       .then(function(r) { return r.ok ? r.json() : null; })
       .then(function(data) {
         if (data && data.user) {
+          userRole = data.user.role || 'Viewer';
+          console.log('✓ User role:', userRole);
           renderUser(data.user);
         } else {
           renderUser({ email: 'Guest', role: 'Viewer' });

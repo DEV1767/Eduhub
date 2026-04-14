@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>EventHub — All Events</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect fill='%235B4FE8' width='32' height='32' rx='8'/><text x='50%' y='50%' font-size='20' font-weight='bold' fill='white' text-anchor='middle' dominant-baseline='central'>E</text></svg>">
 <script src="auth-client.js"></script>
 <script>
 (function(){
@@ -258,6 +259,13 @@ footer{
 	.action{width:100%;justify-content:center}
 	.nav-cta .btn-outline{display:none}
 }
+
+/* ── SKELETON LOADER ── */
+.skeleton{background:linear-gradient(90deg,var(--surface2) 0%,var(--border) 50%,var(--surface2) 100%);background-size:200% 100%;animation:shimmer 2s infinite;border-radius:8px;height:16px}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.skeleton-line{height:14px;background:var(--surface2);border-radius:6px;margin-bottom:12px;width:100%}
+.skeleton-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;opacity:0.6}
+.skeleton-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
 </style>
 </head>
 <body>
@@ -401,7 +409,7 @@ footer{
 </div>
 
 <script>
-const API = (window.AuthAPI && window.AuthAPI.root) || 'https://eduhub-backend-eight.vercel.app/api/v1';
+const API = 'http://localhost:8000/api/v1';
 const LOGIN_PAGE = 'login-signup.html';
 const EVENTS_PAGE = 'index.html';
 
@@ -643,7 +651,7 @@ function renderEvents(){
 			<div class="card-foot">
 				<div class="teams"><strong>${event.status}</strong> event</div>
 				<div class="actions">
-					<a class="action" href="schedule.html${event._id ? '?eventId=' + encodeURIComponent(event._id) : ''}">
+					<a class="action" href="event-view.html${event._id ? '?id=' + encodeURIComponent(event._id) : ''}">
 						<svg viewBox="0 0 16 16" fill="none"><rect x="1.5" y="2.5" width="13" height="11" rx="2" stroke="currentColor" stroke-width="1.3"></rect><path d="M5 5.2h6M5 8h6M5 10.8h3.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"></path></svg>
 						View Details
 					</a>

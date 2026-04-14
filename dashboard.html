@@ -328,6 +328,14 @@ tr:hover td{background:var(--surface2)}
   .content{padding:12px}
   .topbar{padding:0 12px}
 }
+
+/* ── SKELETON LOADER ── */
+.skeleton{background:linear-gradient(90deg,var(--surface2) 0%,var(--border) 50%,var(--surface2) 100%);background-size:200% 100%;animation:shimmer 2s infinite;border-radius:8px;height:16px}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.skeleton-line{height:12px;background:var(--surface2);border-radius:4px;margin-bottom:8px;width:100%}
+.skeleton-line:last-child{margin-bottom:0}
+.skeleton-stat{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px;opacity:0.6}
+.skeleton-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}
 </style>
 </head>
 <body>
@@ -661,7 +669,7 @@ function toggleTheme(){
 }
 
 // ── API BASE ──
-const API = (window.AuthAPI && window.AuthAPI.root) || 'https://eduhub-backend-eight.vercel.app/api/v1';
+const API = 'http://localhost:8000/api/v1';
 
 // ── STATE ──
 let events = [];
@@ -796,7 +804,6 @@ async function loadEvents(){
   }
 }
 
-// ── FILTERS ──
 function setFilter(type, el){
   activeType = type;
   document.querySelectorAll('.fchip').forEach(c => c.classList.remove('on'));
@@ -870,7 +877,7 @@ function renderEvents(){
           </div>
         </div>
         <div class="ecard-btns">
-          <button class="ebtn schedule" onclick="openScheduleModal('${e._id}')">Schedule</button>
+          <button class="ebtn schedule" onclick="openScheduleModal('${e._id}')">Manage</button>
           <button class="ebtn del" onclick="delEvent('${e._id}')">Delete</button>
         </div>
       </div>
@@ -898,9 +905,9 @@ async function loadAllRegistrations(){
   try{
     // Get registrations for each event
     const regPromises = events.map(e =>
-      fetch(`${API}/teams/${e._id}/teams`, { credentials:'include' })
-        .then(r => r.ok ? r.json() : { teams: [] })
-        .then(data => (data.teams || []).map(t => ({ ...t, eventName: e.name, eventId: e._id })))
+      fetch(`${API}/teams/registrations/${e._id}`, { credentials:'include' })
+        .then(r => r.ok ? r.json() : { registrations: [] })
+        .then(data => (data.registrations || []).map(t => ({ ...t, eventName: e.name, eventId: e._id })))
     );
     const results = await Promise.all(regPromises);
     allRegs = results.flat();
@@ -1002,7 +1009,7 @@ let currentScheduleEventId = null;
 let scheduleSlots = [];
 
 function openScheduleModal(eventId){
-  window.location.href = 'schedule.html?event=' + eventId;
+  window.location.href = 'eventdetail.html?id=' + eventId;
 }
 
 function closeScheduleModal(){

@@ -1,0 +1,393 @@
+================================================================================
+                    EVENTHUB - ALL API ROUTES NEEDED
+                        Complete Reference Guide
+================================================================================
+
+BASE URL: http://localhost:8000/api/v1
+
+================================================================================
+                          ✅ EXISTING ROUTES (15)
+================================================================================
+
+1. POST /auth/register
+   Purpose: User registration (signup)
+   Body: { username, email, password, firstname, lastname, role }
+   Response: { user, token }
+
+2. POST /auth/login
+   Purpose: User login
+   Body: { email, password }
+   Response: { user, token }
+
+3. GET /auth/me
+   Purpose: Get current logged-in user profile
+   Auth: Required
+   Response: { user: { _id, email, firstname, lastname, role } }
+
+4. POST /auth/logout
+   Purpose: Logout user
+   Auth: Required
+   Response: { message: "Logged out successfully" }
+
+5. POST /events
+   Purpose: Create a new event
+   Auth: Required (Organiser only)
+   Method: POST
+   Body: { name, type, status, date, time, venue, maxTeams, prize, description }
+   Response: { event: {...}, message: "Event created" }
+
+6. GET /events
+   Purpose: Get all events (for organiser dashboard)
+   Auth: Required
+   Method: GET
+   Response: { events: [{...}, {...}] }
+
+7. GET /events/:eventId
+   Purpose: Get single event details (for event details page)
+   Auth: Required
+   Method: GET
+   Response: { event: {...} }
+
+8. PUT /events/:eventId
+   Purpose: Update event details (name, date, type, venue, maxTeams, prize, etc)
+   Auth: Required (Event owner only)
+   Method: PUT
+   Body: { name, type, status, date, time, venue, maxTeams, prize, description, registrationFee }
+   Response: { event: {...}, message: "Event updated" }
+
+9. DELETE /events/:eventId
+   Purpose: Delete an event
+   Auth: Required (Event owner only)
+   Method: DELETE
+   Response: { message: "Event deleted" }
+
+10. GET /schedule/:eventId
+    Purpose: Get all time slots for an event
+    Auth: Required
+    Method: GET
+    Response: { slots: [{...}, {...}] }
+
+11. POST /schedule/:eventId
+    Purpose: Add a new time slot to event schedule
+    Auth: Required
+    Method: POST
+    Body: { title, starttime, endtime, description, order }
+    Response: { slot: {...}, message: "Slot added" }
+
+12. PUT /schedule/:eventId/:slotId
+    Purpose: Update a time slot
+    Auth: Required
+    Method: PUT
+    Body: { title, starttime, endtime, description, order }
+    Response: { slot: {...} }
+
+13. DELETE /schedule/:eventId/:slotId
+    Purpose: Delete a time slot
+    Auth: Required
+    Method: DELETE
+    Response: { message: "Slot deleted" }
+
+14. GET /teams/:eventId/teams
+    Purpose: Get all team registrations for an event
+    Auth: Required
+    Method: GET
+    Response: { teams: [{...}, {...}] }
+    Note: Frontend also expects endpoint /registrations/:eventId
+
+15. DELETE /teams/:teamId
+    Purpose: Cancel a team registration
+    Auth: Required
+    Method: DELETE
+    Response: { message: "Registration cancelled" }
+
+================================================================================
+                          ❌ MISSING ROUTES (6 CRITICAL)
+================================================================================
+
+PRIORITY 1 - MUST IMPLEMENT FOR EVENT DETAILS PAGE:
+
+
+16. PUT /events/:eventId/rules
+    Purpose: Save event rules and regulations
+    Auth: Required (Event owner only)
+    Method: PUT
+    Body: { rules: "markdown text", rulesVisible: true/false }
+    Response: { event: {...}, rules: "...", rulesVisible: true/false }
+    Frontend Tab: Rules & Regulations
+    Used In: eventdetail.html - Rules tab   (done)
+
+17. PUT /events/:eventId/info
+    Purpose: Save complete event information (description, FAQs, eligibility, coordinator, links)
+    Auth: Required (Event owner only)
+    Method: PUT
+    Body: {
+      description: "full description",
+      eligibility: "eligibility criteria",
+      coordinator: {
+        name: "coordinator name",
+        phone: "+91-...",
+        email: "email@college.edu"
+      },
+      links: [
+        { label: "Registration", url: "https://..." },
+        { label: "Rules", url: "https://..." }
+      ],
+      faqs: [
+        { q: "Question 1?", a: "Answer 1" },
+        { q: "Question 2?", a: "Answer 2" }
+      ]
+    }
+    Response: { event: {...}, info: {...} }
+    Frontend Tab: Event Info
+    Used In: eventdetail.html - Event Info tab
+
+18. PUT /registrations/:registrationId/approve
+    Purpose: Approve a pending team registration
+    Auth: Required (Event admin only)
+    Method: PUT
+    Body: {} (empty body)
+    Response: { registration: {...}, status: "Approved", approvedAt: "2025-04-12T..." }
+    Frontend Tab: Registrations
+    Used In: eventdetail.html - Approve button in registrations table
+
+19. PUT /registrations/:registrationId/reject
+    Purpose: Reject a team registration with reason and notes
+    Auth: Required (Event admin only)
+    Method: PUT
+    Body: {
+      reason: "Incomplete registration form",
+      notes: "Missing member details"
+    }
+    Response: {
+      registration: {...},
+      status: "Rejected",
+      rejectionReason: "...",
+      rejectionNotes: "...",
+      rejectedAt: "2025-04-12T..."
+    }
+    Frontend Tab: Registrations
+    Used In: eventdetail.html - Reject button + modal
+
+20. PUT /registrations/:registrationId/payment
+    Purpose: Update payment status for a team registration
+    Auth: Required (Event admin only)
+    Method: PUT
+    Body: {
+      status: "Paid" | "Pending" | "Failed",
+      amount: 200,
+      method: "UPI" | "Cash" | "Card" | "Bank Transfer",
+      transactionId: "TXN8823749",
+      date: "2025-04-12"
+    }
+    Response: {
+      registration: {...},
+      paymentStatus: "Paid",
+      paymentAmount: 200,
+      paymentMethod: "UPI",
+      transactionId: "TXN8823749",
+      paymentDate: "2025-04-12T..."
+    }
+    Frontend Tab: Payments
+    Used In: eventdetail.html - Payment update modal
+
+21. GET /registrations/:eventId
+    Purpose: Get all registrations for an event (alternative to /teams/:eventId/teams with consistent field names)
+    Auth: Required
+    Method: GET
+    Response: {
+      registrations: [
+        {
+          _id: "registration_id",
+          eventId: "event_id",
+          teamName: "Team Name",
+          leadName: "Lead Name",
+          email: "email@college.edu",
+          phone: "9876543210",
+          members: ["Member 1", "Member 2", "Member 3"],
+          status: "Pending" | "Approved" | "Rejected" | "Confirmed",
+          paymentStatus: "Pending" | "Paid" | "Failed",
+          paymentAmount: 200,
+          paymentMethod: "UPI" | "Cash" | "Card" | "Bank Transfer" | null,
+          transactionId: "TXN123" | null,
+          paymentDate: "2025-04-12T..." | null,
+          createdAt: "2025-04-10T...",
+          approvedAt: "2025-04-11T..." | null,
+          rejectionReason: "Incomplete form" | null,
+          rejectionNotes: "Missing details" | null,
+          rejectedAt: "2025-04-11T..." | null
+        }
+      ]
+    }
+    Frontend Tab: Registrations & Payments
+    Used In: eventdetail.html - Registration table, Payment table, Overview stats
+
+================================================================================
+                        FIELD NAMING REQUIREMENTS
+================================================================================
+
+Use EXACT camelCase for all fields:
+✅ CORRECT:  teamName, leadName, paymentStatus, transactionId, paymentAmount
+❌ WRONG:    team_name, lead_name, payment_status, transaction_id, payment_amount
+
+Status Values - Must Use EXACT Strings:
+- Registration Status: "Pending" | "Approved" | "Rejected" | "Confirmed"
+- Payment Status: "Pending" | "Paid" | "Failed"
+- Event Status: "Upcoming" | "Live" | "Completed"
+- Event Type: "Hackathon" | "Quiz" | "Cultural" | "Techtalk" | "Sports"
+
+================================================================================
+                           ROUTES BY USE CASE
+================================================================================
+
+USE CASE 1: ORGANISER LOGIN & DASHBOARD
+├── POST /auth/login                    → User login
+├── GET /auth/me                        → Get user profile
+⟊ GET /events                            → List all events
+
+USE CASE 2: CREATE NEW EVENT
+└── POST /events                         → Create event
+
+USE CASE 3: MANAGE SINGLE EVENT (Event Details Page)
+├── GET /events/:eventId                → Load event details
+├── PUT /events/:eventId                → Update event settings
+├── DELETE /events/:eventId             → Delete event
+├── PUT /events/:eventId/rules          ❌ MISSING
+├── PUT /events/:eventId/info           ❌ MISSING
+├── GET /registrations/:eventId         ❌ MISSING (or GET /teams/:eventId/teams)
+├── PUT /registrations/:id/approve      ❌ MISSING
+├── PUT /registrations/:id/reject       ❌ MISSING
+├── PUT /registrations/:id/payment      ❌ MISSING
+├── GET /schedule/:eventId              → Get event schedule
+├── POST /schedule/:eventId             → Add time slot
+├── PUT /schedule/:eventId/:slotId      → Edit time slot
+└── DELETE /schedule/:eventId/:slotId   → Delete time slot
+
+USE CASE 4: MANAGE EVENT REGISTRATIONS (Registrations Tab)
+├── GET /registrations/:eventId         ❌ MISSING
+├── PUT /registrations/:id/approve      ❌ MISSING
+├── PUT /registrations/:id/reject       ❌ MISSING
+└── DELETE /teams/:teamId               → Cancel registration
+
+USE CASE 5: MANAGE PAYMENTS (Payments Tab)
+├── GET /registrations/:eventId         ❌ MISSING
+└── PUT /registrations/:id/payment      ❌ MISSING
+
+USE CASE 6: LOGOUT
+└── POST /auth/logout                   → Logout user
+
+================================================================================
+                         IMPLEMENTATION PRIORITY
+================================================================================
+
+PHASE 1 (Required - Blocks App):
+✓1. PUT /events/:eventId/rules
+✓2. PUT /events/:eventId/info
+✓3. PUT /registrations/:id/approve
+✓4. PUT /registrations/:id/reject
+✓5. PUT /registrations/:id/payment
+✓6. GET /registrations/:eventId
+   Total Time: 2-3 hours
+
+PHASE 2 (Nice to Have):
+  7. POST /registrations/:id/bulk-approve (Bulk approve registrations)
+  8. POST /registrations/:id/bulk-reject (Bulk reject registrations)
+  9. GET /events/:eventId/stats (Event statistics/analytics)
+  10. GET /events/:eventId/activity-log (Activity timeline)
+  11. POST /notifications/:id/send-email (Send approval/rejection emails)
+  12. GET /payments/:eventId/report (Payment reports)
+
+PHASE 3 (Optional Enhancements):
+  13. PUT /events/:eventId/logo (Upload event banner)
+  14. POST /events/:eventId/teams/:teamId/penalty (Apply penalty)
+  15. GET /leaderboard/:eventId (Event leaderboard)
+
+================================================================================
+                           AUTHENTICATION
+================================================================================
+
+All protected routes require:
+- Header: Authorization: Bearer <token>
+- OR Cookies: MUST send credentials: 'include' with fetch
+
+Current user role will be available from /auth/me endpoint:
+- role: "Organiser" | "Faculty" | "Student" | "Admin"
+- Only "Organiser" and "Admin" can manage events
+
+================================================================================
+                        ERROR HANDLING REQUIRED
+================================================================================
+
+All routes must return proper error responses:
+
+400 Bad Request:
+  { success: false, message: "Validation error", errors: {...} }
+
+401 Unauthorized:
+  { success: false, message: "User not authenticated" }
+
+403 Forbidden:
+  { success: false, message: "You don't have permission to access this resource" }
+
+404 Not Found:
+  { success: false, message: "Event/Registration not found" }
+
+500 Server Error:
+  { success: false, message: "Internal server error" }
+
+================================================================================
+                      DEPLOYMENT CHECKLIST
+================================================================================
+
+Frontend Status:
+✓ eventdetail.html - 100% complete
+✓ dashboard.html - 100% complete  
+✓ Dark/Light mode - Working
+✓ Responsive design - Complete
+✓ All UI elements - Styled
+
+Backend Status:
+✓ 15 existing endpoints - Working (need verification)
+✗ 6 critical endpoints - NOT IMPLEMENTED
+✗ Field naming consistency - NEEDS CHECKING
+✗ Authentication - NEEDS VERIFICATION
+
+Testing:
+✗ Test all 21 endpoints with Postman
+✗ Test field naming with eventdetail.html
+✗ Test authentication on protected routes
+✗ Test error handling
+✗ Test with different user roles
+
+Final Integration:
+✗ Run eventdetail.html against backend
+✗ Check all tabs load correctly
+✗ Verify approve/reject functionality
+✗ Verify payment updates work
+✗ Test CSV exports
+
+================================================================================
+                          QUICK REFERENCE
+================================================================================
+
+New Routes to Create (6):
+1. PUT /events/:eventId/rules
+2. PUT /events/:eventId/info
+3. PUT /registrations/:id/approve
+4. PUT /registrations/:id/reject
+5. PUT /registrations/:id/payment
+6. GET /registrations/:eventId
+
+Routes to Verify/Fix:
+- GET /teams/:eventId/teams (field naming)
+- PUT /events/:eventId (response structure)
+- GET /events/:eventId (include new fields)
+
+Estimated Backend Work:
+- Route Definition: 1 hour
+- Database Logic: 1 hour
+- Testing & Debugging: 1-2 hours
+- TOTAL: 3-4 hours
+
+================================================================================
+                        END OF ROUTES REFERENCE
+================================================================================

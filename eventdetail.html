@@ -1,0 +1,2160 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EventHub — Event Details</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+*{font-family:'Manrope',sans-serif!important}
+
+/* ── LIGHT THEME ── */
+:root{
+  --purple:#5B4FE8;--purple-dark:#3D35C0;--purple-light:#EAE8FD;--purple-faint:#F4F3FE;
+  --teal:#0ABFA3;--teal-light:#E0F8F5;
+  --red:#E84F4F;--red-light:#FDF0F0;
+  --green:#22C55E;--green-light:#F0FDF4;
+  --amber:#F59E0B;--amber-light:#FFFBEB;
+  --blue:#3B82F6;--blue-light:#EFF6FF;
+  --bg:#F9FAFB;--surface:#FFFFFF;--surface2:#F3F4F6;
+  --text:#111827;--text2:#6B7280;--text3:#9CA3AF;
+  --border:#E5E7EB;--border2:#D1D5DB;
+  --shadow:rgba(0,0,0,0.06);
+  --sidebar:220px;
+}
+
+/* ── DARK THEME ── */
+[data-theme="dark"]{
+  --bg:#0F1117;--surface:#1A1D27;--surface2:#222636;
+  --text:#F1F5F9;--text2:#94A3B8;--text3:#64748B;
+  --border:#2D3148;--border2:#3D4166;
+  --shadow:rgba(0,0,0,0.3);
+  --purple-faint:#1E1B3A;--purple-light:#2D2860;
+  --teal-light:#0D2E2A;--green-light:#0D2416;
+  --amber-light:#2A1F00;--red-light:#2A0E0E;
+  --blue-light:#0D1E3A;
+}
+
+html,body{height:100%;background:var(--bg);color:var(--text);font-size:14px;transition:background 0.2s,color 0.2s}
+
+/* ── LAYOUT ── */
+.app{display:flex;min-height:100vh}
+
+/* ── SIDEBAR ── */
+.sidebar{
+  width:var(--sidebar);flex-shrink:0;background:var(--surface);
+  border-right:1px solid var(--border);
+  display:flex;flex-direction:column;
+  position:fixed;top:0;left:0;bottom:0;z-index:200;
+  transition:transform 0.28s ease,background 0.2s,border-color 0.2s
+}
+.sidebar-logo{display:flex;align-items:center;gap:9px;padding:15px 14px;border-bottom:1px solid var(--border);text-decoration:none;cursor:pointer}
+.logo-icon{width:30px;height:30px;border-radius:8px;background:var(--purple);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.logo-icon svg{width:15px;height:15px}
+.logo-text{font-size:15px;font-weight:700;color:var(--text)}
+.logo-text span{color:var(--purple)}
+.sidebar-nav{flex:1;padding:8px;display:flex;flex-direction:column;gap:1px;overflow-y:auto}
+.nav-label{font-size:10px;font-weight:600;color:var(--text3);letter-spacing:0.8px;text-transform:uppercase;padding:10px 8px 4px}
+.nav-item{
+  display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:7px;
+  font-size:13px;font-weight:500;color:var(--text2);
+  cursor:pointer;border:none;background:none;width:100%;text-align:left;transition:all 0.12s
+}
+.nav-item svg{width:15px;height:15px;flex-shrink:0;opacity:0.65}
+.nav-item:hover{background:var(--surface2);color:var(--text)}
+.nav-item:hover svg{opacity:1}
+.nav-item.active{background:var(--purple-faint);color:var(--purple);font-weight:600}
+.nav-item.active svg{opacity:1}
+.nav-back{color:var(--text2);font-size:12px;display:flex;align-items:center;gap:6px;padding:8px 10px;cursor:pointer;border-radius:7px;border:none;background:none;width:100%;transition:all 0.12s;margin-bottom:4px}
+.nav-back:hover{background:var(--surface2);color:var(--text)}
+.nav-back svg{width:14px;height:14px;flex-shrink:0}
+.sidebar-bottom{padding:8px;border-top:1px solid var(--border)}
+.user-row{display:flex;align-items:center;gap:9px;padding:9px 10px;border-radius:8px;background:var(--surface2)}
+.user-av{width:32px;height:32px;border-radius:50%;background:var(--purple-light);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--purple);flex-shrink:0}
+.user-info{flex:1;min-width:0}
+.user-name{font-size:13px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.user-role{font-size:11px;color:var(--text3)}
+
+/* ── MAIN ── */
+.main{margin-left:var(--sidebar);flex:1;display:flex;flex-direction:column;min-width:0}
+
+/* ── TOPBAR ── */
+.topbar{
+  position:sticky;top:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 20px;height:54px;gap:12px;
+  background:var(--surface);border-bottom:1px solid var(--border);
+}
+.topbar-left{display:flex;align-items:center;gap:10px}
+.ham-btn{display:none;background:none;border:none;cursor:pointer;padding:4px;color:var(--text2);border-radius:6px}
+.ham-btn:hover{background:var(--surface2)}
+.ham-btn svg{width:18px;height:18px;display:block}
+.topbar-title{font-size:15px;font-weight:600;color:var(--text)}
+.topbar-subtitle{font-size:12px;color:var(--text3);margin-left:2px}
+.topbar-right{display:flex;align-items:center;gap:8px}
+.theme-btn{
+  width:34px;height:34px;border-radius:8px;border:1px solid var(--border);
+  background:var(--surface2);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  color:var(--text2);transition:all 0.15s;flex-shrink:0
+}
+.theme-btn:hover{border-color:var(--purple);color:var(--purple)}
+.theme-btn svg{width:15px;height:15px}
+.icon-sun{display:none}.icon-moon{display:block}
+[data-theme="dark"] .icon-sun{display:block}
+[data-theme="dark"] .icon-moon{display:none}
+
+/* ── CONTENT ── */
+.content{padding:20px;flex:1}
+
+/* ── EVENT HEADER ── */
+.event-header{
+  background:var(--surface);border:1px solid var(--border);border-radius:12px;
+  padding:18px 20px;margin-bottom:18px;
+  display:flex;align-items:flex-start;justify-content:space-between;gap:16px;
+  flex-wrap:wrap;
+}
+.event-header-left{display:flex;align-items:flex-start;gap:14px;flex:1;min-width:0}
+.event-icon-lg{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:22px}
+.event-icon-lg.hack{background:var(--purple-faint)}
+.event-icon-lg.quiz{background:var(--amber-light)}
+.event-icon-lg.cult{background:#FFE4E6}
+[data-theme="dark"] .event-icon-lg.cult{background:#2A0D14}
+.event-icon-lg.tech{background:var(--teal-light)}
+.event-header-info{flex:1;min-width:0}
+.event-header-name{font-size:20px;font-weight:700;color:var(--text);margin-bottom:4px;line-height:1.2}
+.event-header-meta{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.event-meta-item{display:flex;align-items:center;gap:4px;font-size:12px;color:var(--text2)}
+.event-meta-item svg{width:12px;height:12px;color:var(--text3);flex-shrink:0}
+.event-header-right{display:flex;align-items:center;gap:8px;flex-shrink:0;flex-wrap:wrap}
+.status-badge-lg{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:20px;font-size:12px;font-weight:600}
+.status-live{background:var(--green-light);color:#166534}
+.status-upcoming{background:var(--amber-light);color:#92400E}
+.status-completed{background:var(--surface2);color:var(--text2)}
+[data-theme="dark"] .status-live{color:#4ade80}
+[data-theme="dark"] .status-upcoming{color:#fbbf24}
+.sdot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.sdot-live{background:#22C55E}.sdot-upcoming{background:#F59E0B}.sdot-done{background:var(--text3)}
+
+/* ── TABS ── */
+.tabs-wrap{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:18px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.tabs-wrap::-webkit-scrollbar{display:none}
+.tab{
+  padding:10px 16px;font-size:13px;font-weight:500;color:var(--text2);
+  cursor:pointer;border:none;background:none;white-space:nowrap;
+  border-bottom:2px solid transparent;margin-bottom:-1px;
+  transition:all 0.15s;display:flex;align-items:center;gap:6px
+}
+.tab:hover{color:var(--text)}
+.tab.active{color:var(--purple);font-weight:600;border-bottom-color:var(--purple)}
+.tab-badge{background:var(--purple-faint);color:var(--purple);font-size:10px;font-weight:700;padding:1px 6px;border-radius:9px}
+.tab-badge.warn{background:var(--amber-light);color:#92400E}
+[data-theme="dark"] .tab-badge.warn{color:#fbbf24}
+
+/* ── TAB PANELS ── */
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+
+/* ── STATS ROW ── */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}
+.scard{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px}
+.scard-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.scard-icon{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center}
+.scard-icon svg{width:16px;height:16px}
+.i-purple{background:var(--purple-faint)}.i-green{background:var(--green-light)}.i-amber{background:var(--amber-light)}.i-teal{background:var(--teal-light)}.i-red{background:var(--red-light)}.i-blue{background:var(--blue-light)}
+.scard-pill{font-size:11px;font-weight:600;padding:2px 8px;border-radius:20px}
+.pill-purple{background:var(--purple-faint);color:var(--purple)}
+.pill-green{background:var(--green-light);color:#166534}
+.pill-amber{background:var(--amber-light);color:#92400E}
+.pill-red{background:var(--red-light);color:var(--red)}
+.pill-blue{background:var(--blue-light);color:var(--blue)}
+[data-theme="dark"] .pill-green{color:#4ade80}
+[data-theme="dark"] .pill-amber{color:#fbbf24}
+.scard-num{font-size:24px;font-weight:700;color:var(--text);margin-bottom:2px}
+.scard-label{font-size:12px;color:var(--text3)}
+
+/* ── TOOLBAR ── */
+.toolbar{display:flex;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.search-box{display:flex;align-items:center;gap:7px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:6px 11px;transition:border-color 0.15s;flex:1;min-width:180px;max-width:280px}
+.search-box:focus-within{border-color:var(--purple)}
+.search-box svg{width:13px;height:13px;color:var(--text3);flex-shrink:0}
+.search-box input{border:none;outline:none;font-size:13px;color:var(--text);background:transparent;width:100%}
+.search-box input::placeholder{color:var(--text3)}
+.filter-pills{display:flex;gap:5px;flex-wrap:wrap}
+.fpill{padding:5px 12px;border:1px solid var(--border);border-radius:20px;font-size:12px;font-weight:500;color:var(--text2);cursor:pointer;background:var(--surface);transition:all 0.12s;white-space:nowrap}
+.fpill:hover{border-color:var(--purple);color:var(--purple)}
+.fpill.on{background:var(--purple);border-color:var(--purple);color:#fff}
+.toolbar-right{display:flex;gap:6px;margin-left:auto;flex-wrap:wrap}
+
+/* ── BUTTONS ── */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--surface2);color:var(--text2);transition:all 0.12s;white-space:nowrap}
+.btn:hover{border-color:var(--border2);color:var(--text)}
+.btn svg{width:13px;height:13px;flex-shrink:0}
+.btn-primary{background:var(--purple);border-color:var(--purple);color:#fff}
+.btn-primary:hover{background:var(--purple-dark);border-color:var(--purple-dark);color:#fff}
+.btn-success{background:var(--green-light);border-color:#bbf7d0;color:#166534}
+.btn-success:hover{background:#dcfce7}
+[data-theme="dark"] .btn-success{color:#4ade80;border-color:#166534}
+.btn-danger{background:var(--red-light);border-color:#fecaca;color:var(--red)}
+.btn-danger:hover{background:#fee2e2}
+.btn-sm{padding:4px 10px;font-size:11px;border-radius:6px}
+.btn-xs{padding:3px 8px;font-size:10px;border-radius:5px}
+.btn-cancel{padding:8px 16px;border:1px solid var(--border);border-radius:7px;font-size:13px;font-weight:500;color:var(--text2);background:transparent;cursor:pointer;transition:all 0.12s}
+.btn-cancel:hover{border-color:var(--border2);color:var(--text)}
+.btn-save{padding:8px 18px;border:none;border-radius:7px;font-size:13px;font-weight:600;color:#fff;background:var(--purple);cursor:pointer;transition:background 0.15s}
+.btn-save:hover{background:var(--purple-dark)}
+.btn-save:disabled{opacity:0.6;cursor:not-allowed}
+.link-btn{font-size:12px;color:var(--purple);background:none;border:none;cursor:pointer;font-weight:500}
+.link-btn:hover{text-decoration:underline}
+
+/* ── TABLE ── */
+.tcard{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.tbl-wrap{overflow-x:auto;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.tbl-wrap::-webkit-scrollbar{width:5px;height:5px}
+.tbl-wrap::-webkit-scrollbar-track{background:var(--surface2);border-radius:10px}
+.tbl-wrap::-webkit-scrollbar-thumb{background:var(--border2);border-radius:10px}
+.tbl-wrap::-webkit-scrollbar-thumb:hover{background:var(--purple)}
+table{width:100%;border-collapse:collapse;min-width:700px;table-layout:auto}
+th{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;padding:10px 14px;text-align:left;background:var(--surface2);white-space:nowrap;position:sticky;top:0;z-index:1}
+td{font-size:13px;color:var(--text);padding:10px 14px;border-top:1px solid var(--border);vertical-align:middle}
+tr:hover td{background:var(--surface2)}
+.td-actions{display:flex;gap:4px;flex-wrap:wrap}
+.select-col{width:36px}
+.select-col input[type=checkbox]{width:14px;height:14px;cursor:pointer;accent-color:var(--purple)}
+
+/* ── STATUS BADGES ── */
+.badge{display:inline-flex;align-items:center;padding:2px 9px;border-radius:5px;font-size:11px;font-weight:600;white-space:nowrap}
+.badge-pending{background:var(--amber-light);color:#92400E}
+.badge-approved{background:var(--green-light);color:#166534}
+.badge-rejected{background:var(--red-light);color:var(--red)}
+.badge-confirmed{background:var(--purple-faint);color:var(--purple)}
+.badge-paid{background:var(--green-light);color:#166534}
+.badge-unpaid{background:var(--amber-light);color:#92400E}
+.badge-failed{background:var(--red-light);color:var(--red)}
+[data-theme="dark"] .badge-pending{color:#fbbf24;background:rgba(245,158,11,0.15)}
+[data-theme="dark"] .badge-approved{color:#4ade80;background:rgba(34,197,94,0.15)}
+[data-theme="dark"] .badge-confirmed{color:#a78bfa;background:rgba(168,85,247,0.15)}
+[data-theme="dark"] .badge-rejected{color:#f87171;background:rgba(248,113,113,0.15)}
+[data-theme="dark"] .badge-paid{color:#4ade80;background:rgba(34,197,94,0.15)}
+[data-theme="dark"] .badge-unpaid{color:#fbbf24;background:rgba(245,158,11,0.15)}
+[data-theme="dark"] .badge-failed{color:#f87171;background:rgba(248,113,113,0.15)}
+
+/* ── BULK BAR ── */
+.bulk-bar{
+  display:none;background:var(--purple);color:#fff;
+  padding:10px 16px;border-radius:9px;margin-bottom:12px;
+  align-items:center;gap:12px;
+}
+.bulk-bar.show{display:flex}
+.bulk-bar-text{font-size:13px;font-weight:600;flex:1}
+.bulk-bar-actions{display:flex;gap:6px}
+.bulk-btn{padding:5px 12px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;border:none;transition:all 0.12s}
+.bulk-approve{background:rgba(255,255,255,0.2);color:#fff}
+.bulk-approve:hover{background:rgba(255,255,255,0.3)}
+.bulk-reject{background:rgba(255,255,255,0.15);color:#fff}
+.bulk-reject:hover{background:rgba(255,255,255,0.25)}
+.bulk-close{background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.7);border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;border:none;font-size:14px;line-height:1}
+
+/* ── INFO CARD ── */
+.info-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:16px}
+.info-item{background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:14px}
+.info-item label{display:block;font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:5px}
+.info-item .val{font-size:14px;font-weight:600;color:var(--text)}
+.info-item .val.muted{font-size:13px;font-weight:400;color:var(--text2)}
+
+/* ── RULES EDITOR ── */
+.rules-wrap{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.rules-toolbar{display:flex;gap:4px;padding:8px 12px;border-bottom:1px solid var(--border);flex-wrap:wrap;background:var(--surface2)}
+.r-btn{padding:4px 8px;border-radius:5px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--surface);color:var(--text2);transition:all 0.12s}
+.r-btn:hover{border-color:var(--purple);color:var(--purple)}
+.rules-editor{width:100%;min-height:280px;padding:14px;border:none;outline:none;font-size:13px;color:var(--text);background:var(--surface);resize:vertical;line-height:1.6}
+.rules-preview{padding:14px;font-size:13px;color:var(--text);line-height:1.7;min-height:200px;border-top:1px solid var(--border);background:var(--surface2)}
+.rules-preview h3{font-size:14px;font-weight:700;margin-bottom:8px}
+.rules-preview p{margin-bottom:8px;color:var(--text2)}
+.rules-preview ul{padding-left:20px;margin-bottom:8px}
+.rules-preview li{margin-bottom:4px;color:var(--text2)}
+
+/* ── FAQs ── */
+.faq-item{border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:8px;background:var(--surface)}
+.faq-q{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;cursor:pointer;font-size:13px;font-weight:600;color:var(--text)}
+.faq-q:hover{background:var(--surface2)}
+.faq-a{padding:0 14px;font-size:13px;color:var(--text2);line-height:1.6;max-height:0;overflow:hidden;transition:max-height 0.2s,padding 0.2s}
+.faq-item.open .faq-a{max-height:200px;padding:0 14px 12px}
+.faq-chevron{transition:transform 0.2s;color:var(--text3)}
+.faq-item.open .faq-chevron{transform:rotate(180deg)}
+
+/* ── SCHEDULE ── */
+.timeline{display:flex;flex-direction:column;margin-bottom:16px}
+.timeline-item{display:flex;gap:12px;padding:12px 0;border-left:2px solid var(--border);padding-left:16px;position:relative}
+.timeline-item::before{content:'';width:10px;height:10px;background:var(--purple);border-radius:50%;border:3px solid var(--surface);position:absolute;left:-7px;top:14px}
+.timeline-item-time{font-size:12px;font-weight:600;color:var(--text);min-width:100px}
+.timeline-item-meta{flex:1}
+.timeline-item-title{font-size:13px;font-weight:600;color:var(--text)}
+.timeline-item-desc{font-size:12px;color:var(--text2);margin-top:2px}
+.timeline-item-actions{display:flex;gap:6px;margin-top:8px}
+.slot-btn{padding:4px 10px;border-radius:6px;font-size:10px;font-weight:500;border:1px solid var(--border);background:var(--surface2);color:var(--text2);cursor:pointer;transition:all 0.12s}
+.slot-btn:hover{border-color:var(--purple);color:var(--purple);background:var(--purple-faint)}
+.slot-btn.delete:hover{border-color:var(--red);color:var(--red);background:var(--red-light)}
+
+/* ── PAYMENT TABLE ── */
+.pay-amount{font-weight:700;color:var(--text)}
+.pay-txn{font-size:11px;color:var(--text3)}
+
+/* ── DARK MODE TEXT FIXES ── */
+[data-theme="dark"] .event-header{background:var(--surface);border-color:var(--border)}
+[data-theme="dark"] .event-icon-lg{background:var(--surface2)}
+[data-theme="dark"] .status-badge-lg{background:var(--surface2);color:var(--text)}
+[data-theme="dark"] .event-meta-item{color:var(--text2)}
+[data-theme="dark"] .scard{background:var(--surface);border-color:var(--border)}
+[data-theme="dark"] .rules-preview{background:var(--surface2);color:var(--text)}
+[data-theme="dark"] .faq-item{background:var(--surface);border-color:var(--border)}
+[data-theme="dark"] .faq-q:hover{background:var(--surface2)}
+[data-theme="dark"] .info-item{background:var(--surface);border-color:var(--border)}
+[data-theme="dark"] table th{background:var(--surface2)}
+[data-theme="dark"] .tcard{background:var(--surface);border-color:var(--border)}
+[data-theme="dark"] .btn-success{background:rgba(34,197,94,0.15);border-color:#166534;color:#4ade80}
+[data-theme="dark"] .btn-danger{background:rgba(232,79,79,0.15);border-color:var(--red);color:#f87171}
+[data-theme="dark"] .btn-success:hover{background:rgba(34,197,94,0.25)}
+[data-theme="dark"] .btn-danger:hover{background:rgba(232,79,79,0.25)}
+[data-theme="dark"] .danger-zone{background:rgba(232,79,79,0.1);border-color:rgba(232,79,79,0.3)}
+[data-theme="dark"] .danger-zone h3{color:#f87171}
+[data-theme="dark"] .danger-zone p{color:var(--text2)}
+[data-theme="dark"] .reject-warning{background:rgba(232,79,79,0.15);border-color:rgba(232,79,79,0.3);color:#f87171}
+[data-theme="dark"] .member-row{background:var(--surface2);border-radius:8px}
+[data-theme="dark"] .detail-item{background:var(--surface2);border-radius:8px}
+[data-theme="dark"] .add-form-wrap{background:var(--surface);border-color:var(--border)}
+[data-theme="dark"] .rules-toolbar{background:var(--surface2);border-color:var(--border)}
+[data-theme="dark"] .r-btn{background:var(--surface);border-color:var(--border);color:var(--text2)}
+[data-theme="dark"] .r-btn:hover{border-color:var(--purple);color:var(--purple)}
+
+/* ── SETTINGS ── */
+.settings-section{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px;margin-bottom:16px}
+.settings-section h3{font-size:14px;font-weight:700;color:var(--text);margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+.settings-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.mfield label{display:block;font-size:12px;font-weight:600;color:var(--text2);margin-bottom:5px}
+.mfield input,.mfield select,.mfield textarea{
+  width:100%;padding:9px 11px;border:1px solid var(--border);border-radius:8px;
+  font-size:13px;color:var(--text);background:var(--surface2);outline:none;transition:border-color 0.15s
+}
+.mfield input:focus,.mfield select:focus,.mfield textarea:focus{border-color:var(--purple);background:var(--surface)}
+.mfield textarea{resize:vertical;min-height:80px}
+.danger-zone{background:var(--red-light);border:1px solid #fecaca;border-radius:10px;padding:18px;margin-bottom:16px}
+.danger-zone h3{font-size:14px;font-weight:700;color:var(--red);margin-bottom:6px}
+.danger-zone p{font-size:13px;color:var(--text2);margin-bottom:12px}
+
+/* ── MODAL ── */
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:500;align-items:center;justify-content:center;padding:1rem}
+.overlay.open{display:flex}
+.modal{background:var(--surface);border-radius:12px;width:100%;max-width:500px;max-height:90vh;overflow-y:auto;animation:mIn 0.2s ease;border:1px solid var(--border)}
+.modal-lg{max-width:680px}
+@keyframes mIn{from{opacity:0;transform:translateY(8px) scale(0.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+.modal-hd{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--surface);z-index:1}
+.modal-hd-title{font-size:15px;font-weight:700;color:var(--text)}
+.modal-x{width:28px;height:28px;border-radius:7px;background:var(--surface2);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text2);transition:background 0.12s}
+.modal-x:hover{background:var(--border)}
+.modal-x svg{width:14px;height:14px}
+.modal-body{padding:16px;display:flex;flex-direction:column;gap:12px}
+.modal-ft{display:flex;justify-content:flex-end;gap:8px;padding:12px 16px;border-top:1px solid var(--border)}
+.mrow{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+/* ── TEAM DETAIL MODAL ── */
+.team-detail-section{margin-bottom:16px}
+.team-detail-section h4{font-size:12px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px}
+.member-list{display:flex;flex-direction:column;gap:8px}
+.member-row{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--surface2);border-radius:8px}
+.member-av{width:30px;height:30px;border-radius:50%;background:var(--purple-light);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--purple);flex-shrink:0}
+.member-info{flex:1;min-width:0}
+.member-name{font-size:13px;font-weight:600;color:var(--text)}
+.member-email{font-size:11px;color:var(--text3)}
+.member-badge{font-size:10px;font-weight:600;padding:2px 7px;border-radius:4px;background:var(--purple-faint);color:var(--purple);flex-shrink:0}
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.detail-item{padding:10px 12px;background:var(--surface2);border-radius:8px}
+.detail-item label{font-size:10px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:0.4px;display:block;margin-bottom:3px}
+.detail-item .dval{font-size:13px;font-weight:600;color:var(--text)}
+.detail-item .dval.sm{font-size:12px;font-weight:400;color:var(--text2)}
+
+/* ── REJECT MODAL ── */
+.reject-warning{background:var(--red-light);border:1px solid #fecaca;border-radius:8px;padding:12px 14px;display:flex;gap:10px;font-size:12px;color:var(--red)}
+.reject-warning svg{width:16px;height:16px;flex-shrink:0;margin-top:1px}
+
+/* ── TOAST ── */
+.toast{
+  position:fixed;bottom:20px;right:20px;max-width:300px;
+  padding:11px 15px;border-radius:9px;font-size:13px;font-weight:500;
+  display:flex;align-items:center;gap:8px;z-index:9999;
+  opacity:0;transform:translateY(10px);
+  transition:all 0.22s ease;pointer-events:none;
+  box-shadow:0 4px 20px var(--shadow)
+}
+.toast.show{opacity:1;transform:translateY(0)}
+.toast.success{background:var(--green-light);color:#166534;border:1px solid #bbf7d0}
+.toast.fail{background:var(--red-light);color:#991b1b;border:1px solid #fecaca}
+[data-theme="dark"] .toast.success{color:#4ade80}
+[data-theme="dark"] .toast.fail{color:#f87171}
+.toast svg{width:15px;height:15px;flex-shrink:0}
+
+/* ── EMPTY ── */
+.empty-state{text-align:center;padding:48px 16px;color:var(--text3)}
+.empty-state svg{width:40px;height:40px;margin:0 auto 12px;display:block}
+.empty-state h4{font-size:14px;font-weight:600;color:var(--text2);margin-bottom:4px}
+.empty-state p{font-size:12px}
+
+/* ── SIDEBAR OVERLAY ── */
+.s-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.35);z-index:199}
+.s-overlay.open{display:block}
+
+/* ── SECTION HEADER ── */
+.sec-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px}
+.sec-title{font-size:14px;font-weight:600;color:var(--text)}
+
+/* ── ADD SLOT FORM ── */
+.add-form-wrap{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;margin-top:12px}
+.add-form-wrap h4{font-size:13px;font-weight:700;margin-bottom:12px;color:var(--text)}
+
+/* ── NOTIFICATION LOG ── */
+.notif-log{display:flex;flex-direction:column;gap:8px}
+.notif-item{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;background:var(--surface);border:1px solid var(--border);border-radius:8px}
+.notif-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px}
+.notif-dot.approval{background:var(--green)}
+.notif-dot.rejection{background:var(--red)}
+.notif-dot.info{background:var(--purple)}
+.notif-info{flex:1;min-width:0}
+.notif-msg{font-size:13px;color:var(--text);margin-bottom:2px}
+.notif-time{font-size:11px;color:var(--text3)}
+
+/* ── PROGRESS BAR ── */
+.prog-wrap{background:var(--surface2);border-radius:4px;height:6px;overflow:hidden;margin-top:4px}
+.prog-bar{height:100%;border-radius:4px;background:var(--purple);transition:width 0.3s}
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px){
+  .stats-row{grid-template-columns:repeat(2,1fr)}
+  .info-grid{grid-template-columns:1fr}
+  .settings-grid{grid-template-columns:1fr}
+  .detail-grid{grid-template-columns:1fr}
+}
+@media(max-width:768px){
+  :root{--sidebar:220px}
+  .sidebar{transform:translateX(-100%)}
+  .sidebar.open{transform:translateX(0)}
+  .main{margin-left:0}
+  .ham-btn{display:flex}
+  .topbar-right .theme-btn{display:flex}
+  .event-header{padding:14px}
+  .content{padding:14px}
+}
+@media(max-width:520px){
+  .stats-row{grid-template-columns:1fr 1fr}
+  .event-header-name{font-size:16px}
+  .mrow{grid-template-columns:1fr}
+}
+
+/* ── SKELETON LOADER ── */
+.skeleton{background:linear-gradient(90deg,var(--surface2) 0%,var(--border) 50%,var(--surface2) 100%);background-size:200% 100%;animation:shimmer 2s infinite;border-radius:8px;height:16px}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.skeleton-line{height:12px;background:var(--surface2);border-radius:4px;margin-bottom:8px;width:100%}
+.skeleton-line:last-child{margin-bottom:0}
+.skeleton-stat{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px;opacity:0.6}
+.skeleton-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- SIDEBAR OVERLAY -->
+  <div class="s-overlay" id="sOverlay" onclick="closeSidebar()"></div>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <a href="javascript:void(0)" onclick="window.location.href=getDashboardUrl()" class="sidebar-logo" style="text-decoration: none;cursor:pointer;">
+      <div class="logo-icon">
+        <svg viewBox="0 0 16 16" fill="none"><rect x="1" y="3" width="14" height="11" rx="2" stroke="white" stroke-width="1.3"/><path d="M5 1v4M11 1v4M1 7h14" stroke="white" stroke-width="1.3" stroke-linecap="round"/></svg>
+      </div>
+      <span class="logo-text">Event<span>Hub</span></span>
+    </a>
+
+    <div class="sidebar-nav">
+      <button class="nav-back" onclick="window.location.href=getDashboardUrl()">
+        <svg viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Back to Dashboard
+      </button>
+
+      <div class="nav-label">Event Sections</div>
+      <button class="nav-item active" onclick="switchTab('overview',this)">
+        <svg viewBox="0 0 16 16" fill="none"><rect x="1.5" y="1.5" width="5.5" height="5.5" rx="1" stroke="currentColor" stroke-width="1.3"/><rect x="9" y="1.5" width="5.5" height="5.5" rx="1" stroke="currentColor" stroke-width="1.3"/><rect x="1.5" y="9" width="5.5" height="5.5" rx="1" stroke="currentColor" stroke-width="1.3"/><rect x="9" y="9" width="5.5" height="5.5" rx="1" stroke="currentColor" stroke-width="1.3"/></svg>
+        Overview
+      </button>
+      <button class="nav-item" onclick="switchTab('registrations',this)">
+        <svg viewBox="0 0 16 16" fill="none"><circle cx="6" cy="5" r="3" stroke="currentColor" stroke-width="1.3"/><path d="M1 14c0-3 2.2-5 5-5s5 2 5 5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M11.5 7l1.5 1.5 2.5-2.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Registrations
+        <span class="nav-count" id="nav-pending-count" style="display:none">0</span>
+      </button>
+      <button class="nav-item" onclick="switchTab('payments',this)">
+        <svg viewBox="0 0 16 16" fill="none"><rect x="1" y="4" width="14" height="9" rx="2" stroke="currentColor" stroke-width="1.3"/><path d="M1 7h14" stroke="currentColor" stroke-width="1.3"/><path d="M4 10.5h3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+        Payments
+      </button>
+      <button class="nav-item" onclick="switchTab('schedule',this)">
+        <svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.3"/><path d="M8 5v3.5l2 1.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+        Schedule
+      </button>
+      <button class="nav-item" onclick="switchTab('rules',this)">
+        <svg viewBox="0 0 16 16" fill="none"><path d="M3 2h10a1 1 0 011 1v10a1 1 0 01-1 1H3a1 1 0 01-1-1V3a1 1 0 011-1z" stroke="currentColor" stroke-width="1.3"/><path d="M5 6h6M5 9h6M5 12h4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+        Rules & Regs
+      </button>
+      <button class="nav-item" onclick="switchTab('info',this)">
+        <svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.3"/><path d="M8 7v5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><circle cx="8" cy="4.5" r="0.7" fill="currentColor"/></svg>
+        Event Info
+      </button>
+      <button class="nav-item" onclick="switchTab('settings',this)">
+        <svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="2.5" stroke="currentColor" stroke-width="1.3"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.05 3.05l1.42 1.42M11.53 11.53l1.42 1.42M3.05 12.95l1.42-1.42M11.53 4.47l1.42-1.42" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+        Settings
+      </button>
+    </div>
+
+    <div class="sidebar-bottom">
+      <div class="user-row">
+        <div class="user-av" id="uav">U</div>
+        <div class="user-info">
+          <div class="user-name" id="uname">—</div>
+          <div class="user-role" id="urole">—</div>
+        </div>
+      </div>
+      <button class="logout-btn" onclick="logout()" style="display:flex;align-items:center;gap:8px;width:100%;padding:8px 10px;margin-top:4px;border-radius:7px;font-size:13px;font-weight:500;color:var(--red);background:none;border:none;cursor:pointer;transition:background 0.12s;margin-bottom:0">
+        <svg viewBox="0 0 16 16" fill="none" style="width:14px;height:14px"><path d="M6 2H3a1 1 0 00-1 1v10a1 1 0 001 1h3M10 11l3-3-3-3M13 8H6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Sign out
+      </button>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- TOPBAR -->
+    <div class="topbar">
+      <div class="topbar-left">
+        <button class="ham-btn" onclick="toggleSidebar()">
+          <svg viewBox="0 0 20 20" fill="none"><path d="M3 6h14M3 10h14M3 14h14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </button>
+        <div>
+          <div class="topbar-title" id="event-topbar-name">Loading…</div>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <button class="theme-btn" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 16 16" fill="none"><path d="M11.5 10.9A5.6 5.6 0 015.1 4.5a6.4 6.4 0 106.4 6.4z" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <svg class="icon-sun" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="2.5" stroke="currentColor" stroke-width="1.3"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.05 3.05l1.42 1.42M11.53 11.53l1.42 1.42M3.05 12.95l1.42-1.42M11.53 4.47l1.42-1.42" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+        </button>
+        <button class="btn btn-primary" onclick="switchTab('settings',null)">
+          <svg viewBox="0 0 16 16" fill="none"><path d="M10 2H6v2l-2 1-1.4-1.4L1.2 5l1.4 1.4-.2 2-.2 2L.8 12l1.4 1.4L3.6 12l2 1v2h4v-2l2-1 1.4 1.4L14.8 12l-1.4-1.4.2-2 .2-2 1.4-1.4L13.8 3.6 12.4 5l-2-1V2z" stroke="#fff" stroke-width="1.2" stroke-linejoin="round"/><circle cx="8" cy="8" r="2" stroke="#fff" stroke-width="1.2"/></svg>
+          Edit Event
+        </button>
+      </div>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content">
+
+      <!-- EVENT HEADER -->
+      <div class="event-header" id="event-header-card">
+        <div class="event-header-left">
+          <div class="event-icon-lg hack" id="event-icon">🏆</div>
+          <div class="event-header-info">
+            <div class="event-header-name" id="event-name">Loading…</div>
+            <div class="event-header-meta" id="event-meta"></div>
+          </div>
+        </div>
+        <div class="event-header-right">
+          <span class="status-badge-lg status-upcoming" id="event-status-badge">
+            <span class="sdot sdot-upcoming"></span>
+            <span id="event-status-text">Upcoming</span>
+          </span>
+        </div>
+      </div>
+
+      <!-- TABS -->
+      <div class="tabs-wrap">
+        <button class="tab active" id="tab-btn-overview" onclick="switchTab('overview',this)">
+          <svg viewBox="0 0 14 14" fill="none" width="13" height="13"><rect x="1" y="1" width="4.5" height="4.5" rx="0.8" stroke="currentColor" stroke-width="1.2"/><rect x="8.5" y="1" width="4.5" height="4.5" rx="0.8" stroke="currentColor" stroke-width="1.2"/><rect x="1" y="8.5" width="4.5" height="4.5" rx="0.8" stroke="currentColor" stroke-width="1.2"/><rect x="8.5" y="8.5" width="4.5" height="4.5" rx="0.8" stroke="currentColor" stroke-width="1.2"/></svg>
+          Overview
+        </button>
+        <button class="tab" id="tab-btn-registrations" onclick="switchTab('registrations',this)">
+          <svg viewBox="0 0 14 14" fill="none" width="13" height="13"><circle cx="5" cy="4.5" r="2.5" stroke="currentColor" stroke-width="1.2"/><path d="M1 12c0-2.5 1.8-4 4-4s4 1.5 4 4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M9.5 6l1.5 1.5 2-2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Registrations
+          <span class="tab-badge warn" id="tab-pending-badge" style="display:none">0</span>
+        </button>
+        <button class="tab" id="tab-btn-payments" onclick="switchTab('payments',this)">
+          <svg viewBox="0 0 14 14" fill="none" width="13" height="13"><rect x="1" y="3.5" width="12" height="7.5" rx="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M1 6h12" stroke="currentColor" stroke-width="1.2"/><path d="M3.5 9h3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+          Payments
+        </button>
+        <button class="tab" id="tab-btn-schedule" onclick="switchTab('schedule',this)">
+          <svg viewBox="0 0 14 14" fill="none" width="13" height="13"><circle cx="7" cy="7" r="5.5" stroke="currentColor" stroke-width="1.2"/><path d="M7 4.5v3l1.5 1" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+          Schedule
+        </button>
+        <button class="tab" id="tab-btn-rules" onclick="switchTab('rules',this)">
+          <svg viewBox="0 0 14 14" fill="none" width="13" height="13"><path d="M2.5 1.5h9a1 1 0 011 1v9a1 1 0 01-1 1h-9a1 1 0 01-1-1v-9a1 1 0 011-1z" stroke="currentColor" stroke-width="1.2"/><path d="M4 5h6M4 7.5h6M4 10h4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+          Rules
+        </button>
+        <button class="tab" id="tab-btn-info" onclick="switchTab('info',this)">
+          <svg viewBox="0 0 14 14" fill="none" width="13" height="13"><circle cx="7" cy="7" r="5.5" stroke="currentColor" stroke-width="1.2"/><path d="M7 6v4.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><circle cx="7" cy="4" r="0.7" fill="currentColor"/></svg>
+          Info
+        </button>
+        <button class="tab" id="tab-btn-settings" onclick="switchTab('settings',this)">
+          <svg viewBox="0 0 14 14" fill="none" width="13" height="13"><circle cx="7" cy="7" r="2" stroke="currentColor" stroke-width="1.2"/><path d="M7 1v1.5M7 11.5V13M1 7h1.5M11.5 7H13M2.7 2.7l1 1M10.3 10.3l1 1M2.7 11.3l1-1M10.3 3.7l1-1" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+          Settings
+        </button>
+      </div>
+
+      <!-- ══════════════════════════════════ -->
+      <!-- TAB: OVERVIEW -->
+      <!-- ══════════════════════════════════ -->
+      <div class="tab-panel active" id="panel-overview">
+        <div class="stats-row" id="overview-stats">
+          <div class="scard">
+            <div class="scard-top">
+              <div class="scard-icon i-purple"><svg viewBox="0 0 16 16" fill="none"><circle cx="6" cy="5" r="3" stroke="#5B4FE8" stroke-width="1.3"/><path d="M1 14c0-3 2.2-5 5-5s5 2 5 5" stroke="#5B4FE8" stroke-width="1.3" stroke-linecap="round"/></svg></div>
+              <span class="scard-pill pill-purple">Total</span>
+            </div>
+            <div class="scard-num" id="ov-total">0</div>
+            <div class="scard-label">Registrations</div>
+            <div class="prog-wrap" style="margin-top:8px"><div class="prog-bar" id="ov-prog" style="width:0%"></div></div>
+            <div style="font-size:11px;color:var(--text3);margin-top:4px" id="ov-prog-label">0 / 0 slots used</div>
+          </div>
+          <div class="scard">
+            <div class="scard-top">
+              <div class="scard-icon i-amber"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="#F59E0B" stroke-width="1.3"/><path d="M8 5v3.5l2 1.5" stroke="#F59E0B" stroke-width="1.3" stroke-linecap="round"/></svg></div>
+              <span class="scard-pill pill-amber">Action</span>
+            </div>
+            <div class="scard-num" id="ov-pending">0</div>
+            <div class="scard-label">Awaiting Approval</div>
+          </div>
+          <div class="scard">
+            <div class="scard-top">
+              <div class="scard-icon i-green"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="#22C55E" stroke-width="1.3"/><path d="M5 8l2.5 2.5 4-4" stroke="#22C55E" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <span class="scard-pill pill-green">Done</span>
+            </div>
+            <div class="scard-num" id="ov-approved">0</div>
+            <div class="scard-label">Approved Teams</div>
+          </div>
+          <div class="scard">
+            <div class="scard-top">
+              <div class="scard-icon i-teal"><svg viewBox="0 0 16 16" fill="none"><rect x="1" y="4" width="14" height="9" rx="2" stroke="#0ABFA3" stroke-width="1.3"/><path d="M1 7h14" stroke="#0ABFA3" stroke-width="1.3"/></svg></div>
+              <span class="scard-pill" style="background:var(--teal-light);color:#0F766E">Revenue</span>
+            </div>
+            <div class="scard-num" id="ov-paid">₹0</div>
+            <div class="scard-label">Payments Collected</div>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <!-- Event Details Card -->
+          <div class="settings-section" style="margin-bottom:0">
+            <h3>Event Details</h3>
+            <div class="info-grid" style="grid-template-columns:1fr 1fr;gap:10px">
+              <div class="info-item">
+                <label>Type</label>
+                <div class="val" id="ov-type">—</div>
+              </div>
+              <div class="info-item">
+                <label>Date</label>
+                <div class="val" id="ov-date">—</div>
+              </div>
+              <div class="info-item">
+                <label>Time</label>
+                <div class="val" id="ov-time">—</div>
+              </div>
+              <div class="info-item">
+                <label>Venue</label>
+                <div class="val muted" id="ov-venue">—</div>
+              </div>
+              <div class="info-item">
+                <label>Max Teams</label>
+                <div class="val" id="ov-maxteams">—</div>
+              </div>
+              <div class="info-item">
+                <label>Prize</label>
+                <div class="val" id="ov-prize">—</div>
+              </div>
+            </div>
+            <div class="info-item" style="margin-top:10px">
+              <label>Description</label>
+              <div class="val muted" id="ov-desc">—</div>
+            </div>
+          </div>
+
+          <!-- Quick Actions + Notification Log -->
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <div class="settings-section" style="margin-bottom:0">
+              <h3>Quick Actions</h3>
+              <div style="display:flex;flex-direction:column;gap:8px">
+                <button class="btn" style="justify-content:flex-start;gap:10px" onclick="switchTab('registrations',null)">
+                  <svg viewBox="0 0 16 16" fill="none" width="15" height="15"><circle cx="6" cy="5" r="3" stroke="currentColor" stroke-width="1.3"/><path d="M1 14c0-3 2.2-5 5-5s5 2 5 5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+                  Review Pending Registrations
+                </button>
+                <button class="btn" style="justify-content:flex-start;gap:10px" onclick="switchTab('payments',null)">
+                  <svg viewBox="0 0 16 16" fill="none" width="15" height="15"><rect x="1" y="4" width="14" height="9" rx="2" stroke="currentColor" stroke-width="1.3"/><path d="M1 7h14" stroke="currentColor" stroke-width="1.3"/></svg>
+                  Manage Payments
+                </button>
+                <button class="btn" style="justify-content:flex-start;gap:10px" onclick="exportCSV('registrations')">
+                  <svg viewBox="0 0 16 16" fill="none" width="15" height="15"><path d="M3 2h7l3 3v9a1 1 0 01-1 1H3a1 1 0 01-1-1V3a1 1 0 011-1z" stroke="currentColor" stroke-width="1.3"/><path d="M10 2v4h4M8 9v5M5.5 11.5L8 14l2.5-2.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  Export Registrations CSV
+                </button>
+                <button class="btn" style="justify-content:flex-start;gap:10px" onclick="exportCSV('payments')">
+                  <svg viewBox="0 0 16 16" fill="none" width="15" height="15"><path d="M3 2h7l3 3v9a1 1 0 01-1 1H3a1 1 0 01-1-1V3a1 1 0 011-1z" stroke="currentColor" stroke-width="1.3"/><path d="M10 2v4h4M8 9v5M5.5 11.5L8 14l2.5-2.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  Export Payment Report CSV
+                </button>
+              </div>
+            </div>
+
+            <div class="settings-section" style="margin-bottom:0;flex:1">
+              <h3>Activity Log</h3>
+              <div class="notif-log" id="activity-log">
+                <div class="empty-state" style="padding:16px">
+                  <svg viewBox="0 0 16 16" fill="none"><path d="M8 1v7M8 12v1" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.3"/></svg>
+                  <p style="font-size:12px">No activity yet</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════════════════════════════ -->
+      <!-- TAB: REGISTRATIONS -->
+      <!-- ══════════════════════════════════ -->
+      <div class="tab-panel" id="panel-registrations">
+        <div class="toolbar">
+          <div class="search-box">
+            <svg viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="4.5" stroke="currentColor" stroke-width="1.3"/><path d="M10 10l3.5 3.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+            <input type="text" placeholder="Search teams or email…" id="reg-search" oninput="filterRegs()">
+          </div>
+          <div class="filter-pills">
+            <div class="fpill on" onclick="setRegFilter('all',this)" data-f="all">All</div>
+            <div class="fpill" onclick="setRegFilter('Pending',this)" data-f="Pending">Pending</div>
+            <div class="fpill" onclick="setRegFilter('Approved',this)" data-f="Approved">Approved</div>
+            <div class="fpill" onclick="setRegFilter('Rejected',this)" data-f="Rejected">Rejected</div>
+          </div>
+          <div class="toolbar-right">
+            <button class="btn" onclick="exportCSV('registrations')">
+              <svg viewBox="0 0 16 16" fill="none"><path d="M3 2h7l3 3v9H3V2z" stroke="currentColor" stroke-width="1.3"/><path d="M10 2v4h4M8 9v5M5.5 11.5L8 14l2.5-2.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Export CSV
+            </button>
+          </div>
+        </div>
+
+        <!-- Bulk Action Bar -->
+        <div class="bulk-bar" id="bulk-bar">
+          <span class="bulk-bar-text" id="bulk-count-text">0 selected</span>
+          <div class="bulk-bar-actions">
+            <button class="bulk-btn bulk-approve" onclick="bulkAction('approve')">✓ Approve All</button>
+            <button class="bulk-btn bulk-reject" onclick="bulkAction('reject')">✗ Reject All</button>
+          </div>
+          <button class="bulk-close" onclick="clearBulkSelection()">×</button>
+        </div>
+
+        <div class="tcard">
+          <div class="tbl-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th class="select-col"><input type="checkbox" id="select-all-regs" onchange="selectAllRegs(this)"></th>
+                  <th>Team</th>
+                  <th>Lead</th>
+                  <th>Email</th>
+                  <th>Members</th>
+                  <th>Status</th>
+                  <th>Payment</th>
+                  <th>Registered</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="regs-tbody">
+                <tr><td colspan="9"><div class="empty-state"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.3"/><path d="M8 5v3.5l2 1.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg><p>Loading…</p></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════════════════════════════ -->
+      <!-- TAB: PAYMENTS -->
+      <!-- ══════════════════════════════════ -->
+      <div class="tab-panel" id="panel-payments">
+        <div class="stats-row" style="grid-template-columns:repeat(3,1fr)">
+          <div class="scard">
+            <div class="scard-top">
+              <div class="scard-icon i-green"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="#22C55E" stroke-width="1.3"/><path d="M5 8l2.5 2.5 4-4" stroke="#22C55E" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <span class="scard-pill pill-green">Paid</span>
+            </div>
+            <div class="scard-num" id="pay-collected">₹0</div>
+            <div class="scard-label">Collected</div>
+          </div>
+          <div class="scard">
+            <div class="scard-top">
+              <div class="scard-icon i-amber"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="#F59E0B" stroke-width="1.3"/><path d="M8 5v3.5l2 1.5" stroke="#F59E0B" stroke-width="1.3" stroke-linecap="round"/></svg></div>
+              <span class="scard-pill pill-amber">Pending</span>
+            </div>
+            <div class="scard-num" id="pay-pending">₹0</div>
+            <div class="scard-label">Pending</div>
+          </div>
+          <div class="scard">
+            <div class="scard-top">
+              <div class="scard-icon i-red"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="#E84F4F" stroke-width="1.3"/><path d="M5 5l6 6M11 5l-6 6" stroke="#E84F4F" stroke-width="1.3" stroke-linecap="round"/></svg></div>
+              <span class="scard-pill pill-red">Failed</span>
+            </div>
+            <div class="scard-num" id="pay-failed">0</div>
+            <div class="scard-label">Failed Payments</div>
+          </div>
+        </div>
+
+        <div class="toolbar">
+          <div class="search-box">
+            <svg viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="4.5" stroke="currentColor" stroke-width="1.3"/><path d="M10 10l3.5 3.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+            <input type="text" placeholder="Search teams…" id="pay-search" oninput="filterPay()">
+          </div>
+          <div class="filter-pills">
+            <div class="fpill on" onclick="setPayFilter('all',this)">All</div>
+            <div class="fpill" onclick="setPayFilter('Paid',this)">Paid</div>
+            <div class="fpill" onclick="setPayFilter('Pending',this)">Pending</div>
+            <div class="fpill" onclick="setPayFilter('Failed',this)">Failed</div>
+          </div>
+          <div class="toolbar-right">
+            <button class="btn" onclick="exportCSV('payments')">
+              <svg viewBox="0 0 16 16" fill="none"><path d="M3 2h7l3 3v9H3V2z" stroke="currentColor" stroke-width="1.3"/><path d="M10 2v4h4M8 9v5M5.5 11.5L8 14l2.5-2.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Payment Report
+            </button>
+          </div>
+        </div>
+
+        <div class="tcard">
+          <div class="tbl-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Team</th>
+                  <th>Lead</th>
+                  <th>Amount</th>
+                  <th>Status</th>
+                  <th>Method</th>
+                  <th>Transaction ID</th>
+                  <th>Date</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="pay-tbody">
+                <tr><td colspan="8"><div class="empty-state"><p>Loading…</p></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════════════════════════════ -->
+      <!-- TAB: SCHEDULE -->
+      <!-- ══════════════════════════════════ -->
+      <div class="tab-panel" id="panel-schedule">
+        <div class="sec-hd">
+          <div class="sec-title">Schedule Timeline</div>
+          <button class="btn btn-primary" onclick="document.getElementById('add-slot-form').style.display='block';this.style.display='none'">
+            <svg viewBox="0 0 16 16" fill="none"><path d="M8 3v10M3 8h10" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/></svg>
+            Add Time Slot
+          </button>
+        </div>
+
+        <div class="tcard" style="padding:16px;margin-bottom:16px">
+          <div class="timeline" id="sched-timeline">
+            <div class="empty-state">
+              <svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.3"/><path d="M8 5v3.5l2 1.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+              <h4>No schedule yet</h4>
+              <p>Add time slots to build your event timeline</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="add-form-wrap" id="add-slot-form" style="display:none">
+          <h4 id="slot-form-title">Add Time Slot</h4>
+          <div class="mfield" style="margin-bottom:10px"><label>Title *</label><input id="slot-title" placeholder="e.g. Opening Ceremony" maxlength="100"></div>
+          <div class="mrow" style="margin-bottom:10px">
+            <div class="mfield"><label>Start Time *</label><input type="time" id="slot-starttime"></div>
+            <div class="mfield"><label>End Time *</label><input type="time" id="slot-endtime"></div>
+          </div>
+          <div class="mfield" style="margin-bottom:10px"><label>Description</label><textarea id="slot-description" placeholder="Optional details…" style="min-height:60px"></textarea></div>
+          <div class="mfield" style="margin-bottom:12px"><label>Order <span style="color:var(--text3);font-weight:400">(for sorting)</span></label><input type="number" id="slot-order" value="1" min="1"></div>
+          <div style="display:flex;gap:8px">
+            <button class="btn-save" id="slot-save-btn" onclick="saveSlot()">Add Slot</button>
+            <button class="btn-cancel" onclick="cancelSlotEdit()">Cancel</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════════════════════════════ -->
+      <!-- TAB: RULES -->
+      <!-- ══════════════════════════════════ -->
+      <div class="tab-panel" id="panel-rules">
+        <div class="sec-hd">
+          <div class="sec-title">Rules & Regulations</div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <label style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text2);cursor:pointer">
+              <input type="checkbox" id="rules-visible" style="accent-color:var(--purple);width:14px;height:14px" checked>
+              Visible to participants
+            </label>
+            <button class="btn btn-primary" onclick="saveRules()">
+              <svg viewBox="0 0 16 16" fill="none"><path d="M2 10v3h3l7-7-3-3L2 10z" stroke="#fff" stroke-width="1.3" stroke-linejoin="round"/></svg>
+              Save Rules
+            </button>
+          </div>
+        </div>
+
+        <div class="rules-wrap">
+          <div class="rules-toolbar">
+            <button class="r-btn" onclick="fmtRules('bold')"><b>B</b></button>
+            <button class="r-btn" onclick="fmtRules('italic')"><i>I</i></button>
+            <button class="r-btn" onclick="fmtRules('ul')">• List</button>
+            <button class="r-btn" onclick="fmtRules('ol')">1. List</button>
+            <button class="r-btn" onclick="fmtRules('h2')">Heading</button>
+            <button class="r-btn" onclick="fmtRules('hr')">Divider</button>
+          </div>
+          <textarea class="rules-editor" id="rules-editor" placeholder="Enter rules and regulations here…&#10;&#10;Example:&#10;1. Teams must consist of 2–4 members.&#10;2. All members must carry valid college ID.&#10;3. Use of AI tools is strictly prohibited.&#10;…"></textarea>
+        </div>
+
+        <div style="margin-top:14px">
+          <div class="sec-hd">
+            <div class="sec-title">Preview</div>
+            <button class="link-btn" onclick="togglePreview()">Toggle Preview</button>
+          </div>
+          <div class="rules-preview" id="rules-preview" style="display:none;border:1px solid var(--border);border-radius:10px"></div>
+        </div>
+      </div>
+
+      <!-- ══════════════════════════════════ -->
+      <!-- TAB: EVENT INFO -->
+      <!-- ══════════════════════════════════ -->
+      <div class="tab-panel" id="panel-info">
+        <div class="sec-hd">
+          <div class="sec-title">Event Information & Guidelines</div>
+          <button class="btn btn-primary" onclick="saveInfo()">
+            <svg viewBox="0 0 16 16" fill="none"><path d="M2 10v3h3l7-7-3-3L2 10z" stroke="#fff" stroke-width="1.3" stroke-linejoin="round"/></svg>
+            Save Info
+          </button>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
+          <div class="settings-section" style="margin-bottom:0">
+            <h3>Detailed Description</h3>
+            <div class="mfield">
+              <textarea id="info-desc" style="min-height:120px" placeholder="Full event description, what participants can expect…"></textarea>
+            </div>
+          </div>
+          <div class="settings-section" style="margin-bottom:0">
+            <h3>Eligibility Criteria</h3>
+            <div class="mfield">
+              <textarea id="info-eligibility" style="min-height:120px" placeholder="Who can participate? Year restrictions, department, etc."></textarea>
+            </div>
+          </div>
+          <div class="settings-section" style="margin-bottom:0">
+            <h3>Resources & Links</h3>
+            <div id="links-list" style="display:flex;flex-direction:column;gap:8px;margin-bottom:10px"></div>
+            <button class="btn btn-sm" onclick="addLink()">+ Add Link</button>
+          </div>
+          <div class="settings-section" style="margin-bottom:0">
+            <h3>Contact Information</h3>
+            <div class="mfield" style="margin-bottom:10px"><label>Coordinator Name</label><input id="info-coord-name" placeholder="e.g. Rahul Sharma"></div>
+            <div class="mfield" style="margin-bottom:10px"><label>Phone</label><input id="info-coord-phone" placeholder="e.g. +91 99999 99999"></div>
+            <div class="mfield"><label>Email</label><input id="info-coord-email" placeholder="e.g. coordinator@college.edu"></div>
+          </div>
+        </div>
+
+        <div class="settings-section">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--border)">
+            <h3 style="margin:0;padding:0;border:none">FAQs</h3>
+            <button class="btn btn-sm btn-primary" onclick="addFaq()">+ Add FAQ</button>
+          </div>
+          <div id="faqs-list"></div>
+          <div class="empty-state" id="faq-empty" style="padding:20px">
+            <svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.3"/><path d="M6 6c0-1.1.9-2 2-2s2 .9 2 2c0 1-1 1.5-2 2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><circle cx="8" cy="12" r="0.7" fill="currentColor"/></svg>
+            <p>No FAQs added yet</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════════════════════════════ -->
+      <!-- TAB: SETTINGS -->
+      <!-- ══════════════════════════════════ -->
+      <div class="tab-panel" id="panel-settings">
+        <div class="settings-section">
+          <h3>Basic Information</h3>
+          <div class="settings-grid">
+            <div class="mfield"><label>Event Name *</label><input id="set-name" placeholder="Event name"></div>
+            <div class="mfield"><label>Type</label>
+              <select id="set-type">
+                <option>Hackathon</option><option>Quiz</option><option>Cultural</option><option>Techtalk</option><option>Sports</option>
+              </select>
+            </div>
+            <div class="mfield"><label>Date *</label><input type="date" id="set-date"></div>
+            <div class="mfield"><label>Time</label><input type="time" id="set-time"></div>
+            <div class="mfield" style="grid-column:1/-1"><label>Venue</label><input id="set-venue" placeholder="Venue name and location"></div>
+          </div>
+        </div>
+
+        <div class="settings-section">
+          <h3>Registration & Prize</h3>
+          <div class="settings-grid">
+            <div class="mfield"><label>Max Teams</label><input type="number" id="set-maxteams" placeholder="e.g. 30" min="1"></div>
+            <div class="mfield"><label>Prize Amount</label><input id="set-prize" placeholder="e.g. ₹50,000"></div>
+            <div class="mfield"><label>Registration Fee</label><input id="set-fee" placeholder="e.g. ₹200 per team"></div>
+            <div class="mfield"><label>Status</label>
+              <select id="set-status">
+                <option>Upcoming</option><option>Live</option><option>Completed</option>
+              </select>
+            </div>
+            <div class="mfield" style="grid-column:1/-1"><label>Description</label><textarea id="set-desc" placeholder="Brief description…"></textarea></div>
+          </div>
+          <div style="margin-top:14px;display:flex;justify-content:flex-end">
+            <button class="btn btn-primary" onclick="saveSettings()">
+              <svg viewBox="0 0 16 16" fill="none"><path d="M3 3h8l2 2v8a1 1 0 01-1 1H3a1 1 0 01-1-1V4a1 1 0 011-1zM6 13V8h4v5" stroke="#fff" stroke-width="1.3" stroke-linejoin="round"/></svg>
+              Save Changes
+            </button>
+          </div>
+        </div>
+
+        <div class="danger-zone">
+          <h3>⚠️ Danger Zone</h3>
+          <p>These actions are irreversible. Please proceed with extreme caution.</p>
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <button class="btn btn-danger" onclick="confirmDeleteEvent()">
+              <svg viewBox="0 0 16 16" fill="none"><path d="M3 4h10M5 4V3a1 1 0 011-1h4a1 1 0 011 1v1M6 7v5M10 7v5M4 4l.5 9a1 1 0 001 1h5a1 1 0 001-1L12 4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Delete Event
+            </button>
+            <button class="btn" onclick="confirmCancelAllRegs()">
+              Cancel All Registrations
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /app -->
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <svg viewBox="0 0 20 20" fill="currentColor" id="ti"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+  <span id="tm"></span>
+</div>
+
+<!-- ═══════════ MODALS ═══════════ -->
+
+<!-- TEAM DETAIL MODAL -->
+<div class="overlay" id="team-modal" onclick="if(event.target===this)closeModal('team-modal')">
+  <div class="modal modal-lg">
+    <div class="modal-hd">
+      <div class="modal-hd-title" id="team-modal-title">Team Details</div>
+      <button class="modal-x" onclick="closeModal('team-modal')">
+        <svg viewBox="0 0 16 16" fill="none"><path d="M3 3l10 10M13 3L3 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <div class="modal-body" id="team-modal-body"></div>
+    <div class="modal-ft" id="team-modal-ft"></div>
+  </div>
+</div>
+
+<!-- REJECT MODAL -->
+<div class="overlay" id="reject-modal" onclick="if(event.target===this)closeModal('reject-modal')">
+  <div class="modal">
+    <div class="modal-hd">
+      <div class="modal-hd-title">Reject Registration</div>
+      <button class="modal-x" onclick="closeModal('reject-modal')">
+        <svg viewBox="0 0 16 16" fill="none"><path d="M3 3l10 10M13 3L3 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="reject-warning">
+        <svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.3"/><path d="M8 5v3.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><circle cx="8" cy="11" r="0.7" fill="currentColor"/></svg>
+        <span>Rejecting this registration will notify the team. This action can be reversed by approving them later.</span>
+      </div>
+      <div class="mfield">
+        <label>Team</label>
+        <input id="reject-team-name" readonly style="background:var(--surface2);cursor:not-allowed">
+      </div>
+      <div class="mfield">
+        <label>Reason for rejection *</label>
+        <select id="reject-reason-select" onchange="updateRejectReason(this)">
+          <option value="">Select a reason…</option>
+          <option value="Incomplete registration form">Incomplete registration form</option>
+          <option value="Team size limit exceeded">Team size limit exceeded</option>
+          <option value="Payment not received">Payment not received</option>
+          <option value="Ineligible participants">Ineligible participants</option>
+          <option value="Duplicate registration">Duplicate registration</option>
+          <option value="Other">Other (specify below)</option>
+        </select>
+      </div>
+      <div class="mfield">
+        <label>Additional notes</label>
+        <textarea id="reject-notes" placeholder="Optional additional details for the team…" style="min-height:80px"></textarea>
+      </div>
+    </div>
+    <div class="modal-ft">
+      <button class="btn-cancel" onclick="closeModal('reject-modal')">Cancel</button>
+      <button class="btn-save" style="background:var(--red)" onclick="confirmReject()">Reject Registration</button>
+    </div>
+  </div>
+</div>
+
+<!-- PAYMENT UPDATE MODAL -->
+<div class="overlay" id="payment-modal" onclick="if(event.target===this)closeModal('payment-modal')">
+  <div class="modal">
+    <div class="modal-hd">
+      <div class="modal-hd-title">Update Payment</div>
+      <button class="modal-x" onclick="closeModal('payment-modal')">
+        <svg viewBox="0 0 16 16" fill="none"><path d="M3 3l10 10M13 3L3 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="mfield">
+        <label>Team</label>
+        <input id="pay-team-name" readonly style="background:var(--surface2);cursor:not-allowed">
+      </div>
+      <div class="mfield">
+        <label>Payment Status</label>
+        <select id="pay-status-select">
+          <option value="Pending">Pending</option>
+          <option value="Paid">Paid</option>
+          <option value="Failed">Failed</option>
+        </select>
+      </div>
+      <div class="mrow">
+        <div class="mfield"><label>Amount (₹)</label><input type="number" id="pay-amount-input" placeholder="e.g. 200"></div>
+        <div class="mfield"><label>Payment Method</label>
+          <select id="pay-method-select">
+            <option value="">—</option>
+            <option value="UPI">UPI</option>
+            <option value="Cash">Cash</option>
+            <option value="Bank Transfer">Bank Transfer</option>
+            <option value="Card">Card</option>
+          </select>
+        </div>
+      </div>
+      <div class="mfield"><label>Transaction ID</label><input id="pay-txn-input" placeholder="Optional transaction reference"></div>
+      <div class="mfield"><label>Date</label><input type="date" id="pay-date-input"></div>
+    </div>
+    <div class="modal-ft">
+      <button class="btn-cancel" onclick="closeModal('payment-modal')">Cancel</button>
+      <button class="btn-save" onclick="confirmPayment()">Update Payment</button>
+    </div>
+  </div>
+</div>
+
+<!-- DELETE CONFIRM MODAL -->
+<div class="overlay" id="delete-modal" onclick="if(event.target===this)closeModal('delete-modal')">
+  <div class="modal">
+    <div class="modal-hd">
+      <div class="modal-hd-title">⚠️ Delete Event</div>
+      <button class="modal-x" onclick="closeModal('delete-modal')">
+        <svg viewBox="0 0 16 16" fill="none"><path d="M3 3l10 10M13 3L3 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="reject-warning" style="background:var(--red-light);border-color:#fecaca;color:var(--red)">
+        <svg viewBox="0 0 16 16" fill="none"><path d="M8 2L1 13h14L8 2z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="M8 7v3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><circle cx="8" cy="12" r="0.7" fill="currentColor"/></svg>
+        <span>This will <strong>permanently delete</strong> the event and all its registrations. This cannot be undone.</span>
+      </div>
+      <div class="mfield">
+        <label>Type the event name to confirm</label>
+        <input id="delete-confirm-input" placeholder="Type event name here…">
+      </div>
+    </div>
+    <div class="modal-ft">
+      <button class="btn-cancel" onclick="closeModal('delete-modal')">Cancel</button>
+      <button class="btn-save" style="background:var(--red)" onclick="executeDeleteEvent()">Delete Permanently</button>
+    </div>
+  </div>
+</div>
+
+<script src="auth-client.js" onerror="console.warn('auth-client.js not loaded')"></script>
+<script>
+(async () => {
+
+// ── STEP 1: Check logout flag ──
+if(sessionStorage.getItem('eventhub_logging_out')){
+  sessionStorage.clear();
+  window.location.replace('login-signup.html');
+  return;
+}
+
+// ── STEP 2: Verify auth and get user role ──
+let currentUserRole = null;
+try{
+  const r = await AuthAPI.me();
+  if(!r.ok) throw new Error();
+  const userData = await r.json();
+  currentUserRole = (userData.user && userData.user.role) || 'Organiser';
+  console.log('✓ User role:', currentUserRole);
+} catch(e){
+  window.location.replace('login-signup.html');
+  return;
+}
+
+// ── THEME ──
+const savedTheme = localStorage.getItem('eventhub_theme') || 'light';
+document.documentElement.setAttribute('data-theme', savedTheme);
+function toggleTheme(){
+  const next = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('eventhub_theme', next);
+}
+
+// ── API ──
+const API = 'http://localhost:8000/api/v1';
+
+// ── HELPER: Get correct dashboard URL based on role ──
+function getDashboardUrl(){
+  return currentUserRole === 'Student' ? 'student-dashboard.html' : 'dashboard.html';
+}
+
+// ── GET EVENT ID FROM URL ──
+const params = new URLSearchParams(location.search);
+const eventId = params.get('id');
+if(!eventId){
+  alert('No event ID provided. Redirecting to dashboard.');
+  window.location.href = getDashboardUrl();
+  return;
+}
+
+// ── STATE ──
+let eventData = {};
+let registrations = [];
+let filteredRegs = [];
+let regFilter = 'all';
+let regSearch = '';
+let payFilter = 'all';
+let paySearch = '';
+let scheduleSlots = [];
+let editingSlotId = null;
+let rejectTargetId = null;
+let payTargetId = null;
+let selectedRegIds = new Set();
+let activityLog = [];
+let faqs = [];
+let links = [];
+let infoData = {};
+let rulesData = '';
+
+// ── SIDEBAR ──
+function toggleSidebar(){ document.getElementById('sidebar').classList.toggle('open'); document.getElementById('sOverlay').classList.toggle('open'); }
+function closeSidebar(){ document.getElementById('sidebar').classList.remove('open'); document.getElementById('sOverlay').classList.remove('open'); }
+
+// ── TOAST ──
+let tt;
+function toast(msg, type = 'success'){
+  clearTimeout(tt);
+  const el = document.getElementById('toast');
+  document.getElementById('tm').textContent = msg;
+  document.getElementById('ti').innerHTML = type === 'success'
+    ? '<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>'
+    : '<path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>';
+  el.className = 'toast ' + type;
+  el.classList.add('show');
+  tt = setTimeout(() => el.classList.remove('show'), 3200);
+}
+
+// ── USER PROFILE ──
+async function loadUserProfile(){
+  try{
+    const r = await AuthAPI.me();
+    if(!r.ok) throw new Error();
+    const data = await r.json();
+    const user = data.user || {};
+    const _fn = user.firstname || user.firstName || user.name || 'User';
+    const _in = (((user.firstname||user.firstName||'')[0])||(user.email||'U')[0]).toUpperCase()+((user.lastname||user.lastName||'')[0]||'').toUpperCase();
+    document.getElementById('uav').textContent = _in||'U';
+    document.getElementById('uname').textContent = [user.firstname||user.firstName,user.lastname||user.lastName].filter(Boolean).join(' ')||user.email||'User';
+    
+    // Display correct role
+    const displayRole = user.role || 'Organiser';
+    document.getElementById('urole').textContent = displayRole;
+    console.log('✓ Displaying role:', displayRole);
+  } catch(e){
+    console.error('Could not load user profile');
+  }
+}
+
+// ── LOGOUT ──
+async function logout(){
+  sessionStorage.setItem('eventhub_logging_out', '1');
+  try{
+    await AuthAPI.logout();
+  } catch(e){}
+  window.location.replace('login-signup.html');
+}
+
+// ── TABS ──
+function switchTab(name, btn){
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('panel-' + name)?.classList.add('active');
+  const tabBtn = btn || document.getElementById('tab-btn-' + name);
+  if(tabBtn) tabBtn.classList.add('active');
+  // also mark sidebar
+  closeSidebar();
+}
+
+// ── LOAD EVENT ──
+async function loadEvent(){
+  try{
+    const res = await fetch(`${API}/events/${eventId}`, { credentials:'include' });
+    if(!res.ok) throw new Error();
+    const data = await res.json();
+    eventData = data.event || data;
+    renderEventHeader();
+    populateSettings();
+  } catch(e){
+    // Demo data fallback
+    eventData = {
+      _id: eventId,
+      name: 'HackFest 2025',
+      type: 'Hackathon',
+      status: 'Upcoming',
+      date: '2025-08-15',
+      time: '09:00',
+      venue: 'Seminar Hall A, Block 3',
+      maxTeams: 30,
+      prize: '₹50,000',
+      description: 'A 24-hour national level hackathon for college students.'
+    };
+    renderEventHeader();
+    populateSettings();
+  }
+}
+
+function renderEventHeader(){
+  const e = eventData;
+  document.getElementById('event-topbar-name').textContent = e.name || 'Event Details';
+  document.getElementById('event-name').textContent = e.name || '—';
+  document.title = `EventHub — ${e.name || 'Event'}`;
+
+  // icon
+  const iconMap = { Hackathon:'🏆', Quiz:'❓', Cultural:'🎭', Techtalk:'💡', Sports:'⚽' };
+  const iconClassMap = { Hackathon:'hack', Quiz:'quiz', Cultural:'cult', Techtalk:'tech', Sports:'tech' };
+  const ic = document.getElementById('event-icon');
+  ic.textContent = iconMap[e.type] || '📅';
+  ic.className = 'event-icon-lg ' + (iconClassMap[e.type] || 'hack');
+
+  // meta
+  const metaItems = [];
+  if(e.date) metaItems.push(`<div class="event-meta-item"><svg viewBox="0 0 16 16" fill="none"><rect x="1" y="3" width="14" height="11" rx="2" stroke="currentColor" stroke-width="1.2"/><path d="M5 1v3M11 1v3M1 7h14" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>${fmtDate(e.date)}</div>`);
+  if(e.time) metaItems.push(`<div class="event-meta-item"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.2"/><path d="M8 5v3.5l2 1.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>${fmtTime(e.time)}</div>`);
+  if(e.venue) metaItems.push(`<div class="event-meta-item"><svg viewBox="0 0 16 16" fill="none"><path d="M8 1C5.24 1 3 3.24 3 6c0 4 5 9 5 9s5-5 5-9c0-2.76-2.24-5-5-5z" stroke="currentColor" stroke-width="1.2"/><circle cx="8" cy="6" r="1.5" stroke="currentColor" stroke-width="1.2"/></svg>${e.venue}</div>`);
+  if(e.type) metaItems.push(`<div class="event-meta-item">${e.type}</div>`);
+  document.getElementById('event-meta').innerHTML = metaItems.join('');
+
+  // status badge
+  const sb = document.getElementById('event-status-badge');
+  const st = (e.status || 'Upcoming').toLowerCase();
+  sb.className = 'status-badge-lg status-' + st;
+  sb.innerHTML = `<span class="sdot sdot-${st}"></span><span id="event-status-text">${e.status || 'Upcoming'}</span>`;
+
+  // overview fields
+  document.getElementById('ov-type').textContent = e.type || '—';
+  document.getElementById('ov-date').textContent = e.date ? fmtDate(e.date) : '—';
+  document.getElementById('ov-time').textContent = e.time ? fmtTime(e.time) : '—';
+  document.getElementById('ov-venue').textContent = e.venue || '—';
+  document.getElementById('ov-maxteams').textContent = e.maxTeams || '—';
+  document.getElementById('ov-prize').textContent = e.prize || '—';
+  document.getElementById('ov-desc').textContent = e.description || 'No description provided.';
+}
+
+// ── LOAD REGISTRATIONS ──
+async function loadRegistrations(){
+  try{
+    const res = await fetch(`${API}/teams/registrations/${eventId}`, { credentials:'include' });
+    if(!res.ok) throw new Error();
+    const data = await res.json();
+    registrations = data.registrations || data || [];
+  } catch(e){
+    // Demo data
+    registrations = [
+      { _id:'r1', teamName:'CodeStorm', leadName:'Arjun Mehta', email:'arjun@email.com', members:['Priya S','Rahul K','Sneha T'], status:'Pending', paymentStatus:'Pending', paymentAmount:200, createdAt:'2025-07-10T10:30:00Z', phone:'9876543210' },
+      { _id:'r2', teamName:'ByteForce', leadName:'Kavya Nair', email:'kavya@email.com', members:['Arun P','Deepak R'], status:'Approved', paymentStatus:'Paid', paymentAmount:200, paymentDate:'2025-07-11T08:00:00Z', paymentMethod:'UPI', transactionId:'TXN8823749', createdAt:'2025-07-09T14:00:00Z', phone:'9876543211' },
+      { _id:'r3', teamName:'NullPointers', leadName:'Siddharth V', email:'sidd@email.com', members:['Anjali M','Rohit S','Kiran B'], status:'Pending', paymentStatus:'Pending', paymentAmount:200, createdAt:'2025-07-12T09:15:00Z', phone:'9876543212' },
+      { _id:'r4', teamName:'AlgoKings', leadName:'Meera Rao', email:'meera@email.com', members:['Dev P'], status:'Rejected', rejectionReason:'Incomplete registration form', paymentStatus:'Pending', paymentAmount:0, createdAt:'2025-07-08T16:45:00Z', phone:'9876543213' },
+      { _id:'r5', teamName:'TechTitans', leadName:'Vikram S', email:'vikram@email.com', members:['Neha A','Suresh K','Lakshmi R'], status:'Approved', paymentStatus:'Paid', paymentAmount:200, paymentDate:'2025-07-11T11:00:00Z', paymentMethod:'Cash', transactionId:'CASH001', createdAt:'2025-07-10T11:00:00Z', phone:'9876543214' },
+      { _id:'r6', teamName:'PixelCraft', leadName:'Divya M', email:'divya@email.com', members:['Hari V','Preethi J'], status:'Pending', paymentStatus:'Failed', paymentAmount:200, createdAt:'2025-07-13T08:30:00Z', phone:'9876543215' },
+    ];
+  }
+  updateOverviewStats();
+  renderRegs();
+  renderPayTable();
+}
+
+// ── LOAD SCHEDULE ──
+async function loadSchedule(){
+  try{
+    const res = await fetch(`${API}/schedule/${eventId}`, { credentials:'include' });
+    if(!res.ok) throw new Error();
+    const data = await res.json();
+    scheduleSlots = data.slots || [];
+  } catch(e){
+    scheduleSlots = [
+      { _id:'s1', title:'Inauguration Ceremony', starttime:'09:00', endtime:'09:30', description:'Welcome address by HOD and Chief Guest', order:1 },
+      { _id:'s2', title:'Problem Statement Release', starttime:'09:30', endtime:'10:00', description:'Teams receive their problem statements', order:2 },
+      { _id:'s3', title:'Hacking Begins', starttime:'10:00', endtime:'22:00', description:'24-hour coding marathon starts', order:3 },
+      { _id:'s4', title:'Mentoring Sessions', starttime:'14:00', endtime:'16:00', description:'Industry experts available for guidance', order:4 },
+    ];
+  }
+  renderSchedule();
+}
+
+// ── UPDATE OVERVIEW STATS ──
+function updateOverviewStats(){
+  const total = registrations.length;
+  const pending = registrations.filter(r => r.status === 'Pending').length;
+  const approved = registrations.filter(r => r.status === 'Approved').length;
+  const paidAmt = registrations.filter(r => r.paymentStatus === 'Paid').reduce((s,r) => s + (r.paymentAmount||0), 0);
+  const maxTeams = eventData.maxTeams || 0;
+
+  document.getElementById('ov-total').textContent = total;
+  document.getElementById('ov-pending').textContent = pending;
+  document.getElementById('ov-approved').textContent = approved;
+  document.getElementById('ov-paid').textContent = '₹' + paidAmt.toLocaleString('en-IN');
+
+  if(maxTeams > 0){
+    const pct = Math.round((total/maxTeams)*100);
+    document.getElementById('ov-prog').style.width = pct + '%';
+    document.getElementById('ov-prog-label').textContent = `${total} / ${maxTeams} slots used`;
+  }
+
+  // Payment stats
+  document.getElementById('pay-collected').textContent = '₹' + paidAmt.toLocaleString('en-IN');
+  const pendingAmt = registrations.filter(r => r.paymentStatus === 'Pending').reduce((s,r) => s + (r.paymentAmount||0), 0);
+  document.getElementById('pay-pending').textContent = '₹' + pendingAmt.toLocaleString('en-IN');
+  document.getElementById('pay-failed').textContent = registrations.filter(r => r.paymentStatus === 'Failed').length;
+
+  // Tab badges
+  if(pending > 0){
+    document.getElementById('tab-pending-badge').textContent = pending;
+    document.getElementById('tab-pending-badge').style.display = 'inline-flex';
+    document.getElementById('nav-pending-count').textContent = pending;
+    document.getElementById('nav-pending-count').style.display = 'inline-flex';
+  } else {
+    document.getElementById('tab-pending-badge').style.display = 'none';
+    document.getElementById('nav-pending-count').style.display = 'none';
+  }
+}
+
+// ── RENDER REGISTRATIONS ──
+function filterRegs(){
+  regSearch = document.getElementById('reg-search').value.toLowerCase();
+  renderRegs();
+}
+function setRegFilter(f, el){
+  regFilter = f;
+  document.querySelectorAll('[data-f]').forEach(e => e.classList.remove('on'));
+  el.classList.add('on');
+  renderRegs();
+}
+function renderRegs(){
+  filteredRegs = registrations.filter(r => {
+    const matchFilter = regFilter === 'all' || r.status === regFilter;
+    const matchSearch = !regSearch || r.teamName?.toLowerCase().includes(regSearch) || r.email?.toLowerCase().includes(regSearch) || r.leadName?.toLowerCase().includes(regSearch);
+    return matchFilter && matchSearch;
+  });
+  const tbody = document.getElementById('regs-tbody');
+  if(!filteredRegs.length){
+    tbody.innerHTML = `<tr><td colspan="9"><div class="empty-state"><svg viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="4.5" stroke="currentColor" stroke-width="1.3"/><path d="M10 10l3.5 3.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg><h4>No registrations found</h4><p>Try adjusting your search or filter.</p></div></td></tr>`;
+    return;
+  }
+  tbody.innerHTML = filteredRegs.map(r => {
+    const statusClass = { Pending:'badge-pending', Approved:'badge-approved', Rejected:'badge-rejected', Confirmed:'badge-confirmed' }[r.status] || 'badge-pending';
+    const payClass = { Paid:'badge-paid', Pending:'badge-unpaid', Failed:'badge-failed' }[r.paymentStatus] || 'badge-unpaid';
+    const checked = selectedRegIds.has(r._id) ? 'checked' : '';
+    return `<tr>
+      <td class="select-col"><input type="checkbox" ${checked} onchange="toggleSelectReg('${r._id}',this)"></td>
+      <td><strong>${esc(r.teamName)}</strong></td>
+      <td>${esc(r.leadName)}</td>
+      <td style="font-size:12px;color:var(--text2)">${esc(r.email)}</td>
+      <td style="font-size:12px;color:var(--text2)">${(r.members||[]).length + 1} members</td>
+      <td><span class="badge ${statusClass}">${r.status}</span></td>
+      <td><span class="badge ${payClass}">${r.paymentStatus||'—'}</span></td>
+      <td style="font-size:12px;color:var(--text3)">${r.createdAt ? fmtDateShort(r.createdAt) : '—'}</td>
+      <td>
+        <div class="td-actions">
+          <button class="btn btn-xs" onclick="viewTeam('${r._id}')">View</button>
+          ${r.status !== 'Approved' && r.status !== 'Confirmed' ? `<button class="btn btn-xs btn-success" onclick="approveReg('${r._id}')">Approve</button>` : ''}
+          ${r.status !== 'Rejected' ? `<button class="btn btn-xs btn-danger" onclick="openRejectModal('${r._id}')">Reject</button>` : ''}
+          <button class="btn btn-xs" onclick="openPaymentModal('${r._id}')">💳</button>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+// ── BULK SELECT ──
+function toggleSelectReg(id, el){
+  if(el.checked) selectedRegIds.add(id);
+  else selectedRegIds.delete(id);
+  updateBulkBar();
+}
+function selectAllRegs(el){
+  filteredRegs.forEach(r => {
+    if(el.checked) selectedRegIds.add(r._id);
+    else selectedRegIds.delete(r._id);
+  });
+  updateBulkBar();
+  renderRegs();
+}
+function updateBulkBar(){
+  const bar = document.getElementById('bulk-bar');
+  if(selectedRegIds.size > 0){
+    bar.classList.add('show');
+    document.getElementById('bulk-count-text').textContent = `${selectedRegIds.size} team${selectedRegIds.size>1?'s':''} selected`;
+  } else {
+    bar.classList.remove('show');
+  }
+}
+
+// ── MODAL UTILITIES ──
+function openModal(modalId){
+  const modal = document.getElementById(modalId);
+  if(modal) modal.classList.add('show');
+}
+function closeModal(modalId){
+  const modal = document.getElementById(modalId);
+  if(modal) modal.classList.remove('show');
+}
+
+function clearBulkSelection(){
+  selectedRegIds.clear();
+  document.getElementById('select-all-regs').checked = false;
+  updateBulkBar();
+  renderRegs();
+}
+async function bulkAction(action){
+  if(!selectedRegIds.size){ toast('No teams selected','fail'); return; }
+  const ids = [...selectedRegIds];
+  if(action === 'approve'){
+    for(const id of ids) await _doApprove(id, true);
+    toast(`${ids.length} registration${ids.length>1?'s':''} approved!`);
+  } else {
+    // open reject modal for bulk
+    rejectTargetId = ids;
+    document.getElementById('reject-team-name').value = `${ids.length} selected teams`;
+    openModal('reject-modal');
+    return;
+  }
+  clearBulkSelection();
+  updateOverviewStats();
+  renderRegs();
+  renderPayTable();
+}
+
+// ── APPROVE ──
+async function approveReg(id){
+  await _doApprove(id, false);
+  toast('Registration approved!');
+  updateOverviewStats();
+  renderRegs();
+  renderPayTable();
+}
+async function _doApprove(id, silent){
+  try{
+    const res = await fetch(`${API}/teams/registrations/${id}/approve`, { method:'PUT', credentials:'include' });
+    if(!res.ok) throw new Error();
+    const data = await res.json();
+    const idx = registrations.findIndex(r => r._id === id);
+    if(idx >= 0) registrations[idx].status = 'Approved';
+  } catch(e){
+    const idx = registrations.findIndex(r => r._id === id);
+    if(idx >= 0) registrations[idx].status = 'Approved';
+  }
+  addLog('approval', `Team "${registrations.find(r=>r._id===id)?.teamName}" approved`);
+}
+
+// ── REJECT ──
+function openRejectModal(id){
+  rejectTargetId = id;
+  const reg = registrations.find(r => r._id === id);
+  document.getElementById('reject-team-name').value = reg?.teamName || '—';
+  document.getElementById('reject-reason-select').value = '';
+  document.getElementById('reject-notes').value = '';
+  openModal('reject-modal');
+}
+function updateRejectReason(sel){}
+async function confirmReject(){
+  const reason = document.getElementById('reject-reason-select').value;
+  const notes = document.getElementById('reject-notes').value.trim();
+  if(!reason){ toast('Please select a rejection reason','fail'); return; }
+  const ids = Array.isArray(rejectTargetId) ? rejectTargetId : [rejectTargetId];
+  for(const id of ids){
+    try{
+      const res = await fetch(`${API}/teams/registrations/${id}/reject`, {
+        method:'PUT', credentials:'include',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ reason, notes })
+      });
+      if(!res.ok) throw new Error();
+    } catch(e){}
+    const idx = registrations.findIndex(r => r._id === id);
+    if(idx >= 0){ registrations[idx].status = 'Rejected'; registrations[idx].rejectionReason = reason + (notes ? ': ' + notes : ''); }
+    addLog('rejection', `Team "${registrations.find(r=>r._id===id)?.teamName}" rejected: ${reason}`);
+  }
+  closeModal('reject-modal');
+  clearBulkSelection();
+  toast(ids.length > 1 ? `${ids.length} registrations rejected` : 'Registration rejected');
+  updateOverviewStats();
+  renderRegs();
+  renderPayTable();
+}
+
+// ── PAYMENT MODAL ──
+function openPaymentModal(id){
+  payTargetId = id;
+  const reg = registrations.find(r => r._id === id);
+  document.getElementById('pay-team-name').value = reg?.teamName || '—';
+  document.getElementById('pay-status-select').value = reg?.paymentStatus || 'Pending';
+  document.getElementById('pay-amount-input').value = reg?.paymentAmount || '';
+  document.getElementById('pay-method-select').value = reg?.paymentMethod || '';
+  document.getElementById('pay-txn-input').value = reg?.transactionId || '';
+  document.getElementById('pay-date-input').value = reg?.paymentDate ? reg.paymentDate.split('T')[0] : new Date().toISOString().split('T')[0];
+  openModal('payment-modal');
+}
+async function confirmPayment(){
+  const status = document.getElementById('pay-status-select').value;
+  const amount = document.getElementById('pay-amount-input').value;
+  const method = document.getElementById('pay-method-select').value;
+  const txn = document.getElementById('pay-txn-input').value.trim();
+  const date = document.getElementById('pay-date-input').value;
+  const payData = { paymentStatus:status, paymentAmount:Number(amount)||0, paymentMethod:method, transactionId:txn, paymentDate:date };
+  try{
+    const res = await fetch(`${API}/teams/registrations/${payTargetId}/payment`, {
+      method:'PUT', credentials:'include',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(payData)
+    });
+    if(!res.ok) throw new Error();
+  } catch(e){}
+  const idx = registrations.findIndex(r => r._id === payTargetId);
+  if(idx >= 0) Object.assign(registrations[idx], payData);
+  addLog('info', `Payment updated for "${registrations.find(r=>r._id===payTargetId)?.teamName}": ${status}`);
+  closeModal('payment-modal');
+  toast('Payment status updated!');
+  updateOverviewStats();
+  renderRegs();
+  renderPayTable();
+}
+
+// ── RENDER PAYMENT TABLE ──
+function filterPay(){
+  paySearch = document.getElementById('pay-search').value.toLowerCase();
+  renderPayTable();
+}
+function setPayFilter(f, el){
+  payFilter = f;
+  document.querySelectorAll('#panel-payments .fpill').forEach(e => e.classList.remove('on'));
+  el.classList.add('on');
+  renderPayTable();
+}
+function renderPayTable(){
+  let filtered = registrations.filter(r => {
+    const matchFilter = payFilter === 'all' || r.paymentStatus === payFilter;
+    const matchSearch = !paySearch || r.teamName?.toLowerCase().includes(paySearch) || r.leadName?.toLowerCase().includes(paySearch);
+    return matchFilter && matchSearch;
+  });
+  const tbody = document.getElementById('pay-tbody');
+  if(!filtered.length){
+    tbody.innerHTML = `<tr><td colspan="8"><div class="empty-state"><p>No payment records found.</p></div></td></tr>`;
+    return;
+  }
+  tbody.innerHTML = filtered.map(r => {
+    const payClass = { Paid:'badge-paid', Pending:'badge-unpaid', Failed:'badge-failed' }[r.paymentStatus] || 'badge-unpaid';
+    return `<tr>
+      <td><strong>${esc(r.teamName)}</strong></td>
+      <td>${esc(r.leadName)}</td>
+      <td class="pay-amount">₹${(r.paymentAmount||0).toLocaleString('en-IN')}</td>
+      <td><span class="badge ${payClass}">${r.paymentStatus||'—'}</span></td>
+      <td style="font-size:12px;color:var(--text2)">${r.paymentMethod||'—'}</td>
+      <td><span class="pay-txn">${r.transactionId||'—'}</span></td>
+      <td style="font-size:12px;color:var(--text3)">${r.paymentDate ? fmtDateShort(r.paymentDate) : '—'}</td>
+      <td>
+        <div class="td-actions">
+          <button class="btn btn-xs" onclick="openPaymentModal('${r._id}')">Update</button>
+          <button class="btn btn-xs" onclick="viewTeam('${r._id}')">View Team</button>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+// ── VIEW TEAM ──
+function viewTeam(id){
+  const r = registrations.find(r => r._id === id);
+  if(!r) return;
+  document.getElementById('team-modal-title').textContent = r.teamName;
+  const statusClass = { Pending:'badge-pending', Approved:'badge-approved', Rejected:'badge-rejected' }[r.status] || 'badge-pending';
+  const payClass = { Paid:'badge-paid', Pending:'badge-unpaid', Failed:'badge-failed' }[r.paymentStatus] || 'badge-unpaid';
+  const allMembers = [{ name: r.leadName, email: r.email, isLead:true }, ...(r.members||[]).map(m => typeof m === 'string' ? { name:m, email:'—' } : m)];
+
+  document.getElementById('team-modal-body').innerHTML = `
+    <div class="team-detail-section">
+      <h4>Team Members</h4>
+      <div class="member-list">
+        ${allMembers.map((m,i) => `
+          <div class="member-row">
+            <div class="member-av">${(m.name||'?')[0].toUpperCase()}</div>
+            <div class="member-info">
+              <div class="member-name">${esc(m.name||'—')}</div>
+              <div class="member-email">${esc(m.email||'—')}</div>
+            </div>
+            ${m.isLead ? '<span class="member-badge">Team Lead</span>' : ''}
+          </div>
+        `).join('')}
+      </div>
+    </div>
+    <div class="team-detail-section">
+      <h4>Registration Details</h4>
+      <div class="detail-grid">
+        <div class="detail-item"><label>Status</label><div class="dval"><span class="badge ${statusClass}">${r.status}</span></div></div>
+        <div class="detail-item"><label>Registered On</label><div class="dval sm">${r.createdAt ? fmtDateShort(r.createdAt) : '—'}</div></div>
+        <div class="detail-item"><label>Phone</label><div class="dval sm">${esc(r.phone||'—')}</div></div>
+        <div class="detail-item"><label>Email</label><div class="dval sm">${esc(r.email||'—')}</div></div>
+        ${r.status === 'Rejected' ? `<div class="detail-item" style="grid-column:1/-1"><label>Rejection Reason</label><div class="dval sm" style="color:var(--red)">${esc(r.rejectionReason||'—')}</div></div>` : ''}
+      </div>
+    </div>
+    <div class="team-detail-section">
+      <h4>Payment Information</h4>
+      <div class="detail-grid">
+        <div class="detail-item"><label>Payment Status</label><div class="dval"><span class="badge ${payClass}">${r.paymentStatus||'—'}</span></div></div>
+        <div class="detail-item"><label>Amount</label><div class="dval">₹${(r.paymentAmount||0).toLocaleString('en-IN')}</div></div>
+        <div class="detail-item"><label>Method</label><div class="dval sm">${esc(r.paymentMethod||'—')}</div></div>
+        <div class="detail-item"><label>Transaction ID</label><div class="dval sm">${esc(r.transactionId||'—')}</div></div>
+        <div class="detail-item"><label>Payment Date</label><div class="dval sm">${r.paymentDate ? fmtDateShort(r.paymentDate) : '—'}</div></div>
+      </div>
+    </div>
+  `;
+  document.getElementById('team-modal-ft').innerHTML = `
+    <button class="btn-cancel" onclick="closeModal('team-modal')">Close</button>
+    ${r.status !== 'Approved' ? `<button class="btn-save btn-success" style="background:var(--green);border:none" onclick="closeModal('team-modal');approveReg('${r._id}')">✓ Approve</button>` : ''}
+    ${r.status !== 'Rejected' ? `<button class="btn-save" style="background:var(--red)" onclick="closeModal('team-modal');openRejectModal('${r._id}')">✗ Reject</button>` : ''}
+    <button class="btn-save" onclick="closeModal('team-modal');openPaymentModal('${r._id}')">💳 Update Payment</button>
+  `;
+  openModal('team-modal');
+}
+
+// ── SCHEDULE ──
+function renderSchedule(){
+  const slots = [...scheduleSlots].sort((a,b) => (a.order||0) - (b.order||0));
+  const container = document.getElementById('sched-timeline');
+  if(!slots.length){
+    container.innerHTML = `<div class="empty-state"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.3"/><path d="M8 5v3.5l2 1.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg><h4>No schedule yet</h4><p>Add time slots to build your event timeline</p></div>`;
+    return;
+  }
+  container.innerHTML = slots.map(s => `
+    <div class="timeline-item">
+      <div class="timeline-item-time">${fmtTime(s.starttime)} – ${fmtTime(s.endtime)}</div>
+      <div class="timeline-item-meta">
+        <div class="timeline-item-title">${esc(s.title)}</div>
+        ${s.description ? `<div class="timeline-item-desc">${esc(s.description)}</div>` : ''}
+        <div class="timeline-item-actions">
+          <button class="slot-btn" onclick="editSlot('${s._id}')">Edit</button>
+          <button class="slot-btn delete" onclick="deleteSlot('${s._id}')">Delete</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function editSlot(id){
+  const slot = scheduleSlots.find(s => s._id === id);
+  if(!slot) return;
+  editingSlotId = id;
+  document.getElementById('slot-title').value = slot.title||'';
+  document.getElementById('slot-starttime').value = slot.starttime||'';
+  document.getElementById('slot-endtime').value = slot.endtime||'';
+  document.getElementById('slot-description').value = slot.description||'';
+  document.getElementById('slot-order').value = slot.order||1;
+  document.getElementById('slot-form-title').textContent = 'Edit Time Slot';
+  document.getElementById('slot-save-btn').textContent = 'Update Slot';
+  document.getElementById('add-slot-form').style.display = 'block';
+  document.getElementById('add-slot-form').scrollIntoView({behavior:'smooth'});
+}
+function cancelSlotEdit(){
+  editingSlotId = null;
+  ['slot-title','slot-starttime','slot-endtime','slot-description'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('slot-order').value = '1';
+  document.getElementById('slot-form-title').textContent = 'Add Time Slot';
+  document.getElementById('slot-save-btn').textContent = 'Add Slot';
+  document.getElementById('add-slot-form').style.display = 'none';
+  document.querySelector('#panel-schedule .btn-primary').style.display = 'inline-flex';
+}
+async function saveSlot(){
+  const title = document.getElementById('slot-title').value.trim();
+  const starttime = document.getElementById('slot-starttime').value;
+  const endtime = document.getElementById('slot-endtime').value;
+  const description = document.getElementById('slot-description').value.trim();
+  const order = parseInt(document.getElementById('slot-order').value)||1;
+  if(!title){ toast('Title required','fail'); return; }
+  if(!starttime||!endtime){ toast('Start and end time required','fail'); return; }
+  const body = { title, starttime, endtime, description, order };
+  try{
+    if(editingSlotId){
+      const res = await fetch(`${API}/schedule/${eventId}/${editingSlotId}`, { method:'PUT', credentials:'include', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) });
+      const data = await res.json();
+      const idx = scheduleSlots.findIndex(s=>s._id===editingSlotId);
+      if(idx>=0) scheduleSlots[idx] = data.slot || {...body, _id:editingSlotId};
+      toast('Slot updated!');
+    } else {
+      const res = await fetch(`${API}/schedule/${eventId}`, { method:'POST', credentials:'include', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) });
+      const data = await res.json();
+      scheduleSlots.push(data.slot || {...body, _id:'s'+Date.now()});
+      toast('Slot added!');
+    }
+  } catch(e){
+    if(editingSlotId){
+      const idx = scheduleSlots.findIndex(s=>s._id===editingSlotId);
+      if(idx>=0) Object.assign(scheduleSlots[idx], body);
+      toast('Slot updated!');
+    } else {
+      scheduleSlots.push({...body, _id:'s'+Date.now()});
+      toast('Slot added!');
+    }
+  }
+  cancelSlotEdit();
+  renderSchedule();
+}
+async function deleteSlot(id){
+  if(!confirm('Delete this time slot?')) return;
+  try{
+    await fetch(`${API}/schedule/${eventId}/${id}`, { method:'DELETE', credentials:'include' });
+  } catch(e){}
+  scheduleSlots = scheduleSlots.filter(s => s._id !== id);
+  renderSchedule();
+  toast('Slot deleted');
+}
+
+// ── RULES ──
+function fmtRules(cmd){
+  const ta = document.getElementById('rules-editor');
+  const start = ta.selectionStart, end = ta.selectionEnd;
+  const sel = ta.value.substring(start, end);
+  let insert = '';
+  if(cmd==='bold') insert = `**${sel||'Bold text'}**`;
+  else if(cmd==='italic') insert = `*${sel||'Italic text'}*`;
+  else if(cmd==='ul') insert = `\n- ${sel||'List item'}`;
+  else if(cmd==='ol') insert = `\n1. ${sel||'List item'}`;
+  else if(cmd==='h2') insert = `\n## ${sel||'Heading'}`;
+  else if(cmd==='hr') insert = `\n---\n`;
+  ta.value = ta.value.substring(0,start) + insert + ta.value.substring(end);
+  ta.focus();
+  ta.selectionStart = ta.selectionEnd = start + insert.length;
+}
+function togglePreview(){
+  const prev = document.getElementById('rules-preview');
+  const isHidden = prev.style.display === 'none';
+  if(isHidden){
+    const text = document.getElementById('rules-editor').value;
+    prev.style.display = 'block';
+    prev.innerHTML = renderMarkdown(text) || '<p style="color:var(--text3)">Nothing to preview.</p>';
+  } else {
+    prev.style.display = 'none';
+  }
+}
+async function saveRules(){
+  rulesData = document.getElementById('rules-editor').value;
+  const visible = document.getElementById('rules-visible').checked;
+  try{
+    const res = await fetch(`${API}/events/${eventId}/rules`, {
+      method:'PUT',
+      credentials:'include',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({ rules:rulesData, rulesVisible:visible })
+    });
+    // Only show error if it's not 404 or 403 (endpoint not available)
+    if(!res.ok && res.status !== 404 && res.status !== 403) {
+      console.error('Failed to save rules:', res.status);
+    }
+  } catch(e){
+    // Network error - silently ignore since rules are stored locally
+    console.debug('Rules endpoint unavailable');
+  }
+  addLog('info', 'Rules & Regulations updated');
+  toast('Rules saved!');
+}
+function renderMarkdown(text){
+  if(!text) return '';
+  return text
+    .replace(/^## (.+)$/gm, '<h3>$1</h3>')
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g, '<em>$1</em>')
+    .replace(/^- (.+)$/gm, '<li>$1</li>')
+    .replace(/(<li>.*<\/li>)/gs, '<ul>$1</ul>')
+    .replace(/^\d+\. (.+)$/gm, '<li>$1</li>')
+    .replace(/^---$/gm, '<hr>')
+    .replace(/\n\n/g, '</p><p>')
+    .replace(/\n/g, '<br>');
+}
+
+// ── EVENT INFO ──
+function addLink(){
+  links.push({ label:'', url:'' });
+  renderLinks();
+}
+function renderLinks(){
+  const container = document.getElementById('links-list');
+  if(!links.length){ container.innerHTML = ''; return; }
+  container.innerHTML = links.map((l,i) => `
+    <div style="display:flex;gap:6px;align-items:center">
+      <input placeholder="Label" value="${esc(l.label)}" oninput="links[${i}].label=this.value" style="flex:1;padding:7px 10px;border:1px solid var(--border);border-radius:7px;font-size:12px;color:var(--text);background:var(--surface2);outline:none">
+      <input placeholder="URL (https://…)" value="${esc(l.url)}" oninput="links[${i}].url=this.value" style="flex:2;padding:7px 10px;border:1px solid var(--border);border-radius:7px;font-size:12px;color:var(--text);background:var(--surface2);outline:none">
+      <button class="btn btn-xs btn-danger" onclick="removeLink(${i})">✕</button>
+    </div>
+  `).join('');
+}
+function removeLink(i){ links.splice(i,1); renderLinks(); }
+
+function addFaq(){
+  faqs.push({ q:'', a:'', open:false });
+  renderFaqs(true);
+}
+function renderFaqs(edit=false){
+  const container = document.getElementById('faqs-list');
+  const empty = document.getElementById('faq-empty');
+  if(!faqs.length){ container.innerHTML=''; empty.style.display='block'; return; }
+  empty.style.display = 'none';
+  container.innerHTML = faqs.map((f,i) => `
+    <div class="faq-item${f.open?' open':''}">
+      <div class="faq-q" onclick="toggleFaq(${i})">
+        ${edit ? `<input placeholder="Question…" value="${esc(f.q)}" oninput="faqs[${i}].q=this.value" onclick="event.stopPropagation()" style="flex:1;border:none;outline:none;font-size:13px;font-weight:600;background:transparent;color:var(--text)">` : esc(f.q||'Untitled FAQ')}
+        <div style="display:flex;gap:6px;align-items:center">
+          <button class="btn btn-xs btn-danger" onclick="event.stopPropagation();removeFaq(${i})">✕</button>
+          <svg class="faq-chevron" viewBox="0 0 16 16" fill="none" width="14" height="14"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+      </div>
+      <div class="faq-a">
+        <textarea placeholder="Answer…" oninput="faqs[${i}].a=this.value" style="width:100%;border:none;outline:none;font-size:13px;color:var(--text2);background:transparent;resize:vertical;min-height:60px">${esc(f.a)}</textarea>
+      </div>
+    </div>
+  `).join('');
+}
+function toggleFaq(i){ faqs[i].open = !faqs[i].open; renderFaqs(true); }
+function removeFaq(i){ faqs.splice(i,1); renderFaqs(true); }
+async function saveInfo(){
+  infoData = {
+    description: document.getElementById('info-desc').value,
+    eligibility: document.getElementById('info-eligibility').value,
+    links, faqs,
+    coordinator: {
+      name: document.getElementById('info-coord-name').value,
+      phone: document.getElementById('info-coord-phone').value,
+      email: document.getElementById('info-coord-email').value,
+    }
+  };
+  try{
+    await fetch(`${API}/events/${eventId}/info`, { method:'PUT', credentials:'include', headers:{'Content-Type':'application/json'}, body:JSON.stringify(infoData) });
+  } catch(e){}
+  addLog('info', 'Event information updated');
+  toast('Event info saved!');
+}
+
+// ── SETTINGS ──
+function populateSettings(){
+  const e = eventData;
+  ['name','type','date','time','venue','prize','status','desc'].forEach(f => {
+    const el = document.getElementById('set-' + f);
+    if(!el) return;
+    const key = f === 'desc' ? 'description' : f;
+    if(e[key] !== undefined) el.value = e[key];
+    if(f === 'type') { for(let o of el.options) if(o.value===e.type) { o.selected=true; break; } }
+    if(f === 'status') { for(let o of el.options) if(o.value===e.status) { o.selected=true; break; } }
+  });
+  if(document.getElementById('set-maxteams')) document.getElementById('set-maxteams').value = e.maxTeams||'';
+}
+async function saveSettings(){
+  const name = document.getElementById('set-name').value.trim();
+  const date = document.getElementById('set-date').value;
+  if(!name){ toast('Event name is required','fail'); return; }
+  if(!date){ toast('Event date is required','fail'); return; }
+  const body = {
+    name, date,
+    type: document.getElementById('set-type').value,
+    time: document.getElementById('set-time').value,
+    venue: document.getElementById('set-venue').value.trim(),
+    prize: document.getElementById('set-prize').value.trim(),
+    status: document.getElementById('set-status').value,
+    maxTeams: Number(document.getElementById('set-maxteams').value)||undefined,
+    description: document.getElementById('set-desc').value.trim(),
+    registrationFee: document.getElementById('set-fee').value.trim(),
+  };
+  try{
+    const res = await fetch(`${API}/events/${eventId}`, { method:'PUT', credentials:'include', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) });
+    if(!res.ok) throw new Error();
+    const data = await res.json();
+    eventData = { ...eventData, ...body };
+  } catch(e){
+    eventData = { ...eventData, ...body };
+  }
+  renderEventHeader();
+  updateOverviewStats();
+  addLog('info', `Event settings updated`);
+  toast('Event updated successfully!');
+}
+
+// ── DELETE EVENT ──
+function confirmDeleteEvent(){ openModal('delete-modal'); document.getElementById('delete-confirm-input').value=''; }
+async function executeDeleteEvent(){
+  const input = document.getElementById('delete-confirm-input').value.trim();
+  if(input !== eventData.name){ toast('Event name does not match','fail'); return; }
+  try{
+    const res = await fetch(`${API}/events/${eventId}`, { method:'DELETE', credentials:'include' });
+    if(!res.ok) throw new Error();
+  } catch(e){}
+  toast('Event deleted');
+  setTimeout(() => window.location.href = getDashboardUrl(), 1200);
+}
+
+function confirmCancelAllRegs(){
+  if(!confirm(`Cancel all ${registrations.length} registrations for this event?`)) return;
+  registrations.forEach(r => r.status = 'Rejected');
+  addLog('rejection','All registrations cancelled');
+  toast(`${registrations.length} registrations cancelled`);
+  updateOverviewStats();
+  renderRegs();
+  renderPayTable();
+}
+
+// ── EXPORT CSV ──
+function exportCSV(type){
+  let rows = [], filename = '';
+  if(type === 'registrations'){
+    filename = `registrations-${eventData.name||eventId}.csv`;
+    rows.push(['Team Name','Lead Name','Email','Members','Status','Payment Status','Payment Amount','Transaction ID','Registered On','Rejection Reason']);
+    registrations.forEach(r => rows.push([
+      r.teamName||'', r.leadName||'', r.email||'',
+      [r.leadName,...(r.members||[])].join(' | '),
+      r.status||'', r.paymentStatus||'',
+      r.paymentAmount||0, r.transactionId||'',
+      r.createdAt ? fmtDateShort(r.createdAt) : '',
+      r.rejectionReason||''
+    ]));
+  } else {
+    filename = `payments-${eventData.name||eventId}.csv`;
+    rows.push(['Team Name','Lead Name','Email','Amount','Payment Status','Method','Transaction ID','Payment Date']);
+    registrations.forEach(r => rows.push([
+      r.teamName||'', r.leadName||'', r.email||'',
+      r.paymentAmount||0, r.paymentStatus||'', r.paymentMethod||'',
+      r.transactionId||'', r.paymentDate ? fmtDateShort(r.paymentDate) : ''
+    ]));
+  }
+  const csv = rows.map(r => r.map(v => `"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const blob = new Blob([csv], {type:'text/csv'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  a.click();
+  toast('CSV exported!');
+}
+
+// ── ACTIVITY LOG ──
+function addLog(type, msg){
+  activityLog.unshift({ type, msg, time: new Date().toISOString() });
+  renderLog();
+}
+function renderLog(){
+  const container = document.getElementById('activity-log');
+  if(!activityLog.length){ container.innerHTML = `<div class="empty-state" style="padding:16px"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.3"/></svg><p style="font-size:12px">No activity yet</p></div>`; return; }
+  container.innerHTML = activityLog.slice(0,10).map(l => `
+    <div class="notif-item">
+      <div class="notif-dot ${l.type}"></div>
+      <div class="notif-info">
+        <div class="notif-msg">${esc(l.msg)}</div>
+        <div class="notif-time">${timeAgo(l.time)}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ── UTILS ──
+function esc(s){ const d = document.createElement('div'); d.textContent = String(s||''); return d.innerHTML; }
+function fmtDate(s){
+  if(!s) return '—';
+  const d = new Date(s);
+  return d.toLocaleDateString('en-IN', {day:'numeric',month:'short',year:'numeric'});
+}
+function fmtDateShort(s){
+  if(!s) return '—';
+  const d = new Date(s);
+  return d.toLocaleDateString('en-IN', {day:'2-digit',month:'short',year:'numeric'});
+}
+function fmtTime(s){
+  if(!s) return '—';
+  const [h,m] = s.split(':');
+  const hh = parseInt(h);
+  const ampm = hh >= 12 ? 'PM' : 'AM';
+  return `${hh===0?12:hh>12?hh-12:hh}:${m} ${ampm}`;
+}
+function timeAgo(iso){
+  const diff = Date.now() - new Date(iso).getTime();
+  const m = Math.floor(diff/60000);
+  if(m < 1) return 'just now';
+  if(m < 60) return `${m}m ago`;
+  const h = Math.floor(m/60);
+  if(h < 24) return `${h}h ago`;
+  return `${Math.floor(h/24)}d ago`;
+}
+
+// ── EXPOSE TO GLOBAL ──
+window.toggleTheme = toggleTheme;
+window.toggleSidebar = toggleSidebar;
+window.closeSidebar = closeSidebar;
+window.logout = logout;
+window.switchTab = switchTab;
+window.closeModal = closeModal;
+window.setRegFilter = setRegFilter;
+window.filterRegs = filterRegs;
+window.selectAllRegs = selectAllRegs;
+window.toggleSelectReg = toggleSelectReg;
+window.clearBulkSelection = clearBulkSelection;
+window.bulkAction = bulkAction;
+window.approveReg = approveReg;
+window.openRejectModal = openRejectModal;
+window.updateRejectReason = updateRejectReason;
+window.confirmReject = confirmReject;
+window.openPaymentModal = openPaymentModal;
+window.confirmPayment = confirmPayment;
+window.viewTeam = viewTeam;
+window.editSlot = editSlot;
+window.saveSlot = saveSlot;
+window.deleteSlot = deleteSlot;
+window.cancelSlotEdit = cancelSlotEdit;
+window.fmtRules = fmtRules;
+window.togglePreview = togglePreview;
+window.saveRules = saveRules;
+window.saveInfo = saveInfo;
+window.addLink = addLink;
+window.removeLink = removeLink;
+window.addFaq = addFaq;
+window.removeFaq = removeFaq;
+window.toggleFaq = toggleFaq;
+window.renderLinks = renderLinks;
+window.renderFaqs = renderFaqs;
+window.saveSettings = saveSettings;
+window.exportCSV = exportCSV;
+window.confirmDeleteEvent = confirmDeleteEvent;
+window.executeDeleteEvent = executeDeleteEvent;
+window.confirmCancelAllRegs = confirmCancelAllRegs;
+window.setPayFilter = setPayFilter;
+window.filterPay = filterPay;
+
+// ── INIT ──
+await loadUserProfile();
+await loadEvent();
+await loadRegistrations();
+await loadSchedule();
+
+// Set today as default payment date
+const pd = document.getElementById('pay-date-input');
+if(pd) pd.value = new Date().toISOString().split('T')[0];
+
+})();
+</script>
+</body>
+</html>

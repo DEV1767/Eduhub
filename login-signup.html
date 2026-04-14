@@ -1411,7 +1411,7 @@
 
   <script src="auth-client.js"></script>
   <script>
-    const API_BASE = ((window.AuthAPI && window.AuthAPI.root) || 'https://eduhub-backend-eight.vercel.app/api/v1') + '/auth';
+    const API_BASE = 'http://localhost:8000/api/v1/auth';
 
     function switchTab(t) {
       document.querySelectorAll('.tab').forEach((el, i) => el.classList.toggle('active', (t === 'login' ? i === 0 : i === 1)));
@@ -1644,7 +1644,8 @@
         }
 
       } catch (e) {
-        document.getElementById('otp-err-msg').textContent = 'Cannot connect to server.';
+        console.error('Verify OTP error:', e);
+        document.getElementById('otp-err-msg').textContent = 'Cannot connect to server. Check if backend is running.';
         document.getElementById('otp-err').classList.add('show');
       } finally {
         btn.disabled = false;
@@ -1660,7 +1661,7 @@
       if (!email) { showErr('l-email', 'l-email-err', 'Email is required'); ok = false; }
       else if (!isValidEmail(email)) { showErr('l-email', 'l-email-err', 'Enter a valid email address'); ok = false; }
       if (!pass) { showErr('l-pass', 'l-pass-err', 'Password is required'); ok = false; }
-      else if (pass.length < 8) { showErr('l-pass', 'l-pass-err', 'Password must be at least 8 characters'); ok = false; }
+      else if (pass.length < 6) { showErr('l-pass', 'l-pass-err', 'Password must be at least 6 characters'); ok = false; }
       if (!ok) return;
       setLoading('l-btn', true);
       try {
@@ -1739,26 +1740,17 @@
       loader.classList.add('show');
     }
 
-    // Auto redirect if already logged in — check via /me endpoint
+    // ── PAGE LOAD: Check auth status ──
     (async () => {
-      // If we just logged out — clear flag and stay on login page, do NOT redirect
-      if (sessionStorage.getItem('eventhub_logging_out')) {
-        sessionStorage.clear();
-        return; // stay on login page
-      }
-
       try {
-        const res = await AuthAPI.me();
-        if (res.ok) {
-          const data = await res.json();
-          showLoader('Taking you to your dashboard...');
-          setTimeout(() => redirectByRole(data.user.role), 800);
-        } else {
-          // Cookie invalid — clear session and stay
-          sessionStorage.clear();
-        }
+        const r = await AuthAPI.me();
+        if (!r.ok) throw new Error();
+        const data = await r.json();
+        showLoader('Taking you to your dashboard...');
+        setTimeout(() => redirectByRole(data.user.role), 800);
       } catch (e) {
         // Not logged in, stay on login page
+        console.debug('Not logged in');
       }
     })();
 

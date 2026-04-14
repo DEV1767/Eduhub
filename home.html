@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>EventHub — College Event Organiser</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect fill='%235B4FE8' width='32' height='32' rx='8'/><text x='50%' y='50%' font-size='20' font-weight='bold' fill='white' text-anchor='middle' dominant-baseline='central'>E</text></svg>">
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -485,6 +486,12 @@ html.dark-mode footer{
   .cta-actions{flex-direction:column;align-items:stretch}
   .btn-hero,.btn-hero-ghost{justify-content:center}
 }
+
+/* ── SKELETON LOADER ── */
+.skeleton{background:linear-gradient(90deg,var(--surface2) 0%,var(--border) 50%,var(--surface2) 100%);background-size:200% 100%;animation:shimmer 2s infinite;border-radius:8px;height:16px}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.skeleton-line{height:14px;background:var(--surface);border-radius:6px;margin-bottom:12px;width:100%}
+.skeleton-card{background:var(--surface);border-radius:12px;padding:20px;display:flex;flex-direction:column;gap:12px;opacity:0.7}
 </style>
 </head>
 <body>
@@ -833,7 +840,67 @@ html.dark-mode footer{
 
 <script src="auth-client.js"></script>
 <script>
-const API_BASE = ((window.AuthAPI && window.AuthAPI.root) || 'https://eduhub-backend-eight.vercel.app/api/v1') + '/auth';
+const API = 'http://localhost:8000/api/v1';
+const LOGIN_PAGE = 'login-signup.html';
+const EVENTS_PAGE = 'index.html';
+
+// Sample events (fallback if API unavailable)
+const SAMPLE_EVENTS = [
+	{ _id:'sample-1', name:'HackFest 2025', type:'Hackathon', status:'Live', date:'2026-04-12', time:'09:00 AM', venue:'Seminar Hall A', city:'Bengaluru', college:'RV College of Engineering', prize:'₹50,000', teams:24, maxTeams:30, description:'A 24-hour coding sprint for teams building practical solutions with mentorship and live demos.' },
+	{ _id:'sample-2', name:'Tech Quiz Championship', type:'Quiz', status:'Upcoming', date:'2026-04-18', time:'11:00 AM', venue:'Room 301', city:'Pune', college:'PCCOE', prize:'₹15,000', teams:18, maxTeams:24, description:'Fast-paced rounds covering technology, startups, and current innovation trends.' },
+	{ _id:'sample-3', name:'Culturals Spring Fest', type:'Cultural', status:'Upcoming', date:'2026-04-21', time:'05:00 PM', venue:'Main Auditorium', city:'Delhi', college:'DTU', prize:'₹25,000', teams:32, maxTeams:40, description:'Dance, music, theatre, and stage performances from every department.' },
+	{ _id:'sample-4', name:'AI Builders Workshop', type:'Techtalk', status:'Completed', date:'2026-03-29', time:'02:00 PM', venue:'Innovation Lab', city:'Hyderabad', college:'IIIT Hyderabad', prize:'Certificate', teams:48, maxTeams:60, description:'Hands-on workshop on AI workflows, prompts, and practical product building.' },
+	{ _id:'sample-5', name:'Code Sprint Arena', type:'Hackathon', status:'Upcoming', date:'2026-04-26', time:'10:00 AM', venue:'Computer Block', city:'Chennai', college:'SSN College of Engineering', prize:'₹30,000', teams:20, maxTeams:28, description:'Short-format problem solving challenge with timed rounds and code reviews.' },
+	{ _id:'sample-6', name:'Design & Pitch Expo', type:'Techtalk', status:'Live', date:'2026-04-07', time:'01:00 PM', venue:'Conference Room B', city:'Mumbai', college:'VJTI', prize:'₹10,000', teams:14, maxTeams:20, description:'A presentation showcase for product ideas, design systems, and startup concepts.' }
+];
+
+let allEvents = [];
+
+// Normalize and enrich events from API
+function normalizeEvent(event){
+	return {
+		_id: event._id || event.id || event.eventId || `event-${Math.random().toString(36).slice(2,8)}`,
+		name: event.name || event.title || 'Untitled Event',
+		type: event.type || event.category || 'Techtalk',
+		status: event.status || 'Upcoming',
+		date: event.date || event.startDate || event.eventDate || '',
+		time: event.time || event.startTime || '',
+		venue: event.venue || event.location || '',
+		city: event.city || event.state || event.eventCity || '',
+		college: event.college || event.collegeName || event.organizer || event.hostInstitute || '',
+		prize: event.prize || event.reward || '',
+		teams: Number(event.teams ?? event.teamCount ?? event.registrations ?? 0) || 0,
+		maxTeams: Number(event.maxTeams ?? event.capacity ?? 0) || 0,
+		description: event.description || event.desc || event.summary || 'No description available.'
+	};
+}
+
+function enrichEvents(events){
+	return events.map(normalizeEvent).sort((a, b) => {
+		const rank = { Live: 0, Upcoming: 1, Completed: 2 };
+		const left = rank[a.status] ?? 9;
+		const right = rank[b.status] ?? 9;
+		if(left !== right) return left - right;
+		const da = new Date(a.date || 0).getTime();
+		const db = new Date(b.date || 0).getTime();
+		return da - db;
+	});
+}
+
+// Load events from API with fallback
+async function loadHomeEvents(){
+	try{
+		const response = await fetch(`${API}/events`);
+		if(!response.ok) throw new Error('API unavailable');
+		const data = await response.json();
+		const apiEvents = Array.isArray(data.events) ? data.events : [];
+		allEvents = enrichEvents(apiEvents.length ? apiEvents : SAMPLE_EVENTS);
+	}catch(error){
+		console.error('Events API error, using samples:', error);
+		allEvents = enrichEvents(SAMPLE_EVENTS);
+	}
+	console.log('Loaded events on homepage:', allEvents.length);
+}
 
 // Auth-aware nav — runs on every page load
 (async function initNav(){
@@ -920,6 +987,9 @@ function toggleTheme(){
   if(icon) icon.textContent=isDark?'☀️':'🌙';
 }
 initTheme();
+
+// Initialize page
+loadHomeEvents();
 </script>
 </body>
 </html>

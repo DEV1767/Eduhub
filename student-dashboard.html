@@ -1,746 +1,2585 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="light">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>EventHub — Student Dashboard</title>
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-*{font-family:'Manrope',sans-serif!important}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EventHub — Student Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
 
-:root{
-  --purple:#5B4FE8;--purple-dark:#3D35C0;--purple-light:#EAE8FD;--purple-faint:#F4F3FE;
-  --teal:#0ABFA3;--teal-light:#E0F8F5;
-  --red:#E84F4F;--red-light:#FDF0F0;
-  --green:#22C55E;--green-light:#F0FDF4;
-  --amber:#F59E0B;--amber-light:#FFFBEB;
-  --bg:#F9FAFB;--surface:#FFFFFF;--surface2:#F3F4F6;
-  --text:#111827;--text2:#6B7280;--text3:#9CA3AF;
-  --border:#E5E7EB;--sidebar:220px;
-}
-[data-theme="dark"]{
-  --bg:#0F1117;--surface:#1A1D27;--surface2:#222636;
-  --text:#F1F5F9;--text2:#94A3B8;--text3:#64748B;
-  --border:#2D3148;--purple-faint:#1E1B3A;--purple-light:#2D2860;
-  --teal-light:#0D2E2A;--green-light:#0D2416;
-  --amber-light:#2A1F00;--red-light:#2A0E0E;
-}
+    * {
+      font-family: 'Manrope', sans-serif !important
+    }
 
-html,body{height:100%;background:var(--bg);color:var(--text);font-size:14px;transition:background 0.2s,color 0.2s}
+    :root {
+      --purple: #5B4FE8;
+      --purple-dark: #3D35C0;
+      --purple-light: #EAE8FD;
+      --purple-faint: #F4F3FE;
+      --teal: #0ABFA3;
+      --teal-light: #E0F8F5;
+      --red: #E84F4F;
+      --red-light: #FDF0F0;
+      --green: #22C55E;
+      --green-light: #F0FDF4;
+      --amber: #F59E0B;
+      --amber-light: #FFFBEB;
+      --bg: #F9FAFB;
+      --surface: #FFFFFF;
+      --surface2: #F3F4F6;
+      --text: #111827;
+      --text2: #6B7280;
+      --text3: #9CA3AF;
+      --border: #E5E7EB;
+      --sidebar: 220px;
+    }
 
-/* ── LAYOUT ── */
-.app{display:flex;min-height:100vh}
+    [data-theme="dark"] {
+      --bg: #0F1117;
+      --surface: #1A1D27;
+      --surface2: #222636;
+      --text: #F1F5F9;
+      --text2: #94A3B8;
+      --text3: #64748B;
+      --border: #2D3148;
+      --purple-faint: #1E1B3A;
+      --purple-light: #2D2860;
+      --teal-light: #0D2E2A;
+      --green-light: #0D2416;
+      --amber-light: #2A1F00;
+      --red-light: #2A0E0E;
+    }
 
-/* ── SIDEBAR ── */
-.sidebar{
-  width:var(--sidebar);flex-shrink:0;background:var(--surface);
-  border-right:1px solid var(--border);
-  display:flex;flex-direction:column;
-  position:fixed;top:0;left:0;bottom:0;z-index:200;
-  transition:transform 0.28s ease,background 0.2s
-}
-.sidebar-logo{display:flex;align-items:center;gap:9px;padding:15px 14px;border-bottom:1px solid var(--border);text-decoration:none}
-.logo-icon{width:30px;height:30px;border-radius:8px;background:var(--purple);display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.logo-icon svg{width:15px;height:15px}
-.logo-text{font-size:15px;font-weight:700;color:var(--text)}
-.logo-text span{color:var(--purple)}
-.student-badge{
-  margin:10px 14px;padding:6px 10px;border-radius:8px;
-  background:var(--purple-light);border:1px solid rgba(91,79,232,0.2);
-  display:flex;align-items:center;gap:7px;font-size:12px;font-weight:600;color:var(--purple)
-}
-.student-badge svg{width:13px;height:13px;flex-shrink:0}
-.sidebar-nav{flex:1;padding:8px;display:flex;flex-direction:column;gap:1px;overflow-y:auto}
-.nav-label{font-size:10px;font-weight:600;color:var(--text3);letter-spacing:0.8px;text-transform:uppercase;padding:10px 8px 4px}
-.nav-item{
-  display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:7px;
-  font-size:13px;font-weight:500;color:var(--text2);
-  cursor:pointer;border:none;background:none;width:100%;text-align:left;transition:all 0.12s;
-  font-family:'Plus Jakarta Sans',sans-serif
-}
-.nav-item svg{width:15px;height:15px;flex-shrink:0;opacity:0.65}
-.nav-item:hover{background:var(--surface2);color:var(--text)}
-.nav-item:hover svg{opacity:1}
-.nav-item.active{background:var(--purple-faint);color:var(--purple);font-weight:600}
-.nav-item.active svg{opacity:1}
-.nav-count{margin-left:auto;background:var(--purple);color:#fff;font-size:10px;font-weight:700;border-radius:9px;padding:1px 6px;min-width:16px;text-align:center}
-.sidebar-bottom{padding:8px;border-top:1px solid var(--border)}
-.user-row{display:flex;align-items:center;gap:9px;padding:9px 10px;border-radius:8px;background:var(--surface2)}
-.user-av{width:32px;height:32px;border-radius:50%;background:var(--purple-light);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--purple);flex-shrink:0}
-.user-info{flex:1;min-width:0}
-.user-name{font-size:13px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.user-role{font-size:11px;color:var(--purple);font-weight:500}
-.logout-btn{display:flex;align-items:center;gap:8px;width:100%;padding:8px 10px;margin-top:4px;border-radius:7px;font-size:13px;font-weight:500;color:var(--red);background:none;border:none;cursor:pointer;transition:background 0.12s;font-family:'Plus Jakarta Sans',sans-serif}
-.logout-btn:hover{background:var(--red-light)}
-.logout-btn svg{width:14px;height:14px}
+    html,
+    body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 14px;
+      transition: background 0.2s, color 0.2s
+    }
 
-/* ── MAIN ── */
-.main{margin-left:var(--sidebar);flex:1;display:flex;flex-direction:column;min-width:0}
+    /* ── LAYOUT ── */
+    .app {
+      display: flex;
+      min-height: 100vh
+    }
 
-/* ── TOPBAR ── */
-.topbar{
-  position:sticky;top:0;z-index:100;
-  display:flex;align-items:center;justify-content:space-between;
-  padding:0 20px;height:54px;gap:12px;
-  background:var(--surface);border-bottom:1px solid var(--border);
-  transition:background 0.2s
-}
-.topbar-left{display:flex;align-items:center;gap:10px}
-.ham-btn{display:none;background:none;border:none;cursor:pointer;padding:4px;color:var(--text2);border-radius:6px}
-.ham-btn svg{width:18px;height:18px;display:block}
-.topbar-title{font-size:15px;font-weight:600;color:var(--text)}
-.topbar-right{display:flex;align-items:center;gap:8px}
-.search-box{display:flex;align-items:center;gap:7px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:6px 11px;transition:border-color 0.15s}
-.search-box:focus-within{border-color:var(--purple)}
-.search-box svg{width:14px;height:14px;color:var(--text3);flex-shrink:0}
-.search-box input{border:none;outline:none;font-size:13px;font-family:'Plus Jakarta Sans',sans-serif;color:var(--text);background:transparent;width:160px}
-.search-box input::placeholder{color:var(--text3)}
-.theme-btn{width:34px;height:34px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text2);transition:all 0.15s;flex-shrink:0}
-.theme-btn:hover{border-color:var(--purple);color:var(--purple)}
-.theme-btn svg{width:15px;height:15px}
-.icon-sun{display:none}.icon-moon{display:block}
-[data-theme="dark"] .icon-sun{display:block}[data-theme="dark"] .icon-moon{display:none}
+    /* ── SIDEBAR ── */
+    .sidebar {
+      width: var(--sidebar);
+      flex-shrink: 0;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      z-index: 200;
+      transition: transform 0.28s ease, background 0.2s
+    }
 
-/* ── CONTENT ── */
-.content{padding:20px;flex:1}
+    .sidebar-logo {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 15px 14px;
+      border-bottom: 1px solid var(--border);
+      text-decoration: none
+    }
 
-/* WELCOME BANNER */
-.welcome-banner{
-  background:var(--purple);border-radius:14px;
-  padding:20px 24px;margin-bottom:18px;
-  display:flex;align-items:center;justify-content:space-between;gap:16px;
-  position:relative;overflow:hidden
-}
-.welcome-banner::before{
-  content:'';position:absolute;right:-40px;top:-40px;
-  width:180px;height:180px;border-radius:50%;
-  background:rgba(255,255,255,0.08)
-}
-.welcome-banner::after{
-  content:'';position:absolute;right:60px;bottom:-60px;
-  width:140px;height:140px;border-radius:50%;
-  background:rgba(255,255,255,0.05)
-}
-.wb-left{position:relative;z-index:1}
-.wb-title{font-size:17px;font-weight:700;color:#fff;margin-bottom:3px}
-.wb-sub{font-size:13px;color:rgba(255,255,255,0.75)}
-.wb-right{position:relative;z-index:1;flex-shrink:0}
-.wb-stats{display:flex;gap:20px}
-.wb-stat{text-align:center}
-.wb-stat-num{font-size:22px;font-weight:700;color:#fff}
-.wb-stat-label{font-size:11px;color:rgba(255,255,255,0.7);font-weight:500}
+    .logo-icon {
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      background: var(--purple);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0
+    }
 
-/* STATS ROW */
-.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px}
-.scard{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px;transition:background 0.2s}
-.scard-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
-.scard-icon{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center}
-.scard-icon svg{width:16px;height:16px}
-.i-teal{background:var(--purple-faint)}.i-amber{background:var(--amber-light)}.i-green{background:var(--green-light)}
-.scard-pill{font-size:11px;font-weight:600;padding:2px 8px;border-radius:20px}
-.pill-teal{background:var(--purple-faint);color:var(--purple)}
-.pill-amber{background:var(--amber-light);color:#92400E}
-.pill-green{background:var(--green-light);color:#166534}
-[data-theme="dark"] .pill-purple{color:#a5b4fc}[data-theme="dark"] .pill-amber{color:#fbbf24}[data-theme="dark"] .pill-green{color:#4ade80}
-.scard-num{font-size:24px;font-weight:700;color:var(--text);margin-bottom:2px}
-.scard-label{font-size:12px;color:var(--text3)}
+    .logo-icon svg {
+      width: 15px;
+      height: 15px
+    }
 
-/* TABS */
-.tabs-row{display:flex;gap:4px;background:var(--surface2);border-radius:10px;padding:4px;margin-bottom:16px;border:1px solid var(--border)}
-.tab-btn{
-  flex:1;padding:8px 12px;border:none;border-radius:7px;
-  font-size:13px;font-weight:500;color:var(--text2);
-  background:transparent;cursor:pointer;transition:all 0.15s;
-  font-family:'Plus Jakarta Sans',sans-serif;white-space:nowrap
-}
-.tab-btn.active{background:var(--surface);color:var(--purple);font-weight:600;box-shadow:0 1px 4px rgba(0,0,0,0.08)}
-.tab-panel{display:none}.tab-panel.active{display:block}
+    .logo-text {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text)
+    }
 
-/* SECTION HEAD */
-.sec-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px}
-.sec-title{font-size:14px;font-weight:600;color:var(--text)}
-.filter-row{display:flex;gap:6px;flex-wrap:wrap}
-.fchip{padding:4px 12px;border:1px solid var(--border);border-radius:20px;font-size:12px;font-weight:500;color:var(--text2);cursor:pointer;background:var(--surface);transition:all 0.12px;white-space:nowrap}
-.fchip:hover{border-color:var(--purple);color:var(--purple)}
-.fchip.on{background:var(--purple);border-color:var(--purple);color:#fff}
+    .logo-text span {
+      color: var(--purple)
+    }
 
-/* EVENT CARDS */
-.events-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:12px}
-.ecard{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px;transition:border-color 0.15s,background 0.2s;position:relative;display:flex;flex-direction:column;height:100%}
-.ecard:hover{border-color:var(--teal)}
-.ecard.registered{border-color:var(--purple);background:var(--purple-faint)}
-.registered-tag{
-  position:absolute;top:10px;right:10px;
-  background:var(--purple);color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px}
-.ecard-top{display:flex;align-items:flex-start;gap:10px;margin-bottom:10px}
-.ecard-icon{width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.ec-hack{background:var(--purple-faint)}.ec-quiz{background:var(--amber-light)}.ec-cult{background:#FFE4E6}.ec-tech{background:var(--teal-light)}
-[data-theme="dark"] .ec-cult{background:#2A0D14}
-.ecard-icon svg{width:18px;height:18px}
-.ecard-info{flex:1;min-width:0}
-.ecard-name{font-size:14px;font-weight:600;color:var(--text);margin-bottom:3px;line-height:1.3}
-.etype-badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600}
-.tb-hack{background:var(--purple-faint);color:var(--purple)}
-.tb-quiz{background:var(--amber-light);color:#92400E}
-.tb-cult{background:#FFE4E6;color:#9F1239}
-.tb-tech{background:var(--teal-light);color:#0F766E}
-[data-theme="dark"] .tb-quiz{color:#fbbf24}[data-theme="dark"] .tb-cult{background:#2A0D14;color:#fb7185}[data-theme="dark"] .tb-tech{color:#2dd4bf}
-.emeta{display:flex;flex-direction:column;gap:4px;margin-bottom:10px;flex-grow:1}
-.emeta-row{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text2)}
-.emeta-row svg{width:12px;height:12px;flex-shrink:0;color:var(--text3)}
-.edivider{height:1px;background:var(--border);margin-bottom:10px}
-.ecard-footer{display:flex;flex-direction:column;gap:8px;margin-top:auto}
-.ecard-footer > div:last-child{display:flex;gap:6px;flex-wrap:nowrap;justify-content:flex-end;width:100%}
-.estatus{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text2);width:100%}
-.sdot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
-.sdot-live{background:var(--green)}.sdot-up{background:var(--amber)}.sdot-done{background:var(--text3)}
-.btn-register{
-  display:inline-flex;align-items:center;gap:5px;
-  padding:6px 12px;border:none;border-radius:7px;
-  font-size:11px;font-weight:600;color:#fff;background:var(--purple);
-  cursor:pointer;transition:all 0.15s;font-family:'Plus Jakarta Sans',sans-serif;white-space:nowrap;flex-shrink:0
-}
-.btn-register:hover{background:var(--purple-dark)}
-.btn-register.registered{background:var(--surface2);color:var(--text3);border:1px solid var(--border);cursor:default}
-.btn-view{padding:6px 10px;border:1px solid var(--border);border-radius:7px;font-size:11px;font-weight:500;color:var(--text2);background:transparent;cursor:pointer;transition:all 0.12s;font-family:'Plus Jakarta Sans',sans-serif;white-space:nowrap;flex-shrink:0}
-.btn-view:hover{border-color:var(--teal);color:var(--teal)}
+    .student-badge {
+      margin: 10px 14px;
+      padding: 6px 10px;
+      border-radius: 8px;
+      background: var(--purple-light);
+      border: 1px solid rgba(91, 79, 232, 0.2);
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--purple)
+    }
 
-/* STUDENT SCHEDULE TIMELINE VIEW */
-.timeline-container{display:flex;flex-direction:column;gap:0;margin:16px 0}
-.timeline-item-view{display:flex;gap:12px;padding:16px 0;border-left:3px solid var(--teal);padding-left:18px;margin-left:0;position:relative}
-.timeline-item-view::before{content:'';width:12px;height:12px;background:var(--teal);border-radius:50%;border:4px solid var(--surface);position:absolute;left:-8.5px;top:18px}
-.timeline-view-time{display:flex;flex-direction:column;gap:2px;min-width:120px}
-.timeline-view-time-label{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px}
-.timeline-view-time-value{font-size:14px;font-weight:700;color:var(--teal)}
-.timeline-view-content{flex:1}
-.timeline-view-title{font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px}
-.timeline-view-desc{font-size:13px;color:var(--text2);margin-bottom:8px;line-height:1.4}
-.timeline-view-meta{display:flex;align-items:center;gap:12px;font-size:12px;color:var(--text3)}
+    .student-badge svg {
+      width: 13px;
+      height: 13px;
+      flex-shrink: 0
+    }
 
-/* MY REGISTRATIONS */
-.reg-list{display:flex;flex-direction:column;gap:10px}
-.reg-card{
-  background:var(--surface);border:1px solid var(--border);
-  border-radius:10px;padding:14px;
-  display:flex;align-items:center;gap:14px;
-  transition:background 0.2s
-}
-.reg-card:hover{border-color:var(--border)}
-.reg-event-icon{width:40px;height:40px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.reg-info{flex:1;min-width:0}
-.reg-event-name{font-size:14px;font-weight:600;color:var(--text);margin-bottom:2px}
-.reg-team-name{font-size:12px;color:var(--text2);margin-bottom:4px}
-.reg-meta{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.reg-meta-item{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--text3)}
-.reg-meta-item svg{width:11px;height:11px}
-.reg-status{flex-shrink:0}
-.badge-confirmed{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;background:var(--green-light);color:#166534}
-.badge-upcoming{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;background:var(--amber-light);color:#92400E}
-.badge-done{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;background:var(--surface2);color:var(--text3)}
-[data-theme="dark"] .badge-confirmed{color:#4ade80}[data-theme="dark"] .badge-upcoming{color:#fbbf24}
+    .sidebar-nav {
+      flex: 1;
+      padding: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      overflow-y: auto
+    }
 
-/* EMPTY STATE */
-.empty{text-align:center;padding:40px 16px}
-.empty svg{width:40px;height:40px;color:var(--text3);margin:0 auto 10px;display:block}
-.empty h3{font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px}
-.empty p{font-size:12px;color:var(--text3)}
+    .nav-label {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text3);
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      padding: 10px 8px 4px
+    }
 
-/* ── REGISTER MODAL ── */
-.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:500;align-items:center;justify-content:center;padding:1rem}
-.overlay.open{display:flex}
-.modal{background:var(--surface);border-radius:12px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto;animation:mIn 0.2s ease;border:1px solid var(--border)}
-@keyframes mIn{from{opacity:0;transform:translateY(8px) scale(0.97)}to{opacity:1;transform:translateY(0) scale(1)}}
-.modal-hd{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--surface);z-index:1}
-.modal-hd-title{font-size:15px;font-weight:700;color:var(--text)}
-.modal-hd-sub{font-size:12px;color:var(--teal);font-weight:500;margin-top:1px}
-.modal-x{width:28px;height:28px;border-radius:7px;background:var(--surface2);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text2)}
-.modal-x svg{width:14px;height:14px}
-.modal-body{padding:16px;display:flex;flex-direction:column;gap:12px}
-.mfield label{display:block;font-size:12px;font-weight:600;color:var(--text2);margin-bottom:5px}
-.mfield input,.mfield select{width:100%;padding:9px 11px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:'Plus Jakarta Sans',sans-serif;color:var(--text);background:var(--surface2);outline:none;transition:border-color 0.15s}
-.mfield input:focus,.mfield select:focus{border-color:var(--purple);background:var(--surface)}
-.mrow{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.members-list{display:flex;flex-direction:column;gap:6px}
-.member-row{display:flex;gap:6px;align-items:center}
-.member-row input{flex:1}
-.member-add-btn{padding:8px 12px;border:1px dashed var(--border);border-radius:8px;font-size:12px;font-weight:500;color:var(--text3);background:transparent;cursor:pointer;transition:all 0.12s;font-family:'Plus Jakarta Sans',sans-serif;width:100%;text-align:center}
-.member-add-btn:hover{border-color:var(--teal);color:var(--teal)}
-.member-remove{width:26px;height:26px;border-radius:6px;border:1px solid var(--border);background:var(--surface2);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text3);flex-shrink:0;transition:all 0.12s}
-.member-remove:hover{border-color:var(--red);color:var(--red);background:var(--red-light)}
-.member-remove svg{width:12px;height:12px}
-.modal-ft{display:flex;justify-content:flex-end;gap:8px;padding:12px 16px;border-top:1px solid var(--border)}
-.btn-cancel{padding:8px 16px;border:1px solid var(--border);border-radius:7px;font-size:13px;font-weight:500;color:var(--text2);background:transparent;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif}
-.btn-cancel:hover{border-color:var(--border)}
-.btn-save{
-  display:inline-flex;align-items:center;gap:6px;
-  padding:8px 20px;border:none;border-radius:7px;font-size:13px;font-weight:600;
-  color:#fff;background:var(--purple);cursor:pointer;
-  font-family:'Plus Jakarta Sans',sans-serif;transition:background 0.15s;min-width:120px;justify-content:center
-}
-.btn-save:hover{background:var(--purple-dark)}
-.btn-save:disabled{opacity:0.6;cursor:not-allowed}
-.spinner{width:14px;height:14px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.7s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 8px 10px;
+      border-radius: 7px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text2);
+      cursor: pointer;
+      border: none;
+      background: none;
+      width: 100%;
+      text-align: left;
+      transition: all 0.12s;
+      font-family: 'Plus Jakarta Sans', sans-serif
+    }
 
-/* TOAST */
-.toast{position:fixed;bottom:20px;right:20px;max-width:300px;padding:11px 15px;border-radius:9px;font-size:13px;font-weight:500;display:flex;align-items:center;gap:8px;z-index:9999;opacity:0;transform:translateY(10px);transition:all 0.22s ease;pointer-events:none;box-shadow:0 4px 20px rgba(0,0,0,0.12)}
-.toast.show{opacity:1;transform:translateY(0)}
-.toast.success{background:var(--green-light);color:#166534;border:1px solid #bbf7d0}
-.toast.fail{background:var(--red-light);color:#991b1b;border:1px solid #fecaca}
-[data-theme="dark"] .toast.success{color:#4ade80}[data-theme="dark"] .toast.fail{color:#f87171}
-.toast svg{width:15px;height:15px;flex-shrink:0}
+    .nav-item svg {
+      width: 15px;
+      height: 15px;
+      flex-shrink: 0;
+      opacity: 0.65
+    }
 
-/* SIDEBAR OVERLAY */
-.s-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.35);z-index:199}
-.s-overlay.open{display:block}
+    .nav-item:hover {
+      background: var(--surface2);
+      color: var(--text)
+    }
 
-/* ── FOOTER ── */
-.dash-footer{
-  padding:14px 20px;border-top:1px solid var(--border);
-  display:flex;align-items:center;justify-content:space-between;
-  flex-wrap:wrap;gap:8px;background:var(--surface);
-  transition:background 0.2s,border-color 0.2s;
-  margin-top:auto;            /* pushes footer to bottom when content is short */
-}
-.dash-footer-copy{font-size:12px;color:var(--text3)}
-.dash-footer-crafted{
-  font-size:12px;color:var(--text3);text-decoration:none;
-  display:flex;align-items:center;gap:4px;transition:color 0.2s
-}
-.dash-footer-crafted:hover{color:var(--purple)}
-.dash-footer-crafted strong{color:var(--text2);font-weight:600}
+    .nav-item:hover svg {
+      opacity: 1
+    }
 
-/* ── RESPONSIVE ── */
-@media(max-width:860px){.stats-row{grid-template-columns:repeat(3,1fr)}}
+    .nav-item.active {
+      background: var(--purple-faint);
+      color: var(--purple);
+      font-weight: 600
+    }
 
-@media(max-width:768px){
-  .sidebar{transform:translateX(-100%)}.sidebar.open{transform:translateX(0)}
-  .main{margin-left:0}.ham-btn{display:flex}
-  .search-box{display:none}
-  .wb-right{display:none}
-}
-@media(max-width:540px){
-  .stats-row{grid-template-columns:1fr 1fr 1fr}
-  .scard-num{font-size:20px}
-  .events-grid{grid-template-columns:1fr}
-  .mrow{grid-template-columns:1fr}
-  .toast{right:10px;left:10px;max-width:unset}
-  .content{padding:12px}
-  .topbar{padding:0 12px}
-  .tabs-row{overflow-x:auto}
-}
-</style>
+    .nav-item.active svg {
+      opacity: 1
+    }
+
+    .nav-count {
+      margin-left: auto;
+      background: var(--purple);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      border-radius: 9px;
+      padding: 1px 6px;
+      min-width: 16px;
+      text-align: center
+    }
+
+    .sidebar-bottom {
+      padding: 8px;
+      border-top: 1px solid var(--border)
+    }
+
+    .user-row {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 9px 10px;
+      border-radius: 8px;
+      background: var(--surface2)
+    }
+
+    .user-av {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--purple-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--purple);
+      flex-shrink: 0
+    }
+
+    .user-info {
+      flex: 1;
+      min-width: 0
+    }
+
+    .user-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis
+    }
+
+    .user-role {
+      font-size: 11px;
+      color: var(--purple);
+      font-weight: 500
+    }
+
+    .logout-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+      padding: 8px 10px;
+      margin-top: 4px;
+      border-radius: 7px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--red);
+      background: none;
+      border: none;
+      cursor: pointer;
+      transition: background 0.12s;
+      font-family: 'Plus Jakarta Sans', sans-serif
+    }
+
+    .logout-btn:hover {
+      background: var(--red-light)
+    }
+
+    .logout-btn svg {
+      width: 14px;
+      height: 14px
+    }
+
+    /* ── MAIN ── */
+    .main {
+      margin-left: var(--sidebar);
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0
+    }
+
+    /* ── TOPBAR ── */
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      height: 54px;
+      gap: 12px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      transition: background 0.2s
+    }
+
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 10px
+    }
+
+    .ham-btn {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+      color: var(--text2);
+      border-radius: 6px
+    }
+
+    .ham-btn svg {
+      width: 18px;
+      height: 18px;
+      display: block
+    }
+
+    .topbar-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text)
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 8px
+    }
+
+    .search-box {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 6px 11px;
+      transition: border-color 0.15s
+    }
+
+    .search-box:focus-within {
+      border-color: var(--purple)
+    }
+
+    .search-box svg {
+      width: 14px;
+      height: 14px;
+      color: var(--text3);
+      flex-shrink: 0
+    }
+
+    .search-box input {
+      border: none;
+      outline: none;
+      font-size: 13px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      color: var(--text);
+      background: transparent;
+      width: 160px
+    }
+
+    .search-box input::placeholder {
+      color: var(--text3)
+    }
+
+    .theme-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--surface2);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text2);
+      transition: all 0.15s;
+      flex-shrink: 0
+    }
+
+    .theme-btn:hover {
+      border-color: var(--purple);
+      color: var(--purple)
+    }
+
+    .theme-btn svg {
+      width: 15px;
+      height: 15px
+    }
+
+    .icon-sun {
+      display: none
+    }
+
+    .icon-moon {
+      display: block
+    }
+
+    [data-theme="dark"] .icon-sun {
+      display: block
+    }
+
+    [data-theme="dark"] .icon-moon {
+      display: none
+    }
+
+    /* ── CONTENT ── */
+    .content {
+      padding: 20px;
+      flex: 1
+    }
+
+    /* WELCOME BANNER */
+    .welcome-banner {
+      background: linear-gradient(135deg, var(--purple) 0%, #4D3BC4 100%);
+      border-radius: 14px;
+      padding: 20px 24px;
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 8px 24px rgba(91, 79, 232, 0.2)
+    }
+
+    .welcome-banner::before {
+      content: '';
+      position: absolute;
+      right: -40px;
+      top: -40px;
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.08)
+    }
+
+    .welcome-banner::after {
+      content: '';
+      position: absolute;
+      right: 60px;
+      bottom: -60px;
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.05)
+    }
+
+    .wb-left {
+      position: relative;
+      z-index: 1
+    }
+
+    .wb-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 3px
+    }
+
+    .wb-sub {
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.75)
+    }
+
+    .wb-right {
+      position: relative;
+      z-index: 1;
+      flex-shrink: 0
+    }
+
+    .wb-stats {
+      display: flex;
+      gap: 20px
+    }
+
+    .wb-stat {
+      text-align: center
+    }
+
+    .wb-stat-num {
+      font-size: 22px;
+      font-weight: 700;
+      color: #fff
+    }
+
+    .wb-stat-label {
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.7);
+      font-weight: 500
+    }
+
+    /* STATS ROW */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 18px
+    }
+
+    .scard {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px;
+      transition: all 0.2s;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03)
+    }
+
+    .scard:hover {
+      border-color: var(--purple);
+      box-shadow: 0 4px 12px rgba(91, 79, 232, 0.08)
+    }
+
+    .scard-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px
+    }
+
+    .scard-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center
+    }
+
+    .scard-icon svg {
+      width: 16px;
+      height: 16px
+    }
+
+    .i-teal {
+      background: var(--purple-faint)
+    }
+
+    .i-amber {
+      background: var(--amber-light)
+    }
+
+    .i-green {
+      background: var(--green-light)
+    }
+
+    .scard-pill {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 20px
+    }
+
+    .pill-teal {
+      background: var(--purple-faint);
+      color: var(--purple)
+    }
+
+    .pill-amber {
+      background: var(--amber-light);
+      color: #92400E
+    }
+
+    .pill-green {
+      background: var(--green-light);
+      color: #166534
+    }
+
+    [data-theme="dark"] .pill-purple {
+      color: #a5b4fc
+    }
+
+    [data-theme="dark"] .pill-amber {
+      color: #fbbf24
+    }
+
+    [data-theme="dark"] .pill-green {
+      color: #4ade80
+    }
+
+    .scard-num {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 2px
+    }
+
+    .scard-label {
+      font-size: 12px;
+      color: var(--text3)
+    }
+
+    /* TABS */
+    .tabs-row {
+      display: flex;
+      gap: 4px;
+      background: var(--surface2);
+      border-radius: 10px;
+      padding: 4px;
+      margin-bottom: 16px;
+      border: 1px solid var(--border)
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 8px 12px;
+      border: none;
+      border-radius: 7px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text2);
+      background: transparent;
+      cursor: pointer;
+      transition: all 0.15s;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      white-space: nowrap
+    }
+
+    .tab-btn.active {
+      background: var(--surface);
+      color: var(--purple);
+      font-weight: 600;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08)
+    }
+
+    .tab-panel {
+      display: none
+    }
+
+    .tab-panel.active {
+      display: block
+    }
+
+    /* SECTION HEAD */
+    .sec-hd {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+      gap: 8px
+    }
+
+    .sec-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text)
+    }
+
+    .filter-row {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap
+    }
+
+    .fchip {
+      padding: 4px 12px;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text2);
+      cursor: pointer;
+      background: var(--surface);
+      transition: all 0.12px;
+      white-space: nowrap
+    }
+
+    .fchip:hover {
+      border-color: var(--purple);
+      color: var(--purple)
+    }
+
+    .fchip.on {
+      background: var(--purple);
+      border-color: var(--purple);
+      color: #fff
+    }
+
+    /* EVENT CARDS */
+    .events-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+      gap: 12px
+    }
+
+    .ecard {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px;
+      transition: border-color 0.2s, background 0.2s, box-shadow 0.2s, transform 0.2s;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05)
+    }
+
+    .ecard:hover {
+      border-color: var(--purple);
+      box-shadow: 0 4px 12px rgba(91, 79, 232, 0.1);
+      transform: translateY(-2px)
+    }
+
+    .ecard.registered {
+      border-color: var(--purple);
+      background: var(--purple-faint)
+    }
+
+    .registered-tag {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: var(--purple);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 20px
+    }
+
+    .ecard-top {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 10px
+    }
+
+    .ecard-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0
+    }
+
+    .ec-hack {
+      background: var(--purple-faint)
+    }
+
+    .ec-quiz {
+      background: var(--amber-light)
+    }
+
+    .ec-cult {
+      background: #FFE4E6
+    }
+
+    .ec-tech {
+      background: var(--teal-light)
+    }
+
+    [data-theme="dark"] .ec-cult {
+      background: #2A0D14
+    }
+
+    .ecard-icon svg {
+      width: 18px;
+      height: 18px
+    }
+
+    .ecard-info {
+      flex: 1;
+      min-width: 0
+    }
+
+    .ecard-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 3px;
+      line-height: 1.3
+    }
+
+    .etype-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600
+    }
+
+    .tb-hack {
+      background: var(--purple-faint);
+      color: var(--purple)
+    }
+
+    .tb-quiz {
+      background: var(--amber-light);
+      color: #92400E
+    }
+
+    .tb-cult {
+      background: #FFE4E6;
+      color: #9F1239
+    }
+
+    .tb-tech {
+      background: var(--teal-light);
+      color: #0F766E
+    }
+
+    [data-theme="dark"] .tb-quiz {
+      color: #fbbf24
+    }
+
+    [data-theme="dark"] .tb-cult {
+      background: #2A0D14;
+      color: #fb7185
+    }
+
+    [data-theme="dark"] .tb-tech {
+      color: #2dd4bf
+    }
+
+    .emeta {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-bottom: 10px;
+      flex-grow: 1
+    }
+
+    .emeta-row {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 12px;
+      color: var(--text2)
+    }
+
+    .emeta-row svg {
+      width: 12px;
+      height: 12px;
+      flex-shrink: 0;
+      color: var(--text3)
+    }
+
+    .edivider {
+      height: 1px;
+      background: var(--border);
+      margin-bottom: 10px
+    }
+
+    .ecard-footer {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: auto
+    }
+
+    .ecard-footer>div:last-child {
+      display: flex;
+      gap: 6px;
+      flex-wrap: nowrap;
+      justify-content: flex-end;
+      width: 100%
+    }
+
+    .estatus {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 12px;
+      color: var(--text2);
+      width: 100%
+    }
+
+    .sdot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      flex-shrink: 0
+    }
+
+    .sdot-live {
+      background: var(--green)
+    }
+
+    .sdot-up {
+      background: var(--amber)
+    }
+
+    .sdot-done {
+      background: var(--text3)
+    }
+
+    .btn-register {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 6px 12px;
+      border: none;
+      border-radius: 7px;
+      font-size: 11px;
+      font-weight: 600;
+      color: #fff;
+      background: var(--purple);
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      white-space: nowrap;
+      flex-shrink: 0;
+      box-shadow: 0 2px 4px rgba(91, 79, 232, 0.2)
+    }
+
+    .btn-register:hover {
+      background: var(--purple-dark);
+      box-shadow: 0 4px 8px rgba(91, 79, 232, 0.3);
+      transform: translateY(-1px)
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      border-radius: 7px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background: var(--surface2);
+      color: var(--text2);
+      transition: all 0.12s;
+      white-space: nowrap;
+      font-family: 'Plus Jakarta Sans', sans-serif
+    }
+
+    .btn:hover {
+      border-color: var(--border2);
+      color: var(--text)
+    }
+
+    .btn-primary {
+      background: var(--purple);
+      border-color: var(--purple);
+      color: #fff
+    }
+
+    .btn-primary:hover {
+      background: var(--purple-dark);
+      border-color: var(--purple-dark);
+      color: #fff
+    }
+
+    .btn-success {
+      background: var(--green-light);
+      border-color: #bbf7d0;
+      color: #166534
+    }
+
+    .btn-success:hover {
+      background: #dcfce7
+    }
+
+    [data-theme="dark"] .btn-success {
+      color: #4ade80;
+      border-color: #166534
+    }
+
+    .btn-danger {
+      background: var(--red-light);
+      border-color: #fecaca;
+      color: var(--red)
+    }
+
+    .btn-danger:hover {
+      background: #fee2e2
+    }
+
+    .btn-sm {
+      padding: 4px 10px;
+      font-size: 11px;
+      border-radius: 6px
+    }
+
+    .btn-xs {
+      padding: 3px 8px;
+      font-size: 10px;
+      border-radius: 5px
+    }
+    
+
+    .btn-register.registered {
+      background: var(--surface2);
+      color: var(--text3);
+      border: 1px solid var(--border);
+      cursor: default;
+      box-shadow: none
+    }
+
+    .btn-view {
+      padding: 6px 10px;
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text2);
+      background: transparent;
+      cursor: pointer;
+      transition: all 0.12s;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      white-space: nowrap;
+      flex-shrink: 0
+    }
+
+    .btn-view:hover {
+      border-color: var(--teal);
+      color: var(--teal)
+    }
+
+    /* STUDENT SCHEDULE TIMELINE VIEW */
+    .timeline-container {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      margin: 16px 0
+    }
+
+    .timeline-item-view {
+      display: flex;
+      gap: 12px;
+      padding: 16px 0;
+      border-left: 3px solid var(--teal);
+      padding-left: 18px;
+      margin-left: 0;
+      position: relative
+    }
+
+    .timeline-item-view::before {
+      content: '';
+      width: 12px;
+      height: 12px;
+      background: var(--teal);
+      border-radius: 50%;
+      border: 4px solid var(--surface);
+      position: absolute;
+      left: -8.5px;
+      top: 18px
+    }
+
+    .timeline-view-time {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 120px
+    }
+
+    .timeline-view-time-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text3);
+      text-transform: uppercase;
+      letter-spacing: 0.5px
+    }
+
+    .timeline-view-time-value {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--teal)
+    }
+
+    .timeline-view-content {
+      flex: 1
+    }
+
+    .timeline-view-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 4px
+    }
+
+    .timeline-view-desc {
+      font-size: 13px;
+      color: var(--text2);
+      margin-bottom: 8px;
+      line-height: 1.4
+    }
+
+    .timeline-view-meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 12px;
+      color: var(--text3)
+    }
+
+    /* MY REGISTRATIONS */
+    .reg-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px
+    }
+
+    .reg-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      transition: all 0.2s;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05)
+    }
+
+    .reg-card:hover {
+      border-color: var(--purple);
+      box-shadow: 0 4px 12px rgba(91, 79, 232, 0.1);
+      transform: translateX(4px)
+    }
+
+    .reg-event-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0
+    }
+
+    .reg-info {
+      flex: 1;
+      min-width: 0
+    }
+
+    .reg-event-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 2px
+    }
+
+    .reg-team-name {
+      font-size: 12px;
+      color: var(--text2);
+      margin-bottom: 4px
+    }
+
+    .reg-meta {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap
+    }
+
+    .reg-meta-item {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      color: var(--text3)
+    }
+
+    .reg-meta-item svg {
+      width: 11px;
+      height: 11px
+    }
+
+    .reg-status {
+      flex-shrink: 0
+    }
+
+    .badge-confirmed {
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      background: var(--green-light);
+      color: #166534
+    }
+
+    .badge-upcoming {
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      background: var(--amber-light);
+      color: #92400E
+    }
+
+    .badge-done {
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      background: var(--surface2);
+      color: var(--text3)
+    }
+
+    [data-theme="dark"] .badge-confirmed {
+      color: #4ade80
+    }
+
+    [data-theme="dark"] .badge-upcoming {
+      color: #fbbf24
+    }
+
+    /* EMPTY STATE */
+    .empty {
+      text-align: center;
+      padding: 40px 16px
+    }
+
+    .empty svg {
+      width: 40px;
+      height: 40px;
+      color: var(--text3);
+      margin: 0 auto 10px;
+      display: block
+    }
+
+    .empty h3 {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 4px
+    }
+
+    .empty p {
+      font-size: 12px;
+      color: var(--text3)
+    }
+
+    /* ── REGISTER MODAL ── */
+    .overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.45);
+      z-index: 500;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem
+    }
+
+    .overlay.open {
+      display: flex
+    }
+
+    .modal {
+      background: var(--surface);
+      border-radius: 12px;
+      width: 100%;
+      max-width: 480px;
+      max-height: 90vh;
+      overflow-y: auto;
+      animation: mIn 0.2s ease;
+      border: 1px solid var(--border)
+    }
+
+    @keyframes mIn {
+      from {
+        opacity: 0;
+        transform: translateY(8px) scale(0.97)
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1)
+      }
+    }
+
+    .modal-hd {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      background: var(--surface);
+      z-index: 1
+    }
+
+    .modal-hd-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text)
+    }
+
+    .modal-hd-sub {
+      font-size: 12px;
+      color: var(--teal);
+      font-weight: 500;
+      margin-top: 1px
+    }
+
+    .modal-x {
+      width: 28px;
+      height: 28px;
+      border-radius: 7px;
+      background: var(--surface2);
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text2)
+    }
+
+    .modal-x svg {
+      width: 14px;
+      height: 14px
+    }
+
+    .modal-body {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px
+    }
+
+    .mfield label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text2);
+      margin-bottom: 5px
+    }
+
+    .mfield input,
+    .mfield select {
+      width: 100%;
+      padding: 9px 11px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 13px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      color: var(--text);
+      background: var(--surface2);
+      outline: none;
+      transition: border-color 0.15s
+    }
+
+    .mfield input:focus,
+    .mfield select:focus {
+      border-color: var(--purple);
+      background: var(--surface)
+    }
+
+    .mrow {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px
+    }
+
+    .members-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px
+    }
+
+    .member-row {
+      display: flex;
+      gap: 6px;
+      align-items: center
+    }
+
+    .member-row input {
+      flex: 1
+    }
+
+    .member-add-btn {
+      padding: 8px 12px;
+      border: 1px dashed var(--border);
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text3);
+      background: transparent;
+      cursor: pointer;
+      transition: all 0.12s;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      width: 100%;
+      text-align: center
+    }
+
+    .member-add-btn:hover {
+      border-color: var(--teal);
+      color: var(--teal)
+    }
+
+    .member-remove {
+      width: 26px;
+      height: 26px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--surface2);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text3);
+      flex-shrink: 0;
+      transition: all 0.12s
+    }
+
+    .member-remove:hover {
+      border-color: var(--red);
+      color: var(--red);
+      background: var(--red-light)
+    }
+
+    .member-remove svg {
+      width: 12px;
+      height: 12px
+    }
+
+    .modal-ft {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 16px;
+      border-top: 1px solid var(--border)
+    }
+
+    .btn-cancel {
+      padding: 8px 16px;
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text2);
+      background: transparent;
+      cursor: pointer;
+      font-family: 'Plus Jakarta Sans', sans-serif
+    }
+
+    .btn-cancel:hover {
+      border-color: var(--border)
+    }
+
+    .btn-save {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 20px;
+      border: none;
+      border-radius: 7px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #fff;
+      background: var(--purple);
+      cursor: pointer;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      transition: background 0.15s;
+      min-width: 120px;
+      justify-content: center
+    }
+
+    .btn-save:hover {
+      background: var(--purple-dark)
+    }
+
+    .btn-save:disabled {
+      opacity: 0.6;
+      cursor: not-allowed
+    }
+
+    .spinner {
+      width: 14px;
+      height: 14px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg)
+      }
+    }
+
+    /* CARD STYLES FOR EVENT MODAL */
+    .card {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden
+    }
+
+    .card-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .card-row:last-child {
+      border-bottom: none
+    }
+
+    .card-row svg {
+      width: 16px;
+      height: 16px;
+      color: var(--text2);
+      flex-shrink: 0
+    }
+
+    .card-row-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text2);
+      min-width: 80px
+    }
+
+    .card-row-value {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text);
+      flex: 1;
+      text-align: right
+    }
+
+    /* TOAST */
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      max-width: 300px;
+      padding: 11px 15px;
+      border-radius: 9px;
+      font-size: 13px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      z-index: 9999;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all 0.22s ease;
+      pointer-events: none;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12)
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0)
+    }
+
+    .toast.success {
+      background: var(--green-light);
+      color: #166534;
+      border: 1px solid #bbf7d0
+    }
+
+    .toast.fail {
+      background: var(--red-light);
+      color: #991b1b;
+      border: 1px solid #fecaca
+    }
+
+    [data-theme="dark"] .toast.success {
+      color: #4ade80
+    }
+
+    [data-theme="dark"] .toast.fail {
+      color: #f87171
+    }
+
+    .toast svg {
+      width: 15px;
+      height: 15px;
+      flex-shrink: 0
+    }
+
+    /* SIDEBAR OVERLAY */
+    .s-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.35);
+      z-index: 199
+    }
+
+    .s-overlay.open {
+      display: block
+    }
+
+    /* ── SKELETON LOADER ── */
+    .skeleton {
+      background: linear-gradient(90deg, var(--surface2) 0%, var(--border) 50%, var(--surface2) 100%);
+      background-size: 200% 100%;
+      animation: shimmer 2s infinite;
+      border-radius: 8px;
+      height: 16px
+    }
+
+    @keyframes shimmer {
+      0% {
+        background-position: 200% 0
+      }
+
+      100% {
+        background-position: -200% 0
+      }
+    }
+
+    .skeleton-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px;
+      opacity: 0.6
+    }
+
+    .skeleton-card-top {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 12px
+    }
+
+    .skeleton-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 9px;
+      flex-shrink: 0;
+      background: var(--surface2)
+    }
+
+    .skeleton-card-content {
+      flex: 1
+    }
+
+    .skeleton-line {
+      height: 12px;
+      background: var(--surface2);
+      border-radius: 4px;
+      margin-bottom: 8px;
+      width: 100%
+    }
+
+    .skeleton-line:last-child {
+      margin-bottom: 0
+    }
+
+    .skeleton-line.short {
+      width: 60%
+    }
+
+    .skeleton-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px
+    }
+
+    .skeleton-stat {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px;
+      opacity: 0.6
+    }
+
+    .skeleton-banner {
+      background: linear-gradient(135deg, rgba(91, 79, 232, 0.1), rgba(10, 191, 163, 0.1));
+      border-radius: 14px;
+      padding: 20px 24px;
+      margin-bottom: 18px;
+      height: 100px;
+      animation: shimmer 2s infinite
+    }
+
+    /* ── FOOTER ── */
+    .dash-footer {
+      padding: 14px 20px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+      background: var(--surface);
+      transition: background 0.2s, border-color 0.2s;
+      margin-top: auto;
+      /* pushes footer to bottom when content is short */
+    }
+
+    .dash-footer-copy {
+      font-size: 12px;
+      color: var(--text3)
+    }
+
+    .dash-footer-crafted {
+      font-size: 12px;
+      color: var(--text3);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      transition: color 0.2s
+    }
+
+    .dash-footer-crafted:hover {
+      color: var(--purple)
+    }
+
+    .dash-footer-crafted strong {
+      color: var(--text2);
+      font-weight: 600
+    }
+
+    /* ── RESPONSIVE ── */
+    @media(max-width:860px) {
+      .stats-row {
+        grid-template-columns: repeat(3, 1fr)
+      }
+    }
+
+    @media(max-width:768px) {
+      .sidebar {
+        transform: translateX(-100%)
+      }
+
+      .sidebar.open {
+        transform: translateX(0)
+      }
+
+      .main {
+        margin-left: 0
+      }
+
+      .ham-btn {
+        display: flex
+      }
+
+      .search-box {
+        display: none
+      }
+
+      .wb-right {
+        display: none
+      }
+    }
+
+    @media(max-width:540px) {
+      .stats-row {
+        grid-template-columns: 1fr 1fr 1fr
+      }
+
+      .scard-num {
+        font-size: 20px
+      }
+
+      .events-grid {
+        grid-template-columns: 1fr
+      }
+
+      .mrow {
+        grid-template-columns: 1fr
+      }
+
+      .toast {
+        right: 10px;
+        left: 10px;
+        max-width: unset
+      }
+
+      .content {
+        padding: 12px
+      }
+
+      .topbar {
+        padding: 0 12px
+      }
+
+      .tabs-row {
+        overflow-x: auto
+      }
+    }
+  </style>
 </head>
+
 <body>
 
-<div class="toast" id="toast">
-  <svg id="ti" viewBox="0 0 20 20" fill="currentColor"></svg>
-  <span id="tm"></span>
-</div>
+  <div class="toast" id="toast">
+    <svg id="ti" viewBox="0 0 20 20" fill="currentColor"></svg>
+    <span id="tm"></span>
+  </div>
 
-<div class="s-overlay" id="sOverlay" onclick="closeSidebar()"></div>
+  <div class="s-overlay" id="sOverlay" onclick="closeSidebar()"></div>
 
-<div class="app">
+  <div class="app">
 
-  <!-- ── SIDEBAR ── -->
-  <aside class="sidebar" id="sidebar">
-    <a href="home.html" class="sidebar-logo">
-      <div class="logo-icon">
-        <svg viewBox="0 0 16 16" fill="none">
-          <rect x="1" y="4" width="14" height="10" rx="2" fill="rgba(255,255,255,0.15)" stroke="white" stroke-width="1.2"/>
-          <path d="M5 4V3a3 3 0 016 0v1" stroke="white" stroke-width="1.2" stroke-linecap="round"/>
-          <circle cx="8" cy="9" r="1.5" fill="white"/>
-        </svg>
-      </div>
-      <span class="logo-text">Event<span>Hub</span></span>
-    </a>
-
-    <div class="student-badge">
-      <svg viewBox="0 0 14 14" fill="none"><circle cx="7" cy="5" r="3" stroke="currentColor" stroke-width="1.3"/><path d="M2 13c0-2.8 2.2-5 5-5s5 2.2 5 5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
-      Student Portal
-    </div>
-
-    <div class="sidebar-nav">
-      <span class="nav-label">Menu</span>
-      <button class="nav-item active" onclick="switchTab('browse');navClick(this,'Browse Events')">
-        <svg viewBox="0 0 16 16" fill="none"><rect x="1" y="3" width="14" height="11" rx="2" stroke="currentColor" stroke-width="1.3"/><path d="M5 1v4M11 1v4M1 7h14" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
-        Browse Events
-      </button>
-      <button class="nav-item" onclick="switchTab('myteams');navClick(this,'My Registrations')">
-        <svg viewBox="0 0 16 16" fill="none"><circle cx="6" cy="5" r="3" stroke="currentColor" stroke-width="1.3"/><path d="M1 14c0-3 2.2-5 5-5s5 2 5 5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M12 7v4M14 9h-4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
-        My Registrations
-        <span class="nav-count" id="reg-count">0</span>
-      </button>
-      <button class="nav-item" onclick="switchTab('upcoming');navClick(this,'Upcoming Events')">
-        <svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.3"/><path d="M8 4.5V8l2.5 1.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
-        Upcoming Events
-      </button>
-      <button class="nav-item" onclick="toggleTheme()">
-        <svg viewBox="0 0 16 16" fill="none"><path d="M11.5 10.9A5.6 5.6 0 015.1 4.5a6.4 6.4 0 106.4 6.4z" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        Toggle Theme
-      </button>
-    </div>
-
-    <div class="sidebar-bottom">
-      <div class="user-row">
-        <div class="user-av" id="uav">S</div>
-        <div class="user-info">
-          <div class="user-name" id="uname">—</div>
-          <div class="user-role">Student</div>
+    <!-- ── SIDEBAR ── -->
+    <aside class="sidebar" id="sidebar">
+      <a href="home.html" class="sidebar-logo">
+        <div class="logo-icon">
+          <svg viewBox="0 0 16 16" fill="none">
+            <rect x="1" y="4" width="14" height="10" rx="2" fill="rgba(255,255,255,0.15)" stroke="white"
+              stroke-width="1.2" />
+            <path d="M5 4V3a3 3 0 016 0v1" stroke="white" stroke-width="1.2" stroke-linecap="round" />
+            <circle cx="8" cy="9" r="1.5" fill="white" />
+          </svg>
         </div>
-      </div>
-      <button class="logout-btn" onclick="logout()">
-        <svg viewBox="0 0 16 16" fill="none"><path d="M6 2H3a1 1 0 00-1 1v10a1 1 0 001 1h3M10 11l3-3-3-3M13 8H6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        Sign out
-      </button>
-    </div>
-  </aside>
-
-  <!-- ── MAIN ── -->
-  <div class="main">
-
-    <!-- TOPBAR -->
-    <div class="topbar">
-      <div class="topbar-left">
-        <button class="ham-btn" onclick="toggleSidebar()">
-          <svg viewBox="0 0 20 20" fill="none"><path d="M3 6h14M3 10h14M3 14h14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-        </button>
-        <div class="topbar-title" id="page-title">Browse Events</div>
-      </div>
-      <div class="topbar-right">
-        <div class="search-box">
-          <svg viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="4.5" stroke="currentColor" stroke-width="1.3"/><path d="M10 10l3.5 3.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
-          <input type="text" placeholder="Search events..." oninput="filterEvents(this.value)">
-        </div>
-      </div>
-    </div>
-
-    <!-- CONTENT -->
-    <div class="content">
-
-      <!-- WELCOME BANNER -->
-      <div class="welcome-banner">
-        <div class="wb-left">
-          <div class="wb-title" id="welcome">Hey there 👋</div>
-          <div class="wb-sub">Discover events, register your team and track your participation.</div>
-        </div>
-        <div class="wb-right">
-          <div class="wb-stats">
-            <div class="wb-stat">
-              <div class="wb-stat-num" id="wb-total">0</div>
-              <div class="wb-stat-label">Events</div>
-            </div>
-            <div class="wb-stat">
-              <div class="wb-stat-num" id="wb-regs">0</div>
-              <div class="wb-stat-label">Registered</div>
-            </div>
-            <div class="wb-stat">
-              <div class="wb-stat-num" id="wb-up">0</div>
-              <div class="wb-stat-label">Upcoming</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- STATS -->
-      <div class="stats-row">
-        <div class="scard">
-          <div class="scard-top">
-            <div class="scard-icon i-purple"><svg viewBox="0 0 16 16" fill="none"><rect x="1" y="3" width="14" height="11" rx="2" stroke="#5B4FE8" stroke-width="1.3"/><path d="M5 1v4M11 1v4M1 7h14" stroke="#5B4FE8" stroke-width="1.3" stroke-linecap="round"/></svg></div>
-            <span class="scard-pill pill-purple">Total</span>
-          </div>
-          <div class="scard-num" id="s-total">0</div>
-          <div class="scard-label">Available Events</div>
-        </div>
-        <div class="scard">
-          <div class="scard-top">
-            <div class="scard-icon i-amber"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="#F59E0B" stroke-width="1.3"/><path d="M8 5v3.5l2 1.5" stroke="#F59E0B" stroke-width="1.3" stroke-linecap="round"/></svg></div>
-            <span class="scard-pill pill-amber">Upcoming</span>
-          </div>
-          <div class="scard-num" id="s-up">0</div>
-          <div class="scard-label">Upcoming Events</div>
-        </div>
-        <div class="scard">
-          <div class="scard-top">
-            <div class="scard-icon i-green"><svg viewBox="0 0 16 16" fill="none"><circle cx="6" cy="5" r="3" stroke="#22C55E" stroke-width="1.3"/><path d="M1 14c0-3 2.2-5 5-5s5 2 5 5" stroke="#22C55E" stroke-width="1.3" stroke-linecap="round"/></svg></div>
-            <span class="scard-pill pill-green">Mine</span>
-          </div>
-          <div class="scard-num" id="s-regs">0</div>
-          <div class="scard-label">My Registrations</div>
-        </div>
-      </div>
-
-      <!-- TABS -->
-      <div class="tabs-row">
-        <button class="tab-btn active" id="tab-browse" onclick="switchTab('browse')">Browse Events</button>
-        <button class="tab-btn" id="tab-myteams" onclick="switchTab('myteams')">My Registrations</button>
-        <button class="tab-btn" id="tab-upcoming" onclick="switchTab('upcoming')">Upcoming I Joined</button>
-      </div>
-
-      <!-- TAB: BROWSE EVENTS -->
-      <div class="tab-panel active" id="panel-browse">
-        <div class="sec-hd">
-          <div class="sec-title">All Events</div>
-          <div class="filter-row">
-            <div class="fchip on" onclick="setFilter('All',this)">All</div>
-            <div class="fchip" onclick="setFilter('Hackathon',this)">Hackathon</div>
-            <div class="fchip" onclick="setFilter('Quiz',this)">Quiz</div>
-            <div class="fchip" onclick="setFilter('Cultural',this)">Cultural</div>
-            <div class="fchip" onclick="setFilter('Techtalk',this)">Techtalk</div>
-          </div>
-        </div>
-        <div class="events-grid" id="egrid"></div>
-      </div>
-
-      <!-- TAB: MY REGISTRATIONS -->
-      <div class="tab-panel" id="panel-myteams">
-        <div class="sec-hd">
-          <div class="sec-title">My Registrations</div>
-        </div>
-        <div class="reg-list" id="reg-list">
-          <div class="empty">
-            <svg viewBox="0 0 40 40" fill="none"><circle cx="15" cy="12" r="6" stroke="currentColor" stroke-width="1.8"/><path d="M4 34c0-6 4.9-11 11-11s11 4.9 11 11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M28 18l2.5 2.5L36 14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            <h3>No registrations yet</h3>
-            <p>Browse events and register your team to get started.</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- TAB: UPCOMING I JOINED -->
-      <div class="tab-panel" id="panel-upcoming">
-        <div class="sec-hd">
-          <div class="sec-title">Upcoming Events I'm Part Of</div>
-        </div>
-        <div class="reg-list" id="upcoming-list">
-          <div class="empty">
-            <svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="16" stroke="currentColor" stroke-width="1.8"/><path d="M20 12v8l5 3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-            <h3>No upcoming events</h3>
-            <p>Register for upcoming events and they'll appear here.</p>
-          </div>
-        </div>
-      </div>
-
-    </div><!-- /.content  ✅ FIXED: .content closes HERE -->
-
-    <!-- FOOTER sits OUTSIDE .content, INSIDE .main ✅ -->
-    <div class="dash-footer">
-      <span class="dash-footer-copy">© 2025 EventHub College. All rights reserved.</span>
-      <a href="https://my-portfoliyo-nine.vercel.app/" target="_blank" rel="noopener" class="dash-footer-crafted">
-        Crafted with ❤️ by <strong>Shivam Chaudhary</strong>
+        <span class="logo-text">Event<span>Hub</span></span>
       </a>
-    </div>
 
-  </div><!-- /.main -->
-</div><!-- /.app -->
+      <div class="student-badge">
+        <svg viewBox="0 0 14 14" fill="none">
+          <circle cx="7" cy="5" r="3" stroke="currentColor" stroke-width="1.3" />
+          <path d="M2 13c0-2.8 2.2-5 5-5s5 2.2 5 5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" />
+        </svg>
+        Student Portal
+      </div>
 
-<!-- ── REGISTER TEAM MODAL ── -->
-<div class="overlay" id="reg-modal" onclick="if(event.target===this)closeRegModal()">
-  <div class="modal">
-    <div class="modal-hd">
-      <div>
-        <div class="modal-hd-title">Register your team</div>
-        <div class="modal-hd-sub" id="reg-modal-event">—</div>
+      <div class="sidebar-nav">
+        <span class="nav-label">Menu</span>
+        <button class="nav-item active" onclick="switchTab('browse');navClick(this,'Browse Events')">
+          <svg viewBox="0 0 16 16" fill="none">
+            <rect x="1" y="3" width="14" height="11" rx="2" stroke="currentColor" stroke-width="1.3" />
+            <path d="M5 1v4M11 1v4M1 7h14" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" />
+          </svg>
+          Browse Events
+        </button>
+        <button class="nav-item" onclick="switchTab('myteams');navClick(this,'My Registrations')">
+          <svg viewBox="0 0 16 16" fill="none">
+            <circle cx="6" cy="5" r="3" stroke="currentColor" stroke-width="1.3" />
+            <path d="M1 14c0-3 2.2-5 5-5s5 2 5 5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" />
+            <path d="M12 7v4M14 9h-4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" />
+          </svg>
+          My Registrations
+          <span class="nav-count" id="reg-count">0</span>
+        </button>
+        <button class="nav-item" onclick="switchTab('upcoming');navClick(this,'Upcoming Events')">
+          <svg viewBox="0 0 16 16" fill="none">
+            <circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.3" />
+            <path d="M8 4.5V8l2.5 1.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" />
+          </svg>
+          Upcoming Events
+        </button>
+        <button class="nav-item" onclick="toggleTheme()">
+          <svg viewBox="0 0 16 16" fill="none">
+            <path d="M11.5 10.9A5.6 5.6 0 015.1 4.5a6.4 6.4 0 106.4 6.4z" stroke="currentColor" stroke-width="1.3"
+              stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+          Toggle Theme
+        </button>
       </div>
-      <button class="modal-x" onclick="closeRegModal()">
-        <svg viewBox="0 0 16 16" fill="none"><path d="M3 3l10 10M13 3L3 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-      </button>
-    </div>
-    <div class="modal-body">
-      <div class="mrow">
-        <div class="mfield"><label>Team name *</label><input id="r-teamname" placeholder="e.g. Code Crushers"></div>
-        <div class="mfield"><label>Team lead name *</label><input id="r-leadname" placeholder="Your name"></div>
-      </div>
-      <div class="mrow">
-        <div class="mfield"><label>College ID *</label><input id="r-collegeid" placeholder="e.g. 1RV21CS001"></div>
-        <div class="mfield"><label>Contact email *</label><input type="email" id="r-email" placeholder="you@college.edu"></div>
-      </div>
-      <div class="mfield">
-        <label>Team members</label>
-        <div class="members-list" id="members-list">
-          <div class="member-row">
-            <input placeholder="Member 1 name" class="member-input">
-            <button class="member-remove" onclick="removeMember(this)"><svg viewBox="0 0 12 12" fill="none"><path d="M2 2l8 8M10 2l-8 8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></button>
+
+      <div class="sidebar-bottom">
+        <div class="user-row">
+          <div class="user-av" id="uav">S</div>
+          <div class="user-info">
+            <div class="user-name" id="uname">—</div>
+            <div class="user-role">Student</div>
           </div>
         </div>
-        <button class="member-add-btn" onclick="addMember()">+ Add member</button>
+        <button class="logout-btn" onclick="logout()">
+          <svg viewBox="0 0 16 16" fill="none">
+            <path d="M6 2H3a1 1 0 00-1 1v10a1 1 0 001 1h3M10 11l3-3-3-3M13 8H6" stroke="currentColor" stroke-width="1.3"
+              stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+          Sign out
+        </button>
+      </div>
+    </aside>
+
+    <!-- ── MAIN ── -->
+    <div class="main">
+
+      <!-- TOPBAR -->
+      <div class="topbar">
+        <div class="topbar-left">
+          <button class="ham-btn" onclick="toggleSidebar()">
+            <svg viewBox="0 0 20 20" fill="none">
+              <path d="M3 6h14M3 10h14M3 14h14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            </svg>
+          </button>
+          <div class="topbar-title" id="page-title">Browse Events</div>
+        </div>
+        <div class="topbar-right">
+          <div class="search-box">
+            <svg viewBox="0 0 16 16" fill="none">
+              <circle cx="6.5" cy="6.5" r="4.5" stroke="currentColor" stroke-width="1.3" />
+              <path d="M10 10l3.5 3.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" />
+            </svg>
+            <input type="text" placeholder="Search events..." oninput="filterEvents(this.value)">
+          </div>
+        </div>
+      </div>
+
+      <!-- CONTENT -->
+      <div class="content">
+
+        <!-- WELCOME BANNER (SKELETON) -->
+        <div class="skeleton-banner" id="welcome-banner-skeleton"></div>
+        <div class="welcome-banner" id="welcome-banner" style="display:none">
+          <div class="wb-left">
+            <div class="wb-title" id="welcome">Hey there 👋</div>
+            <div class="wb-sub">Discover events, register your team and track your participation.</div>
+          </div>
+          <div class="wb-right">
+            <div class="wb-stats">
+              <div class="wb-stat">
+                <div class="wb-stat-num" id="wb-total">0</div>
+                <div class="wb-stat-label">Events</div>
+              </div>
+              <div class="wb-stat">
+                <div class="wb-stat-num" id="wb-regs">0</div>
+                <div class="wb-stat-label">Registered</div>
+              </div>
+              <div class="wb-stat">
+                <div class="wb-stat-num" id="wb-up">0</div>
+                <div class="wb-stat-label">Upcoming</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- STATS (SKELETON) -->
+        <div class="skeleton-stats" id="stats-skeleton">
+          <div class="skeleton-stat">
+            <div style="display:flex;gap:10px;margin-bottom:12px">
+              <div class="skeleton-icon"></div>
+              <div style="flex:1">
+                <div class="skeleton-line"></div>
+                <div class="skeleton-line short"></div>
+              </div>
+            </div>
+            <div class="skeleton-line" style="height:24px;margin-bottom:8px"></div>
+            <div class="skeleton-line short"></div>
+          </div>
+          <div class="skeleton-stat">
+            <div style="display:flex;gap:10px;margin-bottom:12px">
+              <div class="skeleton-icon"></div>
+              <div style="flex:1">
+                <div class="skeleton-line"></div>
+                <div class="skeleton-line short"></div>
+              </div>
+            </div>
+            <div class="skeleton-line" style="height:24px;margin-bottom:8px"></div>
+            <div class="skeleton-line short"></div>
+          </div>
+          <div class="skeleton-stat">
+            <div style="display:flex;gap:10px;margin-bottom:12px">
+              <div class="skeleton-icon"></div>
+              <div style="flex:1">
+                <div class="skeleton-line"></div>
+                <div class="skeleton-line short"></div>
+              </div>
+            </div>
+            <div class="skeleton-line" style="height:24px;margin-bottom:8px"></div>
+            <div class="skeleton-line short"></div>
+          </div>
+        </div>
+        <div class="stats-row" id="stats-row" style="display:none">
+          <div class="scard">
+            <div class="scard-top">
+              <div class="scard-icon i-purple"><svg viewBox="0 0 16 16" fill="none">
+                  <rect x="1" y="3" width="14" height="11" rx="2" stroke="#5B4FE8" stroke-width="1.3" />
+                  <path d="M5 1v4M11 1v4M1 7h14" stroke="#5B4FE8" stroke-width="1.3" stroke-linecap="round" />
+                </svg></div>
+              <span class="scard-pill pill-purple">Total</span>
+            </div>
+            <div class="scard-num" id="s-total">0</div>
+            <div class="scard-label">Available Events</div>
+          </div>
+          <div class="scard">
+            <div class="scard-top">
+              <div class="scard-icon i-amber"><svg viewBox="0 0 16 16" fill="none">
+                  <circle cx="8" cy="8" r="6.5" stroke="#F59E0B" stroke-width="1.3" />
+                  <path d="M8 5v3.5l2 1.5" stroke="#F59E0B" stroke-width="1.3" stroke-linecap="round" />
+                </svg></div>
+              <span class="scard-pill pill-amber">Upcoming</span>
+            </div>
+            <div class="scard-num" id="s-up">0</div>
+            <div class="scard-label">Upcoming Events</div>
+          </div>
+          <div class="scard">
+            <div class="scard-top">
+              <div class="scard-icon i-green"><svg viewBox="0 0 16 16" fill="none">
+                  <circle cx="6" cy="5" r="3" stroke="#22C55E" stroke-width="1.3" />
+                  <path d="M1 14c0-3 2.2-5 5-5s5 2 5 5" stroke="#22C55E" stroke-width="1.3" stroke-linecap="round" />
+                </svg></div>
+              <span class="scard-pill pill-green">Mine</span>
+            </div>
+            <div class="scard-num" id="s-regs">0</div>
+            <div class="scard-label">My Registrations</div>
+          </div>
+        </div>
+
+        <!-- TABS -->
+        <div class="tabs-row">
+          <button class="tab-btn active" id="tab-browse" onclick="switchTab('browse')">Browse Events</button>
+          <button class="tab-btn" id="tab-myteams" onclick="switchTab('myteams')">My Registrations</button>
+          <button class="tab-btn" id="tab-upcoming" onclick="switchTab('upcoming')">Upcoming I Joined</button>
+        </div>
+
+        <!-- TAB: BROWSE EVENTS -->
+        <div class="tab-panel active" id="panel-browse">
+          <div class="sec-hd">
+            <div class="sec-title">All Events</div>
+            <div class="filter-row">
+              <div class="fchip on" onclick="setFilter('All',this)">All</div>
+              <div class="fchip" onclick="setFilter('Hackathon',this)">Hackathon</div>
+              <div class="fchip" onclick="setFilter('Quiz',this)">Quiz</div>
+              <div class="fchip" onclick="setFilter('Cultural',this)">Cultural</div>
+              <div class="fchip" onclick="setFilter('Techtalk',this)">Techtalk</div>
+            </div>
+          </div>
+          <div class="events-grid" id="egrid">
+            <div class="skeleton-card">
+              <div class="skeleton-card-top">
+                <div class="skeleton-icon"></div>
+                <div class="skeleton-card-content">
+                  <div class="skeleton-line"></div>
+                  <div class="skeleton-line short"></div>
+                </div>
+              </div>
+              <div class="skeleton-line" style="height:30px;margin:10px 0"></div>
+              <div class="skeleton-line"></div>
+              <div class="skeleton-line"></div>
+            </div>
+            <div class="skeleton-card">
+              <div class="skeleton-card-top">
+                <div class="skeleton-icon"></div>
+                <div class="skeleton-card-content">
+                  <div class="skeleton-line"></div>
+                  <div class="skeleton-line short"></div>
+                </div>
+              </div>
+              <div class="skeleton-line" style="height:30px;margin:10px 0"></div>
+              <div class="skeleton-line"></div>
+              <div class="skeleton-line"></div>
+            </div>
+            <div class="skeleton-card">
+              <div class="skeleton-card-top">
+                <div class="skeleton-icon"></div>
+                <div class="skeleton-card-content">
+                  <div class="skeleton-line"></div>
+                  <div class="skeleton-line short"></div>
+                </div>
+              </div>
+              <div class="skeleton-line" style="height:30px;margin:10px 0"></div>
+              <div class="skeleton-line"></div>
+              <div class="skeleton-line"></div>
+            </div>
+            <div class="skeleton-card">
+              <div class="skeleton-card-top">
+                <div class="skeleton-icon"></div>
+                <div class="skeleton-card-content">
+                  <div class="skeleton-line"></div>
+                  <div class="skeleton-line short"></div>
+                </div>
+              </div>
+              <div class="skeleton-line" style="height:30px;margin:10px 0"></div>
+              <div class="skeleton-line"></div>
+              <div class="skeleton-line"></div>
+            </div>
+            <div class="skeleton-card">
+              <div class="skeleton-card-top">
+                <div class="skeleton-icon"></div>
+                <div class="skeleton-card-content">
+                  <div class="skeleton-line"></div>
+                  <div class="skeleton-line short"></div>
+                </div>
+              </div>
+              <div class="skeleton-line" style="height:30px;margin:10px 0"></div>
+              <div class="skeleton-line"></div>
+              <div class="skeleton-line"></div>
+            </div>
+            <div class="skeleton-card" style="margin-right:0">
+              <div class="skeleton-card-top">
+                <div class="skeleton-icon"></div>
+                <div class="skeleton-card-content">
+                  <div class="skeleton-line"></div>
+                  <div class="skeleton-line short"></div>
+                </div>
+              </div>
+              <div class="skeleton-line" style="height:30px;margin:10px 0"></div>
+              <div class="skeleton-line"></div>
+              <div class="skeleton-line"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB: MY REGISTRATIONS -->
+        <div class="tab-panel" id="panel-myteams">
+          <div class="sec-hd">
+            <div class="sec-title">My Registrations</div>
+          </div>
+          <div class="reg-list" id="reg-list">
+            <div class="empty">
+              <svg viewBox="0 0 40 40" fill="none">
+                <circle cx="15" cy="12" r="6" stroke="currentColor" stroke-width="1.8" />
+                <path d="M4 34c0-6 4.9-11 11-11s11 4.9 11 11" stroke="currentColor" stroke-width="1.8"
+                  stroke-linecap="round" />
+                <path d="M28 18l2.5 2.5L36 14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                  stroke-linejoin="round" />
+              </svg>
+              <h3>No registrations yet</h3>
+              <p>Browse events and register your team to get started.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB: UPCOMING I JOINED -->
+        <div class="tab-panel" id="panel-upcoming">
+          <div class="sec-hd">
+            <div class="sec-title">Upcoming Events I'm Part Of</div>
+          </div>
+          <div class="reg-list" id="upcoming-list">
+            <div class="empty">
+              <svg viewBox="0 0 40 40" fill="none">
+                <circle cx="20" cy="20" r="16" stroke="currentColor" stroke-width="1.8" />
+                <path d="M20 12v8l5 3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+              </svg>
+              <h3>No upcoming events</h3>
+              <p>Register for upcoming events and they'll appear here.</p>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /.content  ✅ FIXED: .content closes HERE -->
+
+      <!-- FOOTER sits OUTSIDE .content, INSIDE .main ✅ -->
+      <div class="dash-footer">
+        <span class="dash-footer-copy">© 2025 EventHub College. All rights reserved.</span>
+        <a href="https://my-portfoliyo-nine.vercel.app/" target="_blank" rel="noopener" class="dash-footer-crafted">
+          Crafted with ❤️ by <strong>Shivam Chaudhary</strong>
+        </a>
+      </div>
+
+    </div><!-- /.main -->
+  </div><!-- /.app -->
+
+  <!-- ── RULES & REGULATIONS MODAL ── -->
+  <div class="overlay" id="rules-modal" onclick="if(event.target===this)closeRulesModal()">
+    <div class="modal" style="max-width:600px">
+      <div class="modal-hd">
+        <div>
+          <div class="modal-hd-title">📋 Rules & Regulations</div>
+          <div class="modal-hd-sub" id="rules-modal-event">—</div>
+        </div>
+        <button class="modal-x" onclick="closeRulesModal()">
+          <svg viewBox="0 0 16 16" fill="none">
+            <path d="M3 3l10 10M13 3L3 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body" id="rules-modal-content" style="max-height:60vh;overflow-y:auto">
+        <div style="text-align:center;padding:20px;color:var(--text3)">Loading...</div>
+      </div>
+      <div class="modal-ft">
+        <button class="btn-cancel" onclick="closeRulesModal()">Close</button>
       </div>
     </div>
-    <div class="modal-ft">
-      <button class="btn-cancel" onclick="closeRegModal()">Cancel</button>
-      <button class="btn-save" id="reg-save-btn" onclick="submitRegistration()">Register Team</button>
-    </div>
   </div>
-</div>
 
-<!-- STUDENT SCHEDULE VIEW MODAL (Read-only) -->
-<div class="overlay" id="schedule-view-modal" onclick="if(event.target===this)closeStudentScheduleModal()">
-  <div class="modal" style="max-width:560px">
-    <div class="modal-hd">
-      <div>
-        <div class="modal-hd-title">📅 Event Schedule</div>
-        <div class="modal-hd-sub" id="student-sched-event-name">—</div>
+  <!-- ── EVENT DETAILS MODAL ── -->
+  <div class="overlay" id="event-modal" onclick="if(event.target===this)closeEventModal()">
+    <div class="modal" style="max-width:650px;max-height:85vh;display:flex;flex-direction:column">
+      <div class="modal-hd">
+        <div>
+          <div class="modal-hd-title" id="eventm-title">Event Details</div>
+          <div class="modal-hd-sub" id="eventm-subtitle">—</div>
+        </div>
+        <button class="modal-x" onclick="closeEventModal()">
+          <svg viewBox="0 0 16 16" fill="none">
+            <path d="M3 3l10 10M13 3L3 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+          </svg>
+        </button>
       </div>
-      <button class="modal-x" onclick="closeStudentScheduleModal()">
-        <svg viewBox="0 0 16 16" fill="none"><path d="M3 3l10 10M13 3L3 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-      </button>
-    </div>
-    <div class="modal-body">
-      <div id="student-schedule-timeline" style="margin-top:4px"></div>
+      <!-- EVENT TABS -->
+      <div class="tabs-row"
+        style="border-radius:0;margin:0;padding:12px;background:var(--surface2);border-bottom:1px solid var(--border);flex:0 0 auto">
+        <button class="tab-btn active" onclick="switchEventTab('info', this)"
+          style="font-size:12px;flex:1">Info</button>
+        <button class="tab-btn" onclick="switchEventTab('rules', this)" style="font-size:12px;flex:1">Rules</button>
+        <button class="tab-btn" onclick="switchEventTab('schedule', this)"
+          style="font-size:12px;flex:1">Schedule</button>
+        <button class="tab-btn" onclick="switchEventTab('register', this)"
+          style="font-size:12px;flex:1">Register</button>
+      </div>
+      <div style="flex:1;padding:16px;overflow-y:auto;min-width:0">
+        <!-- INFO TAB -->
+        <div id="eventm-tab-info" class="tab-panel active">
+          <div class="sec-title" style="margin-bottom:12px">Event Details</div>
+          <div class="card" style="padding:12px">
+            <div class="card-row">
+              <svg viewBox="0 0 16 16" fill="none">
+                <rect x="1" y="2.5" width="12" height="10" rx="1.5" stroke="currentColor" stroke-width="1.2" />
+                <path d="M4 1v3M10 1v3M1 5.5h14" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" />
+              </svg>
+              <div class="card-row-label">Date & Time</div>
+              <div class="card-row-value" id="eventm-datetime">—</div>
+            </div>
+            <div class="card-row">
+              <svg viewBox="0 0 16 16" fill="none">
+                <path d="M8 1.5a4.5 4.5 0 014.5 4.5c0 3-4.5 6.5-4.5 6.5S3.5 9 3.5 6a4.5 4.5 0 014.5-4.5z"
+                  stroke="currentColor" stroke-width="1.2" />
+                <circle cx="8" cy="6" r="1.5" stroke="currentColor" stroke-width="1.2" />
+              </svg>
+              <div class="card-row-label">Venue</div>
+              <div class="card-row-value" id="eventm-venue">—</div>
+            </div>
+            <div class="card-row">
+              <svg viewBox="0 0 16 16" fill="none">
+                <path d="M1.5 6.1L8 3l6.5 3.1L8 9.2 1.5 6.1z" stroke="currentColor" stroke-width="1.2"
+                  stroke-linejoin="round" />
+                <path d="M3 7.3v2.1c0 .9 1.8 1.6 5 1.6s5-.7 5-1.6V7.3" stroke="currentColor" stroke-width="1.2"
+                  stroke-linecap="round" />
+              </svg>
+              <div class="card-row-label">College</div>
+              <div class="card-row-value" id="eventm-college">—</div>
+            </div>
+            <div class="card-row">
+              <svg viewBox="0 0 16 16" fill="none">
+                <path d="M7 1.5l1.4 4h4.2L9.2 8.1l1.4 4L7 9.8l-3.6 2.3 1.4-4L1.4 5.5h4.2z" stroke="currentColor"
+                  stroke-width="1.2" stroke-linejoin="round" />
+              </svg>
+              <div class="card-row-label">Prize Pool</div>
+              <div class="card-row-value" id="eventm-prize">—</div>
+            </div>
+            <div class="card-row">
+              <svg viewBox="0 0 16 16" fill="none">
+                <circle cx="8" cy="4.5" r="2" stroke="currentColor" stroke-width="1.2" />
+                <path d="M2 13c0-2.7 2.3-4.5 6-4.5s6 1.8 6 4.5" stroke="currentColor" stroke-width="1.2"
+                  stroke-linecap="round" />
+              </svg>
+              <div class="card-row-label">Teams</div>
+              <div class="card-row-value" id="eventm-teams">—</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RULES TAB -->
+        <div id="eventm-tab-rules" class="tab-panel" style="display:none">
+          <div class="sec-title" style="margin-bottom:12px">Rules & Regulations</div>
+          <div id="eventm-rules-content"
+            style="font-size:13px;color:var(--text);white-space:pre-wrap;word-wrap:break-word;line-height:1.6">—</div>
+        </div>
+
+        <!-- SCHEDULE TAB -->
+        <div id="eventm-tab-schedule" class="tab-panel" style="display:none">
+          <div class="sec-title" style="margin-bottom:12px">Event Schedule</div>
+          <div id="eventm-schedule-content">
+            <div class="empty" style="padding:20px">
+              <p>Loading schedule...</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- REGISTER TAB -->
+        <div id="eventm-tab-register" class="tab-panel" style="display:none">
+          <div class="sec-title" style="margin-bottom:12px">Team Registration</div>
+          <div id="eventm-reg-status"></div>
+          <div id="eventm-reg-content">
+            <p style="color:var(--text2);margin-bottom:16px;font-size:12px">Register your team for this event directly
+              from the dashboard.</p>
+            <button class="btn btn-primary" onclick="switchToRegModal()" style="width:100%">Register Your Team</button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
-</div>
+  </div>
 
-<script src="auth-client.js"></script>
-<script>
-(async () => {
+  <!-- ── REGISTER TEAM MODAL ── -->
+  <div class="overlay" id="reg-modal" onclick="if(event.target===this)closeRegModal()">
+    <div class="modal">
+      <div class="modal-hd">
+        <div>
+          <div class="modal-hd-title">Register your team</div>
+          <div class="modal-hd-sub" id="reg-modal-event">—</div>
+        </div>
+        <button class="modal-x" onclick="closeRegModal()">
+          <svg viewBox="0 0 16 16" fill="none">
+            <path d="M3 3l10 10M13 3L3 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="mrow">
+          <div class="mfield"><label>Team name *</label><input type="text" id="r-teamname" placeholder="e.g. Code Crushers"></div>
+          <div class="mfield"><label>Team lead name *</label><input type="text" id="r-leadname" placeholder="Your name"></div>
+        </div>
+        <div class="mrow">
+          <div class="mfield"><label>College ID *</label><input type="text" id="r-collegeid" placeholder="e.g. 1RV21CS001"></div>
+          <div class="mfield"><label>Phone Number *</label><input type="tel" id="r-phone" placeholder="e.g. 9876543210"></div>
+        </div>
+        <div class="mfield">
+          <label>Team members</label>
+          <div class="members-list" id="members-list">
+            <div class="member-row">
+              <input placeholder="Member 1 name" class="member-input">
+              <button class="member-remove" onclick="removeMember(this)"><svg viewBox="0 0 12 12" fill="none">
+                  <path d="M2 2l8 8M10 2l-8 8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" />
+                </svg></button>
+            </div>
+          </div>
+          <button class="member-add-btn" onclick="addMember()">+ Add member</button>
+        </div>
+      </div>
+      <div class="modal-ft">
+        <button class="btn-cancel" onclick="closeRegModal()">Cancel</button>
+        <button class="btn-save" id="reg-save-btn" onclick="submitRegistration()">Register Team</button>
+      </div>
+    </div>
+  </div>
 
-  // ── STEP 1: Logout flag check ──
-  if(sessionStorage.getItem('eventhub_logging_out')){
-    sessionStorage.clear();
-    window.location.replace('login-signup.html');
-    return;
-  }
+  <!-- STUDENT SCHEDULE VIEW MODAL (Read-only) -->
+  <div class="overlay" id="schedule-view-modal" onclick="if(event.target===this)closeStudentScheduleModal()">
+    <div class="modal" style="max-width:560px">
+      <div class="modal-hd">
+        <div>
+          <div class="modal-hd-title">📅 Event Schedule</div>
+          <div class="modal-hd-sub" id="student-sched-event-name">—</div>
+        </div>
+        <button class="modal-x" onclick="closeStudentScheduleModal()">
+          <svg viewBox="0 0 16 16" fill="none">
+            <path d="M3 3l10 10M13 3L3 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div id="student-schedule-timeline" style="margin-top:4px"></div>
+      </div>
+    </div>
+  </div>
 
-  // ── STEP 2: Verify via cookie and get profile ──
-  let user = {};
-  try{
-    const r = await AuthAPI.me();
-    if(!r.ok) throw new Error('not authenticated');
-    const data = await r.json();
-    user = data.user || {};
-  } catch(e){
-    window.location.replace('login-signup.html');
-    return;
-  }
+  <!-- ── PAYMENT MODAL ── -->
+  <div class="overlay" id="payment-modal" onclick="if(event.target===this)closePaymentModal()">
+    <div class="modal" style="max-width:500px">
+      <div class="modal-hd">
+        <div>
+          <div class="modal-hd-title">💳 Payment Details</div>
+          <div class="modal-hd-sub" id="payment-modal-event">—</div>
+        </div>
+        <button class="modal-x" onclick="closePaymentModal()">
+          <svg viewBox="0 0 16 16" fill="none">
+            <path d="M3 3l10 10M13 3L3 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="card" style="padding:12px;margin-bottom:14px">
+          <div class="card-row">
+            <svg viewBox="0 0 16 16" fill="none"><rect x="1" y="4" width="14" height="9" rx="1" stroke="currentColor" stroke-width="1.2"/><path d="M1 7h14" stroke="currentColor" stroke-width="1.2"/></svg>
+            <div class="card-row-label">Amount</div>
+            <div class="card-row-value" id="pay-amount">₹0</div>
+          </div>
+          <div class="card-row">
+            <svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.2"/><path d="M5 8l2.5 2.5 3.5-4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+            <div class="card-row-label">Status</div>
+            <div class="card-row-value" id="pay-status">Pending</div>
+          </div>
+          <div class="card-row">
+            <svg viewBox="0 0 16 16" fill="none"><path d="M2 3h12c1 0 1 1 1 1v9c0 1-1 1-1 1H2c-1 0-1-1-1-1V4c0-1 1-1 1-1z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M6 8h4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+            <div class="card-row-label">Team Name</div>
+            <div class="card-row-value" id="pay-team">—</div>
+          </div>
+          <div class="card-row">
+            <svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="4.5" r="2" stroke="currentColor" stroke-width="1.2"/><path d="M2 13c0-2.7 2.3-4.5 6-4.5s6 1.8 6 4.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+            <div class="card-row-label">Lead</div>
+            <div class="card-row-value" id="pay-lead">—</div>
+          </div>
+        </div>
+        <div class="mfield">
+          <label>Payment Method</label>
+          <select id="pay-method" style="width:100%;padding:9px 11px;border:1px solid var(--border);border-radius:8px;background:var(--surface2);color:var(--text);outline:none;font-size:13px">
+            <option value="">Select payment method</option>
+            <option value="UPI">UPI</option>
+            <option value="Credit Card">Credit Card</option>
+            <option value="Debit Card">Debit Card</option>
+            <option value="Net Banking">Net Banking</option>
+            <option value="Cash">Cash (At Counter)</option>
+          </select>
+        </div>
+        <div class="mfield" style="margin-top:12px">
+          <label>Transaction ID / Reference</label>
+          <input type="text" id="pay-txn" placeholder="e.g. TXN123456789" style="width:100%;padding:9px 11px;border:1px solid var(--border);border-radius:8px;background:var(--surface2);color:var(--text);outline:none;font-size:13px">
+        </div>
+      </div>
+      <div class="modal-ft" style="display:flex;justify-content:center;gap:8px;padding:12px 16px;border-top:1px solid var(--border)">
+        <button class="btn-cancel" onclick="closePaymentModal()">Close</button>
+        <button class="btn-save" style="background:var(--green)" onclick="submitPayment()">Mark as Paid</button>
+      </div>
+    </div>
+  </div>
 
-  // ── STEP 4: Role check ──
-  if(user.role && user.role !== 'Student'){
-    window.location.replace('dashboard.html');
-    return;
-  }
+  <script src="auth-client.js"></script>
+  <script>
+    (async () => {
 
-  // ── STEP 5: Set UI ──
-  const _fn = user.firstname || user.firstName || user.name || 'Student';
-  const _in = (((user.firstname||user.firstName||'')[0])||(user.email||'S')[0]).toUpperCase()+((user.lastname||user.lastName||'')[0]||'').toUpperCase();
-  document.getElementById('uav').textContent = _in || 'S';
-  document.getElementById('uname').textContent = [user.firstname||user.firstName, user.lastname||user.lastName].filter(Boolean).join(' ') || user.email || 'Student';
-  document.getElementById('welcome').textContent = 'Hey, ' + _fn + ' 👋';
+      // ── STEP 1: Logout flag check ──
+      if (sessionStorage.getItem('eventhub_logging_out')) {
+        sessionStorage.clear();
+        window.location.replace('login-signup.html');
+        return;
+      }
 
-  // ── THEME ──
-  const savedTheme = localStorage.getItem('eventhub_theme') || 'light';
-  document.documentElement.setAttribute('data-theme', savedTheme);
-  function toggleTheme(){
-    const next = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
-    document.documentElement.setAttribute('data-theme', next);
-    localStorage.setItem('eventhub_theme', next);
-  }
+      // ── STEP 2: Verify via cookie and get profile ──
+      let user = {};
+      try {
+        const r = await AuthAPI.me();
+        if (!r.ok) throw new Error('not authenticated');
+        const data = await r.json();
+        user = data.user || {};
+      } catch (e) {
+        window.location.replace('login-signup.html');
+        return;
+      }
 
-  // ── API ──
-  const API = (window.AuthAPI && window.AuthAPI.root) || 'https://eduhub-backend-eight.vercel.app/api/v1';
+      // ── STEP 4: Role check ──
+      if (user.role && user.role !== 'Student') {
+        window.location.replace('dashboard.html');
+        return;
+      }
 
-  // ── STATE ──
-  let events = [];
-  let myRegs = [];
-  let activeFilter = 'All';
-  let searchQ = '';
-  let currentEventId = null;
+      // ── STEP 5: Set UI ──
+      const _fn = user.firstname || user.firstName || user.name || 'Student';
+      const _in = (((user.firstname || user.firstName || '')[0]) || (user.email || 'S')[0]).toUpperCase() + ((user.lastname || user.lastName || '')[0] || '').toUpperCase();
+      document.getElementById('uav').textContent = _in || 'S';
+      document.getElementById('uname').textContent = [user.firstname || user.firstName, user.lastname || user.lastName].filter(Boolean).join(' ') || user.email || 'Student';
+      document.getElementById('welcome').textContent = 'Hey, ' + _fn + ' 👋';
 
-  // ── SIDEBAR ──
-  function toggleSidebar(){ document.getElementById('sidebar').classList.toggle('open'); document.getElementById('sOverlay').classList.toggle('open'); }
-  function closeSidebar(){ document.getElementById('sidebar').classList.remove('open'); document.getElementById('sOverlay').classList.remove('open'); }
-  function navClick(el, title){
-    document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
-    el.classList.add('active');
-    document.getElementById('page-title').textContent = title;
-    closeSidebar();
-  }
+      // ── THEME ──
+      const savedTheme = localStorage.getItem('eventhub_theme') || 'light';
+      document.documentElement.setAttribute('data-theme', savedTheme);
+      function toggleTheme() {
+        const next = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', next);
+        localStorage.setItem('eventhub_theme', next);
+      }
 
-  // ── LOGOUT ──
-  async function logout(){
-    sessionStorage.setItem('eventhub_logging_out', '1');
-    try{ await AuthAPI.logout(); }catch(e){}
-    window.location.replace('login-signup.html');
-  }
+      // ── API ──
+      const API = 'http://localhost:8000/api/v1';
 
-  // ── TOAST ──
-  let tt;
-  function toast(msg, type='success'){
-    clearTimeout(tt);
-    const el = document.getElementById('toast');
-    document.getElementById('tm').textContent = msg;
-    document.getElementById('ti').innerHTML = type === 'success'
-      ? '<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>'
-      : '<path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>';
-    el.className = 'toast ' + type;
-    el.classList.add('show');
-    tt = setTimeout(() => el.classList.remove('show'), 3000);
-  }
+      // ── STATE ──
+      let events = [];
+      let myRegs = [];
+      let activeFilter = 'All';
+      let searchQ = '';
+      let currentEventId = null;
 
-  // ── TABS ──
-  function switchTab(tab){
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-    document.getElementById('tab-' + tab).classList.add('active');
-    document.getElementById('panel-' + tab).classList.add('active');
-  }
+      // ── SIDEBAR ──
+      function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); document.getElementById('sOverlay').classList.toggle('open'); }
+      function closeSidebar() { document.getElementById('sidebar').classList.remove('open'); document.getElementById('sOverlay').classList.remove('open'); }
+      function navClick(el, title) {
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        el.classList.add('active');
+        document.getElementById('page-title').textContent = title;
+        closeSidebar();
+      }
 
-  // ── FILTERS ──
-  function setFilter(type, el){
-    activeFilter = type;
-    document.querySelectorAll('.fchip').forEach(c => c.classList.remove('on'));
-    el.classList.add('on');
-    renderEvents();
-  }
-  function filterEvents(q){ searchQ = q.toLowerCase(); renderEvents(); }
+      // ── LOGOUT ──
+      async function logout() {
+        sessionStorage.setItem('eventhub_logging_out', '1');
+        try { await AuthAPI.logout(); } catch (e) { }
+        window.location.replace('login-signup.html');
+      }
 
-  // ── CHECK IF REGISTERED ──
-  function isRegistered(eventId){
-    return myRegs.some(r => {
-      const evId = r.event && typeof r.event === 'object'
-        ? (r.event._id || r.event.id)
-        : r.event;
-      return String(evId) === String(eventId);
-    });
-  }
+      // ── TOAST ──
+      let tt;
+      function toast(msg, type = 'success') {
+        clearTimeout(tt);
+        const el = document.getElementById('toast');
+        document.getElementById('tm').textContent = msg;
+        document.getElementById('ti').innerHTML = type === 'success'
+          ? '<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>'
+          : '<path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>';
+        el.className = 'toast ' + type;
+        el.classList.add('show');
+        tt = setTimeout(() => el.classList.remove('show'), 3000);
+      }
 
-  // ── TYPE CONFIG ──
-  const TC = {
-    Hackathon: { ic:'ec-hack', bc:'tb-hack', svg:'<rect x="1" y="3" width="14" height="10" rx="2" stroke="#5B4FE8" stroke-width="1.3"/><path d="M5 3V2a3 3 0 016 0v1" stroke="#5B4FE8" stroke-width="1.3" stroke-linecap="round"/>' },
-    Quiz:      { ic:'ec-quiz', bc:'tb-quiz', svg:'<path d="M8 1l1.8 4.5h4.7l-3.8 2.8 1.5 4.7L8 10.5l-4.2 2.5 1.5-4.7L1.5 5.5h4.7z" stroke="#92400E" stroke-width="1.2" stroke-linejoin="round"/>' },
-    Cultural:  { ic:'ec-cult', bc:'tb-cult', svg:'<circle cx="8" cy="6" r="3.5" stroke="#9F1239" stroke-width="1.3"/><path d="M2 14c0-2.8 2.7-5 6-5s6 2.2 6 5" stroke="#9F1239" stroke-width="1.3" stroke-linecap="round"/>' },
-    'Techtalk':{ ic:'ec-tech', bc:'tb-tech', svg:'<path d="M2 2h12v9H2z" stroke="#0F766E" stroke-width="1.3" stroke-linejoin="round"/><path d="M6 14h4M8 11v3" stroke="#0F766E" stroke-width="1.3" stroke-linecap="round"/>' },
-    Sports:    { ic:'ec-tech', bc:'tb-tech', svg:'<circle cx="8" cy="8" r="5.5" stroke="#0F766E" stroke-width="1.3"/>' },
-  };
-  const SC = {
-    Live:      { dot:'sdot-live', label:'Live' },
-    Upcoming:  { dot:'sdot-up',   label:'Upcoming' },
-    Completed: { dot:'sdot-done', label:'Completed' },
-  };
+      // ── ESCAPE HTML (XSS PREVENTION) ──
+      function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+      }
 
-  // ── RENDER EVENTS ──
-  function renderEvents(){
-    const grid = document.getElementById('egrid');
-    const list = events.filter(e => {
-      const matchType = activeFilter === 'All' || e.type === activeFilter;
-      const matchSearch = !searchQ || e.name.toLowerCase().includes(searchQ) || (e.venue||'').toLowerCase().includes(searchQ);
-      return matchType && matchSearch;
-    });
-    if(!list.length){
-      grid.innerHTML = `<div class="empty" style="grid-column:1/-1">
+      // ── TABS ──
+      function switchTab(tab) {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+        document.getElementById('tab-' + tab).classList.add('active');
+        document.getElementById('panel-' + tab).classList.add('active');
+      }
+
+      // ── FILTERS ──
+      function setFilter(type, el) {
+        activeFilter = type;
+        document.querySelectorAll('.fchip').forEach(c => c.classList.remove('on'));
+        el.classList.add('on');
+        renderEvents();
+      }
+      function filterEvents(q) { searchQ = q.toLowerCase(); renderEvents(); }
+
+      // ── CHECK IF REGISTERED ──
+      function isRegistered(eventId) {
+        const eventIdStr = String(eventId);
+        
+        const found = myRegs.some(r => {
+          // Check both direct eventId and nested event object
+          const evId = r.eventId || (r.event && typeof r.event === 'object'
+            ? (r.event._id || r.event.id)
+            : r.event);
+          const evIdStr = String(evId || '');
+          return evIdStr === eventIdStr && evIdStr !== '';
+        });
+        
+        return found;
+      }
+
+      // ── TYPE CONFIG ──
+      const TC = {
+        Hackathon: { ic: 'ec-hack', bc: 'tb-hack', svg: '<rect x="1" y="3" width="14" height="10" rx="2" stroke="#5B4FE8" stroke-width="1.3"/><path d="M5 3V2a3 3 0 016 0v1" stroke="#5B4FE8" stroke-width="1.3" stroke-linecap="round"/>' },
+        Quiz: { ic: 'ec-quiz', bc: 'tb-quiz', svg: '<path d="M8 1l1.8 4.5h4.7l-3.8 2.8 1.5 4.7L8 10.5l-4.2 2.5 1.5-4.7L1.5 5.5h4.7z" stroke="#92400E" stroke-width="1.2" stroke-linejoin="round"/>' },
+        Cultural: { ic: 'ec-cult', bc: 'tb-cult', svg: '<circle cx="8" cy="6" r="3.5" stroke="#9F1239" stroke-width="1.3"/><path d="M2 14c0-2.8 2.7-5 6-5s6 2.2 6 5" stroke="#9F1239" stroke-width="1.3" stroke-linecap="round"/>' },
+        'Techtalk': { ic: 'ec-tech', bc: 'tb-tech', svg: '<path d="M2 2h12v9H2z" stroke="#0F766E" stroke-width="1.3" stroke-linejoin="round"/><path d="M6 14h4M8 11v3" stroke="#0F766E" stroke-width="1.3" stroke-linecap="round"/>' },
+        Sports: { ic: 'ec-tech', bc: 'tb-tech', svg: '<circle cx="8" cy="8" r="5.5" stroke="#0F766E" stroke-width="1.3"/>' },
+      };
+      const SC = {
+        Live: { dot: 'sdot-live', label: 'Live' },
+        Upcoming: { dot: 'sdot-up', label: 'Upcoming' },
+        Completed: { dot: 'sdot-done', label: 'Completed' },
+      };
+
+      // ── RENDER EVENTS ──
+      function renderEvents() {
+        const grid = document.getElementById('egrid');
+        const list = events.filter(e => {
+          const matchType = activeFilter === 'All' || e.type === activeFilter;
+          const matchSearch = !searchQ || e.name.toLowerCase().includes(searchQ) || (e.venue || '').toLowerCase().includes(searchQ);
+          return matchType && matchSearch;
+        });
+        if (!list.length) {
+          grid.innerHTML = `<div class="empty" style="grid-column:1/-1">
         <svg viewBox="0 0 40 40" fill="none"><rect x="3" y="9" width="34" height="26" rx="4" stroke="currentColor" stroke-width="1.8"/><path d="M13 9V6a7 7 0 0114 0v3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
         <h3>No events found</h3>
         <p>${activeFilter !== 'All' ? `No ${activeFilter} events available.` : 'No events have been created yet.'}</p>
       </div>`;
-      return;
-    }
-    grid.innerHTML = list.map(e => {
-      const tc = TC[e.type] || TC['Techtalk'];
-      const sc = SC[e.status] || SC['Upcoming'];
-      const ds = e.date ? new Date(e.date).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}) : 'TBD';
-      const reg = isRegistered(e._id);
-      const isCompleted = e.status === 'Completed';
-      return `<div class="ecard${reg?' registered':''}">
+          return;
+        }
+        grid.innerHTML = list.map(e => {
+          const tc = TC[e.type] || TC['Techtalk'];
+          const sc = SC[e.status] || SC['Upcoming'];
+          const ds = e.date ? new Date(e.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : 'TBD';
+          const reg = isRegistered(e._id);
+          console.log(`🎯 Rendering event card: ${e.name} (ID: ${e._id}) - isRegistered: ${reg}, myRegs.length: ${myRegs.length}`);
+          const isCompleted = e.status === 'Completed';
+          return `<div class="ecard${reg ? ' registered' : ''}">
         ${reg ? '<div class="registered-tag">✓ Registered</div>' : ''}
         <div class="ecard-top">
           <div class="ecard-icon ${tc.ic}"><svg viewBox="0 0 16 16" fill="none">${tc.svg}</svg></div>
@@ -750,42 +2589,46 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-size:14px;tran
           </div>
         </div>
         <div class="emeta">
-          <div class="emeta-row"><svg viewBox="0 0 12 12" fill="none"><rect x="0.5" y="2" width="11" height="9" rx="1.5" stroke="currentColor" stroke-width="1.1"/><path d="M4 1v2M8 1v2M0.5 5h11" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>${ds}${e.time?' · '+e.time:''}</div>
+          <div class="emeta-row"><svg viewBox="0 0 12 12" fill="none"><rect x="0.5" y="2" width="11" height="9" rx="1.5" stroke="currentColor" stroke-width="1.1"/><path d="M4 1v2M8 1v2M0.5 5h11" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>${ds}${e.time ? ' · ' + e.time : ''}</div>
           ${e.venue ? `<div class="emeta-row"><svg viewBox="0 0 12 12" fill="none"><path d="M6 1a4 4 0 014 4c0 2.8-4 7-4 7S2 7.8 2 5a4 4 0 014-4z" stroke="currentColor" stroke-width="1.1"/><circle cx="6" cy="5" r="1.5" stroke="currentColor" stroke-width="1.1"/></svg>${e.venue}</div>` : ''}
           ${e.prize ? `<div class="emeta-row"><svg viewBox="0 0 12 12" fill="none"><path d="M6 1l1.2 3.5H11l-3 2.2 1.2 3.5L6 8.5 2.8 10.2 4 6.7 1 4.5h3.8z" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round"/></svg>${e.prize}</div>` : ''}
         </div>
         <div class="edivider"></div>
         <div class="ecard-footer">
-          <div class="estatus"><div class="sdot ${sc.dot}"></div>${sc.label} · <strong>${e.teams||e.team||0}</strong> teams${e.maxTeams?' / '+e.maxTeams:''}</div>
+          <div class="estatus"><div class="sdot ${sc.dot}"></div>${sc.label} · <strong>${e.teams || e.team || 0}</strong> teams${e.maxTeams ? ' / ' + e.maxTeams : ''}</div>
           <div>
             ${reg
-              ? `<a class="btn-view" href="schedule.html?eventId=${e._id}" style="text-decoration:none;display:inline-flex;align-items:center;">📅 Schedule</a><button class="btn-register registered">✓ Registered</button>`
+              ? (() => {
+                  const regForEvent = myRegs.find(r => (r.event && typeof r.event === 'object' ? r.event._id : r.event) === e._id);
+                  const regId = regForEvent ? regForEvent._id : e._id;
+                  return `<button class="btn-view" onclick="openRulesModal('${e._id}')" style="display:inline-flex;align-items:center;">📋 Rules</button><button class="btn-view" onclick="openEventModal('${e._id}')" style="display:inline-flex;align-items:center;margin-left:6px">📄 Details</button><button class="btn-view" onclick="openPaymentModal('${regId}')" style="display:inline-flex;align-items:center;margin-left:6px;background:var(--green);color:#fff">💳 Pay</button>`;
+                })()
               : isCompleted
                 ? `<button class="btn-register registered">Closed</button>`
-                : `<button class="btn-register" onclick="openRegModal('${e._id}')">Register</button>`
+                : `<button class="btn-view" onclick="openRulesModal('${e._id}')" style="display:inline-flex;align-items:center;margin-right:6px">📋 Rules</button><button class="btn-view" onclick="openEventModal('${e._id}')" style="display:inline-flex;align-items:center;margin-right:6px">📄 Details</button><button class="btn-register" onclick="openRegModal('${e._id}')">Register</button>`
             }
           </div>
         </div>
       </div>`;
-    }).join('');
-  }
+        }).join('');
+      }
 
-  // ── RENDER MY REGISTRATIONS ──
-  function renderMyRegs(){
-    const list = document.getElementById('reg-list');
-    const upList = document.getElementById('upcoming-list');
-    if(!myRegs.length){
-      list.innerHTML = `<div class="empty"><svg viewBox="0 0 40 40" fill="none"><circle cx="15" cy="12" r="6" stroke="currentColor" stroke-width="1.8"/><path d="M4 34c0-6 4.9-11 11-11s11 4.9 11 11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><h3>No registrations yet</h3><p>Browse events and register your team.</p></div>`;
-      upList.innerHTML = `<div class="empty"><svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="16" stroke="currentColor" stroke-width="1.8"/><path d="M20 12v8l5 3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><h3>No upcoming events</h3><p>Register for upcoming events and they will appear here.</p></div>`;
-      return;
-    }
-    const renderCard = r => {
-      const ev = r.event && typeof r.event === 'object' ? r.event : (events.find(e => e._id === r.event) || {});
-      const tc = TC[ev.type] || TC['Techtalk'];
-      const ds = ev.date ? new Date(ev.date).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}) : 'TBD';
-      const statusCls = ev.status==='Upcoming'?'badge-upcoming':ev.status==='Completed'?'badge-done':'badge-confirmed';
-      const membersCount = Array.isArray(r.members) ? r.members.length : (r.members || 1);
-      return `<div class="reg-card">
+      // ── RENDER MY REGISTRATIONS ──
+      function renderMyRegs() {
+        const list = document.getElementById('reg-list');
+        const upList = document.getElementById('upcoming-list');
+        if (!myRegs.length) {
+          list.innerHTML = `<div class="empty"><svg viewBox="0 0 40 40" fill="none"><circle cx="15" cy="12" r="6" stroke="currentColor" stroke-width="1.8"/><path d="M4 34c0-6 4.9-11 11-11s11 4.9 11 11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><h3>No registrations yet</h3><p>Browse events and register your team.</p></div>`;
+          upList.innerHTML = `<div class="empty"><svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="16" stroke="currentColor" stroke-width="1.8"/><path d="M20 12v8l5 3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><h3>No upcoming events</h3><p>Register for upcoming events and they will appear here.</p></div>`;
+          return;
+        }
+        const renderCard = r => {
+          const ev = r.event && typeof r.event === 'object' ? r.event : (events.find(e => e._id === r.event) || {});
+          const tc = TC[ev.type] || TC['Techtalk'];
+          const ds = ev.date ? new Date(ev.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : 'TBD';
+          const statusCls = ev.status === 'Upcoming' ? 'badge-upcoming' : ev.status === 'Completed' ? 'badge-done' : 'badge-confirmed';
+          const membersCount = Array.isArray(r.members) ? r.members.length : (r.members || 1);
+          return `<div class="reg-card">
         <div class="reg-event-icon ${tc.ic}"><svg viewBox="0 0 16 16" fill="none">${tc.svg}</svg></div>
         <div class="reg-info">
           <div class="reg-event-name">${ev.name || r.eventName || 'Event'}</div>
@@ -797,211 +2640,441 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-size:14px;tran
           </div>
         </div>
         <div class="reg-status" style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
-          <span class="${statusCls}">${ev.status||'Confirmed'}</span>
-          ${ev._id ? `<a class="btn-view" href="schedule.html?eventId=${ev._id}" style="font-size:11px;padding:4px 10px;text-decoration:none;display:inline-block">📅 Schedule</a>` : ''}
+          <span class="${statusCls}">${ev.status || 'Confirmed'}</span>
+          <span style="font-size:10px;padding:4px 8px;background:var(--amber-faint);color:var(--amber);border-radius:4px;font-weight:600">
+            💰 ${r.paymentStatus || 'Pending'}
+          </span>
+          <button class="btn-view" onclick="openPaymentModal('${r._id}')" style="font-size:11px;padding:4px 10px;display:inline-block;background:var(--green);color:#fff">💳 Pay</button>
         </div>
       </div>`;
-    };
-    list.innerHTML = myRegs.map(renderCard).join('');
-    const upcoming = myRegs.filter(r => { const ev = r.event && typeof r.event === 'object' ? r.event : events.find(e => String(e._id) === String(r.event)); return ev && ev.status === 'Upcoming'; });
-    upList.innerHTML = upcoming.length ? upcoming.map(renderCard).join('') : `<div class="empty"><svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="16" stroke="currentColor" stroke-width="1.8"/><path d="M20 12v8l5 3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><h3>No upcoming events</h3><p>Register for upcoming events and they will appear here.</p></div>`;
-  }
-
-  // ── STATS ──
-  function updateStats(){
-    document.getElementById('s-total').textContent = events.length;
-    document.getElementById('s-up').textContent = events.filter(e => e.status === 'Upcoming').length;
-    document.getElementById('s-regs').textContent = myRegs.length;
-    document.getElementById('wb-total').textContent = events.length;
-    document.getElementById('wb-regs').textContent = myRegs.length;
-    document.getElementById('wb-up').textContent = events.filter(e => e.status === 'Upcoming').length;
-    document.getElementById('reg-count').textContent = myRegs.length;
-  }
-
-  // ── REGISTER MODAL ──
-  function openRegModal(eventId){
-    currentEventId = eventId;
-    const ev = events.find(e => e._id === eventId || e.id === eventId);
-    if(!ev) return;
-    document.getElementById('reg-modal-event').textContent = ev.name;
-    document.getElementById('reg-modal').classList.add('open');
-    document.getElementById('r-teamname').focus();
-  }
-  function closeRegModal(){
-    document.getElementById('reg-modal').classList.remove('open');
-    ['r-teamname','r-leadname','r-collegeid','r-email'].forEach(id => document.getElementById(id).value = '');
-    document.getElementById('members-list').innerHTML = `<div class="member-row"><input placeholder="Member 1 name" class="member-input"><button class="member-remove" onclick="removeMember(this)"><svg viewBox="0 0 12 12" fill="none"><path d="M2 2l8 8M10 2l-8 8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></button></div>`;
-    currentEventId = null;
-  }
-  function addMember(){
-    const list = document.getElementById('members-list');
-    const count = list.querySelectorAll('.member-row').length + 1;
-    if(count > 5){ toast('Max 5 members allowed', 'fail'); return; }
-    const div = document.createElement('div');
-    div.className = 'member-row';
-    div.innerHTML = `<input placeholder="Member ${count} name" class="member-input"><button class="member-remove" onclick="removeMember(this)"><svg viewBox="0 0 12 12" fill="none"><path d="M2 2l8 8M10 2l-8 8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></button>`;
-    list.appendChild(div);
-  }
-  function removeMember(btn){
-    const rows = document.querySelectorAll('#members-list .member-row');
-    if(rows.length <= 1){ toast('At least 1 member required', 'fail'); return; }
-    btn.closest('.member-row').remove();
-  }
-
-  function tryOpenRegisterFromUrl(){
-    const params = new URLSearchParams(window.location.search);
-    const eventId = params.get('eventId');
-    const autoReg = params.get('autoreg');
-    if(!eventId || autoReg !== '1') return;
-
-    const eventExists = events.some(e => String(e._id || e.id) === String(eventId));
-    if(!eventExists) return;
-
-    if(isRegistered(eventId)){
-      toast('You are already registered for this event.', 'success');
-      return;
-    }
-
-    openRegModal(eventId);
-  }
-
-  // ── SUBMIT REGISTRATION ──
-  async function submitRegistration(){
-    const teamName = document.getElementById('r-teamname').value.trim();
-    const leadName = document.getElementById('r-leadname').value.trim();
-    const collegeId = document.getElementById('r-collegeid').value.trim();
-    const email = document.getElementById('r-email').value.trim();
-    const memberInputs = document.querySelectorAll('.member-input');
-    const memberNames = Array.from(memberInputs).map(i=>i.value.trim()).filter(Boolean);
-
-    if(!teamName){ toast('Team name is required', 'fail'); return; }
-    if(!leadName){ toast('Team lead name is required', 'fail'); return; }
-    if(!collegeId){ toast('College ID is required', 'fail'); return; }
-    if(!email){ toast('Valid email is required', 'fail'); return; }
-
-    const ev = events.find(e => e._id === currentEventId || e.id === currentEventId);
-    if(!ev) return;
-
-    const btn = document.getElementById('reg-save-btn');
-    btn.disabled = true;
-    btn.innerHTML = '<div class="spinner"></div> Registering...';
-
-    try{
-      const res = await fetch(`${API}/teams/register`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({
-          teamname:  teamName,
-          leadname:  leadName,
-          collegeid: collegeId,
-          email,
-          members:   memberNames.length ? memberNames : ['Solo'],
-          eventId:   ev._id || currentEventId
-        })
-      });
-      const data = await res.json();
-      if(res.ok){
-        closeRegModal();
-        await loadMyRegistrations();
-        await loadEvents();
-        toast('Team "' + teamName + '" registered for ' + ev.name + '!');
-      } else {
-        toast(data.message || 'Registration failed', 'fail');
+        };
+        list.innerHTML = myRegs.map(renderCard).join('');
+        const upcoming = myRegs.filter(r => { const ev = r.event && typeof r.event === 'object' ? r.event : events.find(e => String(e._id) === String(r.event)); return ev && ev.status === 'Upcoming'; });
+        upList.innerHTML = upcoming.length ? upcoming.map(renderCard).join('') : `<div class="empty"><svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="16" stroke="currentColor" stroke-width="1.8"/><path d="M20 12v8l5 3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><h3>No upcoming events</h3><p>Register for upcoming events and they will appear here.</p></div>`;
       }
-    } catch(e){
-      toast('Cannot connect to server', 'fail');
-    } finally {
-      btn.disabled = false;
-      btn.innerHTML = 'Register Team';
-    }
-  }
 
-  // ── LOAD EVENTS FROM API ──
-  async function loadEvents(){
-    try{
-      const res = await fetch(`${API}/events`, { credentials:'include' });
-      if(res.status === 401){
-        window.location.replace('login-signup.html');
-        return; // ← stop, don't retry
+      // ── STATS ──
+      function updateStats() {
+        document.getElementById('s-total').textContent = events.length;
+        document.getElementById('s-up').textContent = events.filter(e => e.status === 'Upcoming').length;
+        document.getElementById('s-regs').textContent = myRegs.length;
+        document.getElementById('wb-total').textContent = events.length;
+        document.getElementById('wb-regs').textContent = myRegs.length;
+        document.getElementById('wb-up').textContent = events.filter(e => e.status === 'Upcoming').length;
+        document.getElementById('reg-count').textContent = myRegs.length;
+        // Show real content, hide skeletons
+        document.getElementById('welcome-banner-skeleton').style.display = 'none';
+        document.getElementById('welcome-banner').style.display = 'flex';
+        document.getElementById('stats-skeleton').style.display = 'none';
+        document.getElementById('stats-row').style.display = 'grid';
       }
-      const data = await res.json();
-      if(res.ok){
-        events = data.events || [];
-        renderEvents();
-        updateStats();
-      } else {
-        toast('Failed to load events', 'fail');
+
+      // ── REGISTER MODAL ──
+      function openRegModal(eventId) {
+        currentEventId = eventId;
+        const ev = events.find(e => e._id === eventId || e.id === eventId);
+        if (!ev) return;
+        document.getElementById('reg-modal-event').textContent = ev.name;
+        document.getElementById('reg-modal').classList.add('open');
+        document.getElementById('r-teamname').focus();
       }
-    } catch(e){
-      toast('Cannot connect to server', 'fail');
-    }
-  }
-
-  // ── LOAD MY REGISTRATIONS FROM API ──
-  async function loadMyRegistrations(){
-    try{
-      const res = await fetch(`${API}/teams/registrations/mine`, { credentials:'include' });
-      if(res.status === 401){
-        window.location.replace('login-signup.html');
-        return; // ← stop, don't retry
+      function closeRegModal() {
+        document.getElementById('reg-modal').classList.remove('open');
+        ['r-teamname', 'r-leadname', 'r-collegeid', 'r-phone'].forEach(id => document.getElementById(id).value = '');
+        document.getElementById('members-list').innerHTML = `<div class="member-row"><input placeholder="Member 1 name" class="member-input"><button class="member-remove" onclick="removeMember(this)"><svg viewBox="0 0 12 12" fill="none"><path d="M2 2l8 8M10 2l-8 8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></button></div>`;
+        currentEventId = null;
       }
-      const data = await res.json();
-      if(res.ok){
-        myRegs = data.myregistration || [];
-        renderMyRegs();
-        updateStats();
+
+      // ── RULES MODAL ──
+      function openRulesModal(eventId) {
+        console.log('Opening rules for event:', eventId);
+        const ev = events.find(e => e._id === eventId || e.id === eventId);
+        if (!ev) {
+          console.error('Event not found:', eventId);
+          return;
+        }
+
+        document.getElementById('rules-modal-event').textContent = ev.name || 'Event';
+        let rulesContent = ev.rules || ev.description || 'No rules or description available for this event.';
+
+        // Format the content nicely
+        document.getElementById('rules-modal-content').innerHTML = `
+      <div style="padding:16px;line-height:1.6;text-align:left;">
+        <div style="color:var(--text);font-size:14px;white-space:pre-wrap;word-wrap:break-word;">${escapeHtml(rulesContent)}</div>
+      </div>
+    `;
+        document.getElementById('rules-modal').classList.add('open');
+        console.log('Rules modal opened successfully');
       }
-    } catch(e){
-      console.log('Could not load registrations:', e);
-    }
-  }
+      function closeRulesModal() {
+        document.getElementById('rules-modal').classList.remove('open');
+      }
 
-  // ── STUDENT SCHEDULE VIEW ──
-  let studentScheduleSlots = [];
-  let currentViewEventId = null;
+      // ── EVENT DETAILS MODAL ──
+      let currentEventModal = null;
 
-  async function openStudentScheduleModal(eventId){
-    currentViewEventId = eventId;
-    const event = events.find(e => e._id === eventId);
-    if(!event) return;
-    document.getElementById('student-sched-event-name').textContent = event.name;
-    document.getElementById('schedule-view-modal').classList.add('open');
-    await loadStudentSchedule(eventId);
-  }
+      function openEventModal(eventId) {
+        currentEventModal = eventId;
+        const ev = events.find(e => e._id === eventId || e.id === eventId);
+        if (!ev) return;
 
-  function closeStudentScheduleModal(){
-    document.getElementById('schedule-view-modal').classList.remove('open');
-    currentViewEventId = null;
-    studentScheduleSlots = [];
-  }
+        // Set title
+        document.getElementById('eventm-title').textContent = ev.name || 'Event';
+        document.getElementById('eventm-subtitle').textContent = ev.type || 'Event Details';
 
-  async function loadStudentSchedule(eventId){
-    try{
-      const res = await fetch(`${API}/schedule/${eventId}`, { credentials:'include' });
-      const data = await res.json();
-      if(res.ok){
-        studentScheduleSlots = data.slots || [];
-        renderStudentScheduleTimeline();
-      } else {
+        // Reset tabs
+        document.querySelectorAll('#event-modal .tab-btn').forEach((b, i) => b.classList.toggle('active', i === 0));
+        document.querySelectorAll('#event-modal .tab-panel').forEach((p, i) => p.style.display = i === 0 ? 'block' : 'none');
+
+        // Populate Info tab
+        document.getElementById('eventm-datetime').textContent = (ev.date ? new Date(ev.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : 'TBD') + (ev.time ? ' · ' + ev.time : '');
+        document.getElementById('eventm-venue').textContent = (ev.venue || 'TBD') + (ev.city ? ', ' + ev.city : '');
+        document.getElementById('eventm-college').textContent = ev.college || 'TBD';
+        document.getElementById('eventm-prize').textContent = ev.prize || 'TBD';
+        document.getElementById('eventm-teams').textContent = (ev.teams || 0) + (ev.maxTeams ? ' / ' + ev.maxTeams : '') + ' teams';
+
+        // Populate Rules tab
+        document.getElementById('eventm-rules-content').textContent = ev.rules || ev.description || 'No rules specified.';
+
+        // Load Schedule
+        loadEventModalSchedule(eventId);
+
+        // Check registration status
+        const isReg = isRegistered(eventId);
+        if (isReg) {
+          document.getElementById('eventm-reg-status').innerHTML = `<div style="background:var(--green-light);border:1px solid var(--green);padding:10px;border-radius:6px;margin-bottom:12px;display:flex;align-items:center;gap:8px;font-size:12px;color:var(--green);font-weight:500">✓ You are registered for this event</div>`;
+          document.getElementById('eventm-reg-content').innerHTML = '<p style="color:var(--text2);font-size:12px">Check your My Registrations tab for more details.</p>';
+        } else {
+          document.getElementById('eventm-reg-status').innerHTML = '';
+          document.getElementById('eventm-reg-content').innerHTML = `<p style="color:var(--text2);margin-bottom:16px;font-size:12px">Register your team for this event directly from the dashboard.</p><button class="btn btn-primary" onclick="switchToRegModal()" style="width:100%">Register Your Team</button>`;
+        }
+
+        document.getElementById('event-modal').classList.add('open');
+      }
+
+      function closeEventModal() {
+        document.getElementById('event-modal').classList.remove('open');
+        currentEventModal = null;
+      }
+
+      function switchEventTab(tab, btn) {
+        document.querySelectorAll('#event-modal .tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('#event-modal .tab-panel').forEach(p => p.style.display = 'none');
+        document.getElementById(`eventm-tab-${tab}`).style.display = 'block';
+        btn.classList.add('active');
+      }
+
+      async function loadEventModalSchedule(eventId) {
+        try {
+          const res = await fetch(`${API}/schedule/${eventId}`, { credentials: 'include' });
+          if (!res.ok) throw new Error();
+          const data = await res.json();
+          const slots = data.slots || [];
+
+          if (!slots.length) {
+            document.getElementById('eventm-schedule-content').innerHTML = '<div class="empty" style="padding:20px"><p>No schedule available.</p></div>';
+            return;
+          }
+
+          document.getElementById('eventm-schedule-content').innerHTML = slots.map(slot => `
+        <div class="schedule-slot" style="margin-bottom:10px">
+          <div class="slot-time">${slot.starttime || slot.time || 'Time TBA'}</div>
+          <div class="slot-title">${slot.title || slot.name || 'Session'}</div>
+          <div class="slot-desc" style="margin-top:4px">${slot.description || slot.desc || ''}</div>
+        </div>
+      `).join('');
+        } catch (e) {
+          document.getElementById('eventm-schedule-content').innerHTML = '<div class="empty" style="padding:20px"><p>Could not load schedule.</p></div>';
+        }
+      }
+
+      function switchToRegModal() {
+        closeEventModal();
+        openRegModal(currentEventModal);
+      }
+
+      function addMember() {
+        const list = document.getElementById('members-list');
+        const count = list.querySelectorAll('.member-row').length + 1;
+        if (count > 5) { toast('Max 5 members allowed', 'fail'); return; }
+        const div = document.createElement('div');
+        div.className = 'member-row';
+        div.innerHTML = `<input placeholder="Member ${count} name" class="member-input"><button class="member-remove" onclick="removeMember(this)"><svg viewBox="0 0 12 12" fill="none"><path d="M2 2l8 8M10 2l-8 8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></button>`;
+        list.appendChild(div);
+      }
+      function removeMember(btn) {
+        const rows = document.querySelectorAll('#members-list .member-row');
+        if (rows.length <= 1) { toast('At least 1 member required', 'fail'); return; }
+        btn.closest('.member-row').remove();
+      }
+
+      function tryOpenRegisterFromUrl() {
+        const params = new URLSearchParams(window.location.search);
+        const eventId = params.get('eventId');
+        const autoReg = params.get('autoreg');
+        if (!eventId || autoReg !== '1') return;
+
+        const eventExists = events.some(e => String(e._id || e.id) === String(eventId));
+        if (!eventExists) return;
+
+        if (isRegistered(eventId)) {
+          toast('You are already registered for this event.', 'success');
+          return;
+        }
+
+        openRegModal(eventId);
+      }
+
+      // ✅ All registration data now comes from database API, not localStorage
+
+      // ── SUBMIT REGISTRATION ──
+      async function submitRegistration() {
+        const teamName = document.getElementById('r-teamname').value.trim();
+        const leadName = document.getElementById('r-leadname').value.trim();
+        const collegeId = document.getElementById('r-collegeid').value.trim();
+        const phone = document.getElementById('r-phone').value.trim();
+        const memberInputs = document.querySelectorAll('.member-input');
+        const memberNames = Array.from(memberInputs).map(i => i.value.trim()).filter(Boolean);
+
+        if (!teamName) { toast('Team name is required', 'fail'); return; }
+        if (!leadName) { toast('Team lead name is required', 'fail'); return; }
+        if (!collegeId) { toast('College ID is required', 'fail'); return; }
+        if (!phone) { toast('Phone number is required', 'fail'); return; }
+
+        const ev = events.find(e => e._id === currentEventId || e.id === currentEventId);
+        if (!ev) {
+          toast('Event not found', 'fail');
+          return;
+        }
+
+        const btn = document.getElementById('reg-save-btn');
+        btn.disabled = true;
+        btn.innerHTML = '<div class="spinner"></div> Registering...';
+
+        try {
+          const eventId = ev._id || ev.id || currentEventId;
+          
+          const payload = {
+            teamname: teamName,
+            leadname: leadName,
+            collegeid: collegeId,
+            phone: phone,
+            members: memberNames.length ? memberNames : ['Solo'],
+            eventId: eventId
+          };
+
+          const res = await fetch(`${API}/teams/register`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify(payload)
+          });
+
+          const data = await res.json();
+
+          if (res.ok) {
+            // Refetch registrations from database instead of manual update
+            closeRegModal();
+            await loadMyRegistrations();  // Get fresh data from API
+            renderEvents();
+            renderMyRegs();
+            updateStats();
+            
+            toast('✓ Team "' + teamName + '" registered for ' + ev.name + '!', 'success');
+          } else {
+            toast(data.message || 'Registration failed', 'fail');
+          }
+        } catch (e) {
+          console.error('Registration error:', e);
+          toast('Cannot connect to server', 'fail');
+        } finally {
+          btn.disabled = false;
+          btn.innerHTML = 'Register Team';
+        }
+      }
+
+      // ── LOAD EVENTS FROM API ──
+      async function loadEvents() {
+        try {
+          const res = await fetch(`${API}/events`, { credentials: 'include' });
+          console.log('Events API response status:', res.status);
+          if (res.status === 401) {
+            window.location.replace('login-signup.html');
+            return; // ← stop, don't retry
+          }
+          const data = await res.json();
+          if (res.ok) {
+            events = data.events || [];
+            console.log('Loaded events:', events.length);
+            renderEvents();
+            updateStats();
+          } else {
+            console.error('Events API error:', data);
+            toast('Failed to load events', 'fail');
+          }
+        } catch (e) {
+          console.error('Events fetch error:', e);
+          toast('Cannot connect to server', 'fail');
+        }
+      }
+
+      // ── LOAD MY REGISTRATIONS FROM API ──
+      async function loadMyRegistrations() {
+        try {
+          console.log('🔄 Loading registrations from server...');
+          
+          // Clear previous registrations
+          myRegs = [];
+          
+          // For each event, check if user is registered
+          if (events.length > 0) {
+            for (const event of events) {
+              try {
+                const res = await fetch(`${API}/teams/checkregistration/${event._id}`, {
+                  credentials: 'include'
+                });
+                
+                const data = await res.json();
+                
+                // If successfully registered for this event
+                if (res.ok && data.success) {
+                  console.log(`✓ User is registered for: ${event.name}`);
+                  
+                  // Add to myRegs array
+                  myRegs.push({
+                    _id: data.teamId,
+                    event: event._id,
+                    eventId: event._id,
+                    eventName: event.name,
+                    paymentStatus: data.paymentStatus || 'Pending',
+                    status: 'Confirmed',
+                    createdAt: new Date().toISOString()
+                  });
+                } else {
+                  console.log(`ℹ️ Not registered for: ${event.name}`);
+                }
+              } catch (e) {
+                console.error(`❌ Error checking registration for ${event._id}:`, e.message);
+              }
+            }
+          }
+          
+          console.log(`✓ Loaded ${myRegs.length} registrations`);
+          
+        } catch (e) {
+          console.error('⚠️ Error loading registrations:', e.message);
+        } finally {
+          renderMyRegs();
+          renderEvents();  // ← Re-render to show/hide register buttons
+          updateStats();
+        }
+      }
+
+      // ── STUDENT SCHEDULE VIEW ──
+      let studentScheduleSlots = [];
+      let currentViewEventId = null;
+
+      async function openStudentScheduleModal(eventId) {
+        currentViewEventId = eventId;
+        const event = events.find(e => e._id === eventId);
+        if (!event) return;
+        document.getElementById('student-sched-event-name').textContent = event.name;
+        document.getElementById('schedule-view-modal').classList.add('open');
+        await loadStudentSchedule(eventId);
+      }
+
+      function closeStudentScheduleModal() {
+        document.getElementById('schedule-view-modal').classList.remove('open');
+        currentViewEventId = null;
         studentScheduleSlots = [];
-        renderStudentScheduleTimeline();
       }
-    } catch(e){
-      studentScheduleSlots = [];
-      renderStudentScheduleTimeline();
-    }
-  }
 
-  function renderStudentScheduleTimeline(){
-    const container = document.getElementById('student-schedule-timeline');
-    if(!studentScheduleSlots.length){
-      container.innerHTML = '<div style="text-align:center;padding:24px;color:var(--text3)"><svg viewBox="0 0 40 40" fill="none" style="width:40px;height:40px;margin:0 auto 12px"><circle cx="20" cy="20" r="16" stroke="currentColor" stroke-width="1.8"/><path d="M20 12v8l5 3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><h3>No schedule yet</h3><p>The organiser hasn\'t added time slots for this event.</p></div>';
-      return;
-    }
-    container.innerHTML = studentScheduleSlots
-      .sort((a,b) => (a.order||0) - (b.order||0))
-      .map(slot => `
+      // ── PAYMENT MODAL ──
+      let paymentTargetId = null;
+      
+      function openPaymentModal(regId) {
+        paymentTargetId = regId;
+        const reg = myRegs.find(r => r._id === regId);
+        if (!reg) return;
+        
+        const event = events.find(e => e._id === reg.event);
+        document.getElementById('payment-modal-event').textContent = event?.name || 'Event';
+        document.getElementById('pay-amount').textContent = reg.paymentAmount ? '₹' + reg.paymentAmount : '₹0';
+        document.getElementById('pay-status').textContent = reg.paymentStatus || 'Pending';
+        document.getElementById('pay-team').textContent = reg.teamname || reg.teamName || '—';
+        document.getElementById('pay-lead').textContent = reg.leadname || reg.leadName || '—';
+        document.getElementById('pay-method').value = reg.paymentMethod || '';
+        document.getElementById('pay-txn').value = reg.transactionId || '';
+        
+        document.getElementById('payment-modal').classList.add('open');
+      }
+      
+      function closePaymentModal() {
+        document.getElementById('payment-modal').classList.remove('open');
+        paymentTargetId = null;
+      }
+      
+      async function submitPayment() {
+        const method = document.getElementById('pay-method').value.trim();
+        const txn = document.getElementById('pay-txn').value.trim();
+        
+        if (!method) { toast('Please select a payment method', 'fail'); return; }
+        
+        try {
+          const res = await fetch(`${API}/teams/registrations/${paymentTargetId}/payment`, {
+            method: 'PUT',
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+              paymentStatus: 'Paid',
+              paymentMethod: method,
+              transactionId: txn,
+              paymentDate: new Date().toISOString().split('T')[0]
+            })
+          });
+          
+          if (res.ok) {
+            // Refetch registrations from database
+            await loadMyRegistrations();
+            closePaymentModal();
+            renderMyRegs();
+            updateStats();
+            toast('Payment marked as completed!', 'success');
+          } else {
+            toast('Failed to update payment status', 'fail');
+          }
+        } catch (e) {
+          console.error('Payment submission error:', e);
+          toast('Cannot connect to server', 'fail');
+        }
+      }
+
+      async function loadStudentSchedule(eventId) {
+        try {
+          const res = await fetch(`${API}/schedule/${eventId}`, { credentials: 'include' });
+          const data = await res.json();
+          if (res.ok) {
+            studentScheduleSlots = data.slots || [];
+            renderStudentScheduleTimeline();
+          } else {
+            studentScheduleSlots = [];
+            renderStudentScheduleTimeline();
+          }
+        } catch (e) {
+          studentScheduleSlots = [];
+          renderStudentScheduleTimeline();
+        }
+      }
+
+      function renderStudentScheduleTimeline() {
+        const container = document.getElementById('student-schedule-timeline');
+        if (!studentScheduleSlots.length) {
+          container.innerHTML = '<div style="text-align:center;padding:24px;color:var(--text3)"><svg viewBox="0 0 40 40" fill="none" style="width:40px;height:40px;margin:0 auto 12px"><circle cx="20" cy="20" r="16" stroke="currentColor" stroke-width="1.8"/><path d="M20 12v8l5 3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><h3>No schedule yet</h3><p>The organiser hasn\'t added time slots for this event.</p></div>';
+          return;
+        }
+        container.innerHTML = studentScheduleSlots
+          .sort((a, b) => (a.order || 0) - (b.order || 0))
+          .map(slot => `
         <div class="timeline-item-view">
           <div class="timeline-view-time">
             <div class="timeline-view-time-label">Time</div>
@@ -1017,38 +3090,77 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-size:14px;tran
           </div>
         </div>
       `).join('');
-  }
+      }
 
-  // Load registrations first so isRegistered() works when events render
-  await loadMyRegistrations();
-  await loadEvents();
-  tryOpenRegisterFromUrl();
+      // ✅ Load data from database (in correct order)
+      console.log('🔄 Page initializing...');
+      
+      // Step 1: Load events first
+      await loadEvents();
+      console.log('✓ Events loaded:', events.length);
+      
+      // Step 2: Check registrations for each event
+      await loadMyRegistrations();
+      console.log('✓ Registrations loaded:', myRegs.length);
+      
+      // Step 3: Try to open registration from URL if needed
+      tryOpenRegisterFromUrl();
 
 
 
-  // ── EXPOSE TO GLOBAL SCOPE ──
-  window.logout                    = logout;
-  window.toggleTheme               = toggleTheme;
-  window.toggleSidebar             = toggleSidebar;
-  window.closeSidebar              = closeSidebar;
-  window.navClick                  = navClick;
-  window.switchTab                 = switchTab;
-  window.setFilter                 = setFilter;
-  window.filterEvents              = filterEvents;
-  window.openRegModal              = openRegModal;
-  window.closeRegModal             = closeRegModal;
-  window.addMember                 = addMember;
-  window.removeMember              = removeMember;
-  window.submitRegistration        = submitRegistration;
-  window.loadMyRegistrations       = loadMyRegistrations;
-  window.openStudentScheduleModal  = openStudentScheduleModal;
-  window.closeStudentScheduleModal = closeStudentScheduleModal;
-  window.loadStudentSchedule       = loadStudentSchedule;
-  window.openScheduleModal         = openStudentScheduleModal;
-  window.closeScheduleModal        = closeStudentScheduleModal;
-  window.loadSchedule              = loadStudentSchedule;
+      // ── EXPOSE TO GLOBAL SCOPE ──
+      window.logout = logout;
+      window.toggleTheme = toggleTheme;
+      window.toggleSidebar = toggleSidebar;
+      window.closeSidebar = closeSidebar;
+      window.navClick = navClick;
+      window.switchTab = switchTab;
+      window.setFilter = setFilter;
+      window.filterEvents = filterEvents;
+      window.openRegModal = openRegModal;
+      window.closeRegModal = closeRegModal;
+      window.openRulesModal = openRulesModal;
+      window.closeRulesModal = closeRulesModal;
+      window.openEventModal = openEventModal;
+      window.closeEventModal = closeEventModal;
+      window.switchEventTab = switchEventTab;
+      window.switchToRegModal = switchToRegModal;
+      window.addMember = addMember;
+      window.removeMember = removeMember;
+      window.submitRegistration = submitRegistration;
+      window.submitPayment = submitPayment;
+      window.openPaymentModal = openPaymentModal;
+      window.closePaymentModal = closePaymentModal;
+      window.loadMyRegistrations = loadMyRegistrations;
+      window.openStudentScheduleModal = openStudentScheduleModal;
+      window.closeStudentScheduleModal = closeStudentScheduleModal;
+      window.loadStudentSchedule = loadStudentSchedule;
+      window.openScheduleModal = openStudentScheduleModal;
+      window.closeScheduleModal = closeStudentScheduleModal;
+      window.loadSchedule = loadStudentSchedule;
 
-})();
-</script>
+      // ── DEBUG COMMANDS ──
+      window.showDebugInfo = function() {
+        console.log('=== DEBUG INFO ===');
+        console.log('📊 Events count:', events.length);
+        console.log('📝 Events:', events);
+        console.log('👤 Registrations count:', myRegs.length);
+        console.log('💾 Registrations (myRegs):', myRegs);
+        console.log('=================');
+      };
+      window.showRegistrations = function() {
+        console.table(myRegs);
+      };
+      window.checkRegistration = function(eventId) {
+        console.log(`Checking if registered for event: ${eventId}`);
+        const result = isRegistered(eventId);
+        console.log(`Result: ${result}`);
+        return result;
+      };
+      // ✅ All data now comes from database API calls, no localStorage
+
+    })();
+  </script>
 </body>
+
 </html>
