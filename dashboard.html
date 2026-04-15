@@ -133,7 +133,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-size:14px;tran
 }
 
 /* ── CONTENT ── */
-.content{padding:20px;flex:1}
+.content{padding:20px;flex:1;display:flex;flex-direction:column}
 
 /* WELCOME */
 .welcome-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px}
@@ -200,6 +200,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-size:14px;tran
 .ebtn{padding:4px 10px;border-radius:6px;font-size:11px;font-weight:500;cursor:pointer;border:1px solid var(--border);background:var(--surface2);color:var(--text2);font-family:'Inter',sans-serif;transition:all 0.12s}
 .ebtn:hover{border-color:var(--purple);color:var(--purple);background:var(--purple-faint)}
 .ebtn.del:hover{border-color:var(--red);color:var(--red);background:var(--red-light)}
+.ebtn.view:hover{border-color:var(--purple);color:var(--purple);background:var(--purple-faint)}
 .ebtn.schedule{border-color:var(--teal);color:var(--teal)}
 .ebtn.schedule:hover{background:var(--teal-light)}
 
@@ -207,7 +208,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-size:14px;tran
 .timeline{display:flex;flex-direction:column;gap:0;margin-bottom:16px}.timeline-item{display:flex;gap:12px;padding:12px 0;border-left:2px solid var(--border);padding-left:16px;margin-left:0;position:relative}.timeline-item::before{content:'';width:10px;height:10px;background:var(--purple);border-radius:50%;border:3px solid var(--surface);position:absolute;left:-7px;top:14px}.timeline-item-time{font-size:12px;font-weight:600;color:var(--text);min-width:100px}.timeline-item-meta{display:flex;flex-direction:column;gap:2px;flex:1}.timeline-item-title{font-size:13px;font-weight:600;color:var(--text)}.timeline-item-desc{font-size:12px;color:var(--text2)}.timeline-item-actions{display:flex;gap:6px;margin-top:8px}.slot-btn{padding:4px 10px;border-radius:6px;font-size:10px;font-weight:500;border:1px solid var(--border);background:var(--surface2);color:var(--text2);cursor:pointer;transition:all 0.12s}.slot-btn:hover{border-color:var(--purple);color:var(--purple);background:var(--purple-faint)}.slot-btn.delete:hover{border-color:var(--red);color:var(--red);background:var(--red-light)}
 
 /* BOTTOM ROW */
-.bottom-row{display:grid;grid-template-columns:2fr 1fr;gap:12px}
+.bottom-row{display:grid;grid-template-columns:1fr;gap:12px;flex:1;margin-bottom:0}
 .tcard,.qcard{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;transition:background 0.2s,border-color 0.2s}
 .tcard .sec-hd,.qcard .sec-hd{padding:12px 14px;margin-bottom:0;border-bottom:1px solid var(--border);flex-shrink:0}
 .tbl-wrap{overflow-x:auto;overflow-y:auto;max-height:320px;-webkit-overflow-scrolling:touch}
@@ -296,7 +297,7 @@ tr:hover td{background:var(--surface2)}
   padding:14px 20px;border-top:1px solid var(--border);
   display:flex;align-items:center;justify-content:space-between;
   flex-wrap:wrap;gap:8px;background:var(--surface);
-  transition:background 0.2s,border-color 0.2s
+  transition:background 0.2s,border-color 0.2s;margin-top:auto
 }
 .dash-footer-copy{font-size:12px;color:var(--text3)}
 .dash-footer-crafted{
@@ -309,15 +310,29 @@ tr:hover td{background:var(--surface2)}
 /* ── SCHEDULE MODAL FORM ── */
 .schedule-form{display:flex;flex-direction:column;gap:10px;padding:12px;background:var(--surface2);border-radius:10px;border:1px solid var(--border)}.schedule-form .mfield{margin-bottom:0}.slot-order-info{font-size:11px;color:var(--text3)}
 
+/* ── PAYMENT STATS ── */
+.payment-stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px}
+.pstat-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px;transition:all 0.2s}
+.pstat-card:hover{border-color:var(--purple);box-shadow:0 2px 8px rgba(91,79,232,0.1)}
+.pstat-icon{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;margin-bottom:8px}
+.pstat-icon svg{width:16px;height:16px}
+.pstat-label{font-size:12px;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px}
+.pstat-amount{font-size:20px;font-weight:700;color:var(--text);margin-bottom:2px}
+.pstat-sub{font-size:11px;color:var(--text2)}
+.pstat-col-total{background:var(--purple-faint)}
+.pstat-col-pending{background:var(--amber-light)}
+.pstat-col-approved{background:var(--green-light)}
+
 /* ── RESPONSIVE ── */
-@media(max-width:1024px){.bottom-row{grid-template-columns:1fr}}
-@media(max-width:860px){.stats-row{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:1024px){.bottom-row{grid-template-columns:1fr}.payment-stats-row{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:860px){.stats-row{grid-template-columns:repeat(2,1fr)}.payment-stats-row{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:768px){
   .sidebar{transform:translateX(-100%)}
   .sidebar.open{transform:translateX(0)}
   .main{margin-left:0}
   .ham-btn{display:flex}
   .search-box{display:none}
+  .payment-stats-row{grid-template-columns:1fr}
 }
 @media(max-width:540px){
   .stats-row{grid-template-columns:1fr 1fr}
@@ -380,6 +395,11 @@ tr:hover td{background:var(--surface2)}
       <button class="nav-item" id="nav-schedule" onclick="navClick(this,'Schedule')">
         <svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.3"/><path d="M8 4.5V8l2.5 1.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
         Schedule
+      </button>
+      <button class="nav-item" id="nav-payment-proofs" onclick="navClick(this,'Payment Proofs'); loadPaymentProofs()">
+        <svg viewBox="0 0 16 16" fill="none"><rect x="1" y="2" width="14" height="12" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M1 5h14" stroke="currentColor" stroke-width="1.3"/><circle cx="8" cy="9" r="1.5" stroke="currentColor" stroke-width="1.3"/></svg>
+        Payment Proofs
+        <span class="nav-count" id="pp-count" style="display:none">0</span>
       </button>
       <button class="nav-item" onclick="navClick(this,'Settings')">
         <svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="2.5" stroke="currentColor" stroke-width="1.3"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.05 3.05l1.42 1.42M11.53 11.53l1.42 1.42M3.05 12.95l1.42-1.42M11.53 4.47l1.42-1.42" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
@@ -480,6 +500,37 @@ tr:hover td{background:var(--surface2)}
         </div>
       </div>
 
+      <!-- PAYMENT COLLECTION STATS -->
+      <div class="sec-hd" style="margin-top:24px;margin-bottom:12px">
+        <div class="sec-title">💰 Payment Collection</div>
+      </div>
+      <div class="payment-stats-row">
+        <div class="pstat-card pstat-col-total">
+          <div class="pstat-icon" style="background:var(--purple-faint)">
+            <svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#5B4FE8" stroke-width="1.2"/><path d="M8 4v8M5 8h6" stroke="#5B4FE8" stroke-width="1.2" stroke-linecap="round"/></svg>
+          </div>
+          <div class="pstat-label">Total Collected</div>
+          <div class="pstat-amount" id="p-total-collected">₹0</div>
+          <div class="pstat-sub">From all events</div>
+        </div>
+        <div class="pstat-card pstat-col-pending">
+          <div class="pstat-icon" style="background:var(--amber-light)">
+            <svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#F59E0B" stroke-width="1.2"/><path d="M8 4v4m0 2v.01" stroke="#F59E0B" stroke-width="1.2" stroke-linecap="round"/></svg>
+          </div>
+          <div class="pstat-label">Pending Verification</div>
+          <div class="pstat-amount" id="p-pending-count">0</div>
+          <div class="pstat-sub">Awaiting approval</div>
+        </div>
+        <div class="pstat-card pstat-col-approved">
+          <div class="pstat-icon" style="background:var(--green-light)">
+            <svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#22C55E" stroke-width="1.2"/><path d="M6 8l2 2 4-4" stroke="#22C55E" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="pstat-label">Verified Payments</div>
+          <div class="pstat-amount" id="p-verified-count">0</div>
+          <div class="pstat-sub">Confirmed</div>
+        </div>
+      </div>
+
       <!-- EVENTS -->
       <div class="sec-hd">
         <div class="sec-title">Events</div>
@@ -496,29 +547,7 @@ tr:hover td{background:var(--surface2)}
       <!-- BOTTOM -->
       <div class="bottom-row">
 
-        <!-- REGISTRATIONS TABLE -->
-        <div class="tcard">
-          <div class="sec-hd">
-            <div class="sec-title">All Registrations</div>
-            <div style="display:flex;gap:8px;align-items:center">
-              <div class="search-box" style="min-width:0;width:160px">
-                <svg viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="4.5" stroke="currentColor" stroke-width="1.3"/><path d="M10 10l3.5 3.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
-                <input type="text" placeholder="Search teams..." oninput="searchRegs(this.value)" style="width:120px">
-              </div>
-              <button class="link-btn" onclick="exportCSV()">Export CSV</button>
-            </div>
-          </div>
-          <div class="tbl-wrap">
-            <table>
-              <thead><tr><th>Team</th><th>Lead</th><th>Event</th><th>Email</th><th>Members</th><th>Status</th><th>Action</th></tr></thead>
-              <tbody id="reg-body">
-                <tr><td colspan="7" style="text-align:center;color:var(--text3);padding:24px">No registrations yet</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <!-- QUICK ACTIONS -->
+      <!-- QUICK ACTIONS -->
         <div class="qcard">
           <div class="sec-hd"><div class="sec-title">Quick Actions</div></div>
           <div class="qcard-body">
@@ -585,7 +614,51 @@ tr:hover td{background:var(--surface2)}
         <div class="mfield"><label>Max teams</label><input type="number" id="m-maxteams" placeholder="e.g. 30" min="1"></div>
         <div class="mfield"><label>Prize</label><input id="m-prize" placeholder="e.g. ₹50,000"></div>
       </div>
+      <div class="mfield"><label>Registration Fee</label><input type="number" id="m-fee" placeholder="e.g. 500" min="0" step="1"></div>
       <div class="mfield"><label>Description</label><textarea id="m-desc" placeholder="Brief description of the event..."></textarea></div>
+      
+      <!-- PAYMENT METHOD SECTION -->
+      <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border)">
+        <label style="display:block;font-size:12px;font-weight:600;color:var(--text2);margin-bottom:8px">💳 Payment Method *</label>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <!-- Option 1: UPI Manual -->
+          <label style="display:flex;align-items:flex-start;gap:10px;padding:10px;border:1.5px solid var(--border);border-radius:8px;cursor:pointer;transition:all 0.2s">
+            <input type="radio" name="paymentMode" value="upi_manual" style="margin-top:3px;cursor:pointer;accent-color:var(--purple)">
+            <div style="flex:1">
+              <div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:2px">UPI Manual Payment</div>
+              <div style="font-size:11px;color:var(--text2)">Students upload payment screenshot for verification</div>
+            </div>
+          </label>
+          
+          <!-- Option 2: Razorpay -->
+          <label style="display:flex;align-items:flex-start;gap:10px;padding:10px;border:1.5px solid var(--border);border-radius:8px;cursor:pointer;transition:all 0.2s">
+            <input type="radio" name="paymentMode" value="razorpay" style="margin-top:3px;cursor:pointer;accent-color:var(--purple)">
+            <div style="flex:1">
+              <div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:2px">Razorpay Payment</div>
+              <div style="font-size:11px;color:var(--text2)">Automated online payment (instant verification)</div>
+            </div>
+          </label>
+        </div>
+      </div>
+      
+      <!-- UPI DETAILS (Hidden by default) -->
+      <div id="upi-details-section" style="display:none;margin-top:16px;padding:12px;background:var(--surface2);border-radius:8px;border-left:3px solid var(--purple)">
+        <label style="display:block;font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px">UPI Configuration</label>
+        <div class="mfield"><label>Your Name *</label><input id="m-organizer-name" placeholder="Your full name"></div>
+        <div class="mfield"><label>UPI ID *</label><input id="m-upi-id" placeholder="e.g. name@upi" pattern="^[a-zA-Z0-9._-]+@[a-zA-Z]+$"></div>
+        <div class="mfield">
+          <label>UPI QR Code Image *</label>
+          <div style="border:2px dashed var(--border);border-radius:8px;padding:16px;text-align:center;cursor:pointer;background:var(--purple-faint)" onclick="document.getElementById('m-qr-code').click()">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin:0 auto 6px;display:block;color:var(--purple)"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+            <div style="font-size:11px;font-weight:600;color:var(--purple)">Upload QR Code</div>
+            <input type="file" id="m-qr-code" accept="image/*" style="display:none" onchange="handleQRUpload(event)">
+          </div>
+          <div id="qr-preview" style="display:none;margin-top:8px;text-align:center;position:relative">
+            <img id="qr-preview-img" src="" alt="QR Code" style="max-width:100%;max-height:150px;border-radius:6px;border:1px solid var(--border)">
+            <button type="button" onclick="clearQRUpload()" style="position:absolute;top:4px;right:4px;background:var(--red);color:#fff;border:none;border-radius:4px;padding:2px 6px;font-size:10px;cursor:pointer;font-weight:600">Remove</button>
+          </div>
+        </div>
+      </div>
     </div>
     <div class="modal-ft">
       <button class="btn-cancel" onclick="closeModal()">Cancel</button>
@@ -622,6 +695,217 @@ tr:hover td{background:var(--surface2)}
             <input type="number" id="slot-order" value="1" min="1">
           </div>
           <button class="btn-save" style="width:100%;margin-top:8px" onclick="addSlot()">Add Slot</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PAYMENT PROOFS MODAL -->
+<div class="overlay" id="payment-proofs-modal" onclick="if(event.target===this)closePaymentProofsModal()">
+  <div class="modal" style="max-width:900px">
+    <div class="modal-hd">
+      <div class="modal-hd-title">📸 Payment Proofs - Pending Verification</div>
+      <button class="modal-x" onclick="closePaymentProofsModal()">
+        <svg viewBox="0 0 16 16" fill="none"><path d="M3 3l10 10M13 3L3 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <div class="modal-body" style="padding:0">
+      <div id="payment-proofs-list" style="max-height:600px;overflow-y:auto">
+        <div style="padding:32px;text-align:center;color:var(--text3)">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" style="margin:0 auto 12px;opacity:0.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+          <div style="font-size:14px">No pending payment proofs</div>
+          <div style="font-size:12px;margin-top:4px">All submissions have been verified ✓</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PAYMENT PROOF DETAIL MODAL -->
+<div class="overlay" id="proof-detail-modal" onclick="if(event.target===this)closeProofDetailModal()">
+  <div class="modal" style="max-width:600px">
+    <div class="modal-hd">
+      <div class="modal-hd-title">Review Payment Proof</div>
+      <button class="modal-x" onclick="closeProofDetailModal()">
+        <svg viewBox="0 0 16 16" fill="none"><path d="M3 3l10 10M13 3L3 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <!-- Team Info -->
+      <div style="padding:12px;background:var(--surface2);border-radius:8px;margin-bottom:16px">
+        <div style="font-size:12px;color:var(--text3);margin-bottom:4px">TEAM</div>
+        <div style="font-size:14px;font-weight:600;color:var(--text)" id="proof-team-name">—</div>
+        <div style="font-size:11px;color:var(--text2);margin-top:6px">
+          <div>Lead: <strong id="proof-lead-name">—</strong></div>
+          <div>Event: <strong id="proof-event-name">—</strong></div>
+          <div>Method: <strong id="proof-method">—</strong></div>
+        </div>
+      </div>
+
+      <!-- Payment Proof Image -->
+      <div style="margin-bottom:16px">
+        <div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:8px">Payment Screenshot</div>
+        <div style="border:1px solid var(--border);border-radius:8px;overflow:hidden;background:var(--surface2);aspect-ratio:16/9;display:flex;align-items:center;justify-content:center">
+          <img id="proof-screenshot" src="" alt="Payment proof" style="width:100%;height:100%;object-fit:contain">
+        </div>
+        <div style="font-size:10px;color:var(--text3);margin-top:6px">Submitted: <span id="proof-submitted-date">—</span></div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div style="display:flex;gap:10px">
+        <button class="btn-save" style="background:var(--green);flex:1;padding:10px" onclick="approvePaymentProof()">✓ Approve Payment</button>
+        <button class="btn-save" style="background:var(--red);flex:1;padding:10px" onclick="openRejectReasonModal()">✕ Reject</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- REJECT REASON MODAL -->
+<div class="overlay" id="reject-reason-modal" onclick="if(event.target===this)closeRejectReasonModal()">
+  <div class="modal" style="max-width:400px">
+    <div class="modal-hd">
+      <div class="modal-hd-title">Reject Payment Proof</div>
+      <button class="modal-x" onclick="closeRejectReasonModal()">
+        <svg viewBox="0 0 16 16" fill="none"><path d="M3 3l10 10M13 3L3 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div style="margin-bottom:16px">
+        <label style="display:block;font-size:12px;font-weight:600;color:var(--text);margin-bottom:8px">Rejection Reason *</label>
+        <textarea id="reject-reason-text" placeholder="e.g., Image is unclear, amount doesn't match, etc." style="width:100%;border:1px solid var(--border);border-radius:6px;padding:10px;background:var(--surface);color:var(--text);font-family:inherit;font-size:12px;resize:vertical;min-height:80px;outline:none" onkeydown="if(event.key==='Enter' && event.ctrlKey) rejectPaymentProof()"></textarea>
+      </div>
+      <div style="display:flex;gap:10px">
+        <button class="btn-cancel" style="flex:1" onclick="closeRejectReasonModal()">Cancel</button>
+        <button class="btn-save" style="background:var(--red);flex:1" onclick="rejectPaymentProof()">Reject</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- REGISTRATION DETAILS MODAL -->
+<div class="overlay" id="reg-details-modal" onclick="if(event.target===this)closeRegDetailsModal()">
+  <div class="modal" style="max-width:600px">
+    <div class="modal-hd">
+      <div class="modal-hd-title">Registration Details</div>
+      <button class="modal-x" onclick="closeRegDetailsModal()">
+        <svg viewBox="0 0 16 16" fill="none"><path d="M3 3l10 10M13 3L3 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <div class="modal-body" style="padding:0">
+      <!-- Team Info Section -->
+      <div style="padding:16px;border-bottom:1px solid var(--border)">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+          <div>
+            <div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px">Team Name</div>
+            <div style="font-size:13px;font-weight:600;color:var(--text);margin-top:4px" id="rd-teamname">—</div>
+          </div>
+          <div>
+            <div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px">Event</div>
+            <div style="font-size:13px;font-weight:600;color:var(--text);margin-top:4px" id="rd-eventname">—</div>
+          </div>
+          <div>
+            <div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px">Lead</div>
+            <div style="font-size:13px;font-weight:600;color:var(--text);margin-top:4px" id="rd-leadname">—</div>
+          </div>
+          <div>
+            <div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px">Status</div>
+            <div style="font-size:13px;font-weight:600;color:var(--text);margin-top:4px" id="rd-status">—</div>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div>
+            <div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px">Email</div>
+            <div style="font-size:13px;font-weight:600;color:var(--text);margin-top:4px" id="rd-email">—</div>
+          </div>
+          <div>
+            <div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px">Phone</div>
+            <div style="font-size:13px;font-weight:600;color:var(--text);margin-top:4px" id="rd-phone">—</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Members Section -->
+      <div style="padding:16px;border-bottom:1px solid var(--border)">
+        <div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px">Team Members</div>
+        <div id="rd-members" style="display:flex;flex-direction:column;gap:6px">—</div>
+      </div>
+
+      <!-- Payment Section -->
+      <div style="padding:20px;border-bottom:1px solid var(--border);background:linear-gradient(135deg, var(--purple-faint) 0%, var(--surface) 100%)">
+        <div style="font-size:12px;font-weight:700;color:var(--purple);text-transform:uppercase;letter-spacing:1px;margin-bottom:16px;display:flex;align-items:center;gap:8px">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="22" height="18" rx="2" ry="2"/><line x1="1" y1="9" x2="23" y2="9"/></svg>
+          Payment Information
+        </div>
+        
+        <!-- Payment Method & Status Cards -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+          <div style="padding:12px;background:var(--surface);border:1px solid var(--border);border-radius:8px;display:flex;flex-direction:column;gap:6px">
+            <div style="font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px">Payment Method</div>
+            <div style="font-size:13px;font-weight:600;color:var(--text)" id="rd-payment-method">—</div>
+          </div>
+          <div style="padding:12px;background:var(--surface);border:1px solid var(--border);border-radius:8px;display:flex;flex-direction:column;gap:6px">
+            <div style="font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px">Payment Status</div>
+            <div style="font-size:13px;font-weight:600;color:var(--text)" id="rd-payment-status">—</div>
+          </div>
+        </div>
+
+        <!-- UPI Screenshot Section -->
+        <div id="rd-screenshot-section" style="display:none;margin-top:16px;">
+          <div style="font-size:11px;font-weight:700;color:var(--text);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:12px;display:flex;align-items:center;gap:7px">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+            Payment Screenshot
+          </div>
+          <div style="border:2px solid var(--border);border-radius:12px;overflow:hidden;background:var(--surface2);aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 24px rgba(0,0,0,0.12);position:relative">
+            <img id="rd-screenshot" src="" alt="Payment proof" style="width:100%;height:100%;object-fit:contain;padding:8px">
+            <div style="position:absolute;top:8px;right:8px;background:var(--purple);color:#fff;padding:4px 10px;border-radius:6px;font-size:10px;font-weight:600;backdrop-filter:blur(10px)">UPI Proof</div>
+          </div>
+          <div style="margin-top:10px;padding:10px;background:var(--surface);border-radius:8px;border-left:3px solid var(--amber)">
+            <div style="font-size:10px;color:var(--text3);margin-bottom:3px">Submitted On</div>
+            <div style="font-size:12px;font-weight:600;color:var(--text)" id="rd-upload-date">—</div>
+          </div>
+        </div>
+
+        <!-- Online Payment Section -->
+        <div id="rd-online-section" style="display:none;margin-top:16px;padding:14px;background:var(--surface);border-radius:10px;border-left:4px solid var(--green)">
+          <div style="font-size:11px;font-weight:700;color:var(--text);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px;display:flex;align-items:center;gap:7px">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            Online Payment Details
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <div>
+              <div style="font-size:10px;color:var(--text3);margin-bottom:4px">Transaction ID</div>
+              <div style="font-size:12px;font-weight:600;color:var(--text);word-break:break-all" id="rd-transaction-id">—</div>
+            </div>
+            <div>
+              <div style="font-size:10px;color:var(--text3);margin-bottom:4px">Amount Paid</div>
+              <div style="font-size:12px;font-weight:600;color:var(--green)" id="rd-payment-amount">—</div>
+            </div>
+          </div>
+          <div style="margin-top:10px;padding:8px;background:var(--green-light);border-radius:6px;font-size:11px;color:var(--green);font-weight:600;display:flex;align-items:center;gap:6px">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+            Verified & Confirmed
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div style="display:flex;gap:10px;padding:16px;justify-content:flex-end;border-top:1px solid var(--border);background:var(--surface2)">
+        <button class="btn-cancel" style="padding:10px 18px;border-radius:8px;font-weight:600;border:1px solid var(--border);transition:all 0.2s" onmouseover="this.style.background='var(--surface)'" onmouseout="this.style.background='var(--surface)'" onclick="closeRegDetailsModal()">
+          <svg width="14" height="14" style="display:inline;margin-right:6px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          Close
+        </button>
+        
+        <!-- Approve/Reject for Manual Payments -->
+        <div id="rd-manual-actions" style="display:flex;gap:10px">
+          <button style="padding:10px 18px;background:var(--green);color:#fff;border:none;border-radius:8px;font-weight:600;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:6px" onmouseover="this.style.background='#20c452'" onmouseout="this.style.background='var(--green)'" onclick="approvePaymentFromReg()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"></path></svg>
+            Approve Payment
+          </button>
+          <button style="padding:10px 18px;background:var(--red);color:#fff;border:none;border-radius:8px;font-weight:600;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:6px" onmouseover="this.style.background='#f54a4a'" onmouseout="this.style.background='var(--red)'" onclick="rejectPaymentFromReg()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            Reject Proof
+          </button>
         </div>
       </div>
     </div>
@@ -713,41 +997,129 @@ function toast(msg, type = 'success'){
 }
 
 // ── MODAL ──
-function openModal(){ document.getElementById('modal').classList.add('open'); setTimeout(()=>document.getElementById('m-name').focus(),100); }
+function openModal(){ 
+  document.getElementById('modal').classList.add('open'); 
+  setTimeout(()=>document.getElementById('m-name').focus(),100);
+  // Reset payment mode to first option
+  document.querySelector('input[name="paymentMode"][value="upi_manual"]').checked = true;
+  updatePaymentMethodUI();
+}
+
 function closeModal(){
   document.getElementById('modal').classList.remove('open');
-  ['m-name','m-venue','m-prize','m-desc','m-date','m-time','m-maxteams'].forEach(id => document.getElementById(id).value = '');
+  ['m-name','m-venue','m-prize','m-desc','m-date','m-time','m-maxteams','m-organizer-name','m-upi-id','m-qr-code'].forEach(id => {
+    const el = document.getElementById(id);
+    if(el) el.value = '';
+  });
   document.getElementById('m-type').selectedIndex = 0;
   document.getElementById('m-status').selectedIndex = 0;
+  document.querySelector('input[name="paymentMode"][value="upi_manual"]').checked = true;
+  document.getElementById('upi-details-section').style.display = 'none';
+  document.getElementById('qr-preview').style.display = 'none';
+}
+
+// Handle Payment Method Change
+document.addEventListener('change', function(e) {
+  if(e.target.name === 'paymentMode') {
+    updatePaymentMethodUI();
+  }
+});
+
+function updatePaymentMethodUI() {
+  const paymentMode = document.querySelector('input[name="paymentMode"]:checked').value;
+  const upiSection = document.getElementById('upi-details-section');
+  
+  if(paymentMode === 'upi_manual') {
+    upiSection.style.display = 'block';
+    document.getElementById('m-organizer-name').required = true;
+    document.getElementById('m-upi-id').required = true;
+    document.getElementById('m-qr-code').required = true;
+  } else {
+    upiSection.style.display = 'none';
+    document.getElementById('m-organizer-name').required = false;
+    document.getElementById('m-upi-id').required = false;
+    document.getElementById('m-qr-code').required = false;
+  }
+}
+
+function handleQRUpload(event) {
+  const file = event.target.files[0];
+  if(!file) return;
+  
+  if(file.size > 5 * 1024 * 1024) {
+    toast('File size must be less than 5MB', 'fail');
+    return;
+  }
+  
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    document.getElementById('qr-preview-img').src = e.target.result;
+    document.getElementById('qr-preview').style.display = 'block';
+  };
+  reader.readAsDataURL(file);
+}
+
+function clearQRUpload() {
+  document.getElementById('m-qr-code').value = '';
+  document.getElementById('qr-preview').style.display = 'none';
 }
 
 // ── SAVE EVENT ──
 async function saveEvent(){
   const name = document.getElementById('m-name').value.trim();
   const date = document.getElementById('m-date').value;
+  const paymentMode = document.querySelector('input[name="paymentMode"]:checked').value;
+  
   if(!name){ toast('Event name is required', 'fail'); return; }
   if(!date){ toast('Please pick a date', 'fail'); return; }
+  if(!paymentMode){ toast('Please select a payment method', 'fail'); return; }
 
   const btn = document.querySelector('.btn-save');
   btn.disabled = true;
   btn.textContent = 'Creating...';
 
   try{
+    const formData = new FormData();
+    formData.append('name', name);
+    formData.append('date', date);
+    formData.append('type', document.getElementById('m-type').value);
+    formData.append('status', document.getElementById('m-status').value);
+    formData.append('time', document.getElementById('m-time').value);
+    formData.append('venue', document.getElementById('m-venue').value.trim());
+    if(document.getElementById('m-maxteams').value) {
+      formData.append('maxTeams', Number(document.getElementById('m-maxteams').value));
+    }
+    formData.append('prize', document.getElementById('m-prize').value.trim());
+    formData.append('description', document.getElementById('m-desc').value.trim());
+    formData.append('paymentMode', paymentMode);
+    
+    // Add fee if specified
+    const fee = document.getElementById('m-fee').value;
+    if(fee) {
+      formData.append('fee', Number(fee));
+    }
+    
+    // Add UPI details if selected
+    if(paymentMode === 'upi_manual') {
+      const orgName = document.getElementById('m-organizer-name').value.trim();
+      const upiId = document.getElementById('m-upi-id').value.trim();
+      const qrFile = document.getElementById('m-qr-code').files[0];
+      
+      if(!orgName){ toast('Organizer name is required for UPI payments', 'fail'); btn.disabled = false; btn.textContent = 'Create Event'; return; }
+      if(!upiId){ toast('UPI ID is required for UPI payments', 'fail'); btn.disabled = false; btn.textContent = 'Create Event'; return; }
+      if(!qrFile){ toast('QR code is required for UPI payments', 'fail'); btn.disabled = false; btn.textContent = 'Create Event'; return; }
+      
+      formData.append('organizerName', orgName);
+      formData.append('upiId', upiId);
+      formData.append('qrCode', qrFile);
+    }
+    
     const res = await fetch(`${API}/events`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
-      body: JSON.stringify({
-        name, date,
-        type: document.getElementById('m-type').value,
-        status: document.getElementById('m-status').value,
-        time: document.getElementById('m-time').value,
-        venue: document.getElementById('m-venue').value.trim(),
-        maxTeams: document.getElementById('m-maxteams').value ? Number(document.getElementById('m-maxteams').value) : undefined,
-        prize: document.getElementById('m-prize').value.trim(),
-        description: document.getElementById('m-desc').value.trim()
-      })
+      body: formData
     });
+    
     const data = await res.json();
     if(res.ok){
       events.unshift(data.event);
@@ -758,6 +1130,7 @@ async function saveEvent(){
       toast(data.message || 'Failed to create event', 'fail');
     }
   } catch(e){
+    console.error('Event creation error:', e);
     toast('Cannot connect to server', 'fail');
   } finally {
     btn.disabled = false;
@@ -795,6 +1168,85 @@ async function loadEvents(){
     const data = await res.json();
     if(res.ok){
       events = data.events || [];
+      // Fetch remaining days for each event
+      for(let ev of events) {
+        try {
+          const remainRes = await fetch(`${API}/events/${ev._id}`, { credentials: 'include' });
+          if(remainRes.ok){
+            const remainData = await remainRes.json();
+            const eventData = remainData.event || remainData;
+            if(eventData.daysRemaining !== undefined){
+              ev.daysRemaining = eventData.daysRemaining;
+              ev.hoursRemaining = eventData.hoursRemaining || 0;
+              ev.status = eventData.status || ev.status || 'Upcoming';
+            }
+          }
+        } catch(e) {
+          console.log('Could not fetch remaining days for event:', ev._id);
+        }
+        
+        // Fallback: Calculate local
+        if(ev.daysRemaining === undefined && ev.date){
+          try {
+            let dateStr = ev.date;
+            let timeStr = ev.time || '00:00';
+            
+            console.log('Parsing event:', ev.name, 'Date:', dateStr, 'Time:', timeStr);
+            
+            // Handle timezone in date (remove Z and time if present)
+            if(dateStr.includes('Z')){
+              dateStr = dateStr.split('T')[0]; // Extract just the date part
+            }
+            
+            if(timeStr.includes('PM') || timeStr.includes('AM')){
+              const timeParts = timeStr.match(/(\d+):(\d+)\s*(AM|PM)/i);
+              if(timeParts){
+                let hours = parseInt(timeParts[1]);
+                const mins = timeParts[2];
+                const period = timeParts[3].toUpperCase();
+                if(period === 'PM' && hours !== 12) hours += 12;
+                if(period === 'AM' && hours === 12) hours = 0;
+                timeStr = `${String(hours).padStart(2, '0')}:${mins}`;
+              }
+            }
+            
+            // Build proper ISO datetime
+            const isoDateTime = dateStr + 'T' + timeStr + ':00';
+            console.log('Built ISO datetime:', isoDateTime);
+            
+            const eventDateTime = new Date(isoDateTime);
+            const now = new Date();
+            
+            console.log('Parsed eventDateTime:', eventDateTime, 'IsValid:', !isNaN(eventDateTime.getTime()), 'Now:', now);
+            
+            // Check if date is valid
+            if(isNaN(eventDateTime.getTime())){
+              console.warn('Invalid event date for', ev.name, ':', dateStr);
+              ev.status = 'Upcoming';
+              ev.daysRemaining = -1;
+              ev.hoursRemaining = 0;
+            } else {
+              const diff = eventDateTime - now;
+              console.log('Date diff (ms):', diff);
+              
+              if(diff <= 0){
+                ev.status = 'Completed';
+                ev.daysRemaining = 0;
+                ev.hoursRemaining = 0;
+              } else {
+                ev.status = 'Upcoming';
+                ev.daysRemaining = Math.floor(diff / (1000 * 60 * 60 * 24));
+                ev.hoursRemaining = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+              }
+              console.log('Calculated for', ev.name, ':', ev.daysRemaining + 'd ' + ev.hoursRemaining + 'h');
+            }
+          } catch(e) {
+            console.error('Error parsing event date:', ev.name, e);
+            ev.daysRemaining = -1;
+            ev.hoursRemaining = 0;
+          }
+        }
+      }
       render();
     } else {
       toast('Failed to load events', 'fail');
@@ -869,7 +1321,9 @@ function renderEvents(){
         <div class="ecard-footer-top">
           <div class="estatus">
             <div class="sdot ${sc.dot}"></div>
-            ${sc.label}
+            ${(e.status || 'Upcoming').toLowerCase() === 'upcoming' && e.daysRemaining !== undefined && e.daysRemaining >= 0 ? 
+              (e.daysRemaining > 0 ? `${e.daysRemaining}d ${e.hoursRemaining || 0}h` : (e.hoursRemaining > 0 ? `${e.hoursRemaining}h` : sc.label)) 
+              : sc.label}
           </div>
           <div class="eteams-count">
             <svg viewBox="0 0 12 12" fill="none"><circle cx="4.5" cy="3.5" r="2" stroke="currentColor" stroke-width="1.1"/><path d="M1 10c0-1.9 1.6-3 3.5-3s3.5 1.1 3.5 3" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/><path d="M8.5 4.5c.9 0 2 .6 2 2.2" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/><path d="M10 6c.6.3 1 .9 1 1.8" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>
@@ -912,7 +1366,8 @@ async function loadAllRegistrations(){
     const results = await Promise.all(regPromises);
     allRegs = results.flat();
     filteredRegs = [...allRegs];
-    renderRegs();
+    // Note: Dashboard doesn't have a registrations table, so we don't call renderRegs()
+    // renderRegs() is only for eventdetail.html
     updateStats();
   } catch(e){
     console.log('Could not load registrations:', e);
@@ -935,23 +1390,37 @@ function searchRegs(q){
 // ── RENDER REGISTRATIONS TABLE ──
 function renderRegs(){
   const tbody = document.getElementById('reg-body');
+  if(!tbody){
+    console.warn('Element reg-body not found in DOM');
+    return;
+  }
   if(!filteredRegs.length){
     tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--text3);padding:24px">No registrations yet</td></tr>';
     return;
   }
   tbody.innerHTML = filteredRegs.map(r => {
-    const membersCount = Array.isArray(r.members) ? r.members.join(', ') : (r.members || '—');
+    const membersCount = Array.isArray(r.members) ? r.members.length : 0;
+    
+    // Registration Status
+    const regStatus = (r.registrationStatus || 'pending').toLowerCase();
+    const regStatusBadge = regStatus === 'approved' ? 'badge-verified' : (regStatus === 'pending' ? 'badge-pending' : 'badge-rejected');
+    const regStatusText = regStatus === 'approved' ? 'Approved' : (regStatus === 'pending' ? 'Pending' : 'Rejected');
+    
+    // Payment Status
+    const payStatus = (r.paymentStatus || 'pending').toLowerCase();
+    const payStatusBadge = payStatus === 'approved' || payStatus === 'verified' ? 'badge-verified' : (payStatus === 'pending' || payStatus === 'submitted' ? 'badge-pending' : 'badge-rejected');
+    const payStatusText = payStatus === 'approved' || payStatus === 'verified' ? 'Approved' : (payStatus === 'pending' || payStatus === 'submitted' ? 'Pending' : 'Rejected');
+    
     return `<tr>
       <td style="font-weight:600">${r.teamname || r.teamName || '—'}</td>
       <td style="color:var(--text2)">${r.leadname || r.leadName || '—'}</td>
       <td style="color:var(--text2)">${r.eventName || '—'}</td>
-      <td style="color:var(--text2);font-size:12px">${r.email || '—'}</td>
-      <td>${membersCount}</td>
-      <td><span class="badge-confirmed">Confirmed</span></td>
-      <td>
-        <button class="ebtn del" onclick="cancelReg('${r._id}')" title="Cancel registration">
-          Cancel
-        </button>
+      <td>${membersCount} member${membersCount !== 1 ? 's' : ''}</td>
+      <td><span class="${regStatusBadge}">${regStatusText}</span></td>
+      <td><span class="${payStatusBadge}">${payStatusText}</span></td>
+      <td style="display:flex;gap:6px">
+        <button class="ebtn view" onclick="viewRegDetails('${r._id}')" title="View details">View</button>
+        <button class="ebtn del" onclick="rejectReg('${r._id}')" title="Reject registration">Reject</button>
       </td>
     </tr>`;
   }).join('');
@@ -982,19 +1451,287 @@ async function cancelReg(tid){
   }
 }
 
+// ── VIEW REGISTRATION DETAILS ──
+let currentViewingReg = null;
+function viewRegDetails(regId){
+  dbg('viewRegDetails CALLED with ID:', regId);
+  console.log('✅ Function executed - looking for reg with ID:', regId);
+  console.log('📋 allRegs data:', allRegs);
+  
+  const reg = allRegs.find(r => r._id === regId);
+  dbg('Found registration:', reg);
+  if(!reg){
+    console.error('❌ Registration not found in allRegs. ID:', regId, 'Available IDs:', allRegs.map(r => r._id));
+    toast('Registration not found', 'fail');
+    return;
+  }
+  currentViewingReg = reg;
+  
+  // Populate modal fields
+  dbg('Populating modal...');
+  document.getElementById('rd-teamname').textContent = reg.teamname || reg.teamName || '—';
+  document.getElementById('rd-eventname').textContent = reg.eventName || '—';
+  document.getElementById('rd-leadname').textContent = reg.leadname || reg.leadName || '—';
+  document.getElementById('rd-email').textContent = reg.email || '—';
+  document.getElementById('rd-phone').textContent = reg.phone || '—';
+  
+  // Status badge
+  const status = (reg.paymentStatus || reg.registrationStatus || 'pending').toLowerCase();
+  const statusText = status === 'approved' || status === 'verified' ? '✓ Approved' : (status === 'pending' ? '⏳ Pending' : (status === 'submitted' ? '⏳ Awaiting Review' : '✗ Rejected'));
+  const statusColor = status === 'approved' || status === 'verified' ? 'var(--green)' : (status === 'pending' ? 'var(--amber)' : (status === 'submitted' ? 'var(--amber)' : 'var(--red)'));
+  document.getElementById('rd-status').innerHTML = `<span style="color:${statusColor};font-weight:600">${statusText}</span>`;
+  
+  // Members
+  const membersDiv = document.getElementById('rd-members');
+  if(Array.isArray(reg.members) && reg.members.length > 0){
+    membersDiv.innerHTML = reg.members.map((m, i) => 
+      `<div style="padding:6px;background:var(--surface2);border-radius:4px;font-size:12px">${i+1}. ${m}</div>`
+    ).join('');
+  } else {
+    membersDiv.innerHTML = '<div style="color:var(--text3)">No members added</div>';
+  }
+  
+  // Payment information
+  const paymentMethod = reg.paymentMethod || 'unknown';
+  const paymentStatus = (reg.paymentStatus || reg.registrationStatus || 'pending').toLowerCase();
+  
+  // Display payment method
+  const displayPaymentMethod = paymentMethod === 'UPI' || paymentMethod === 'manual_upi' ? '💸 UPI' : 
+    (paymentMethod === 'razorpay' || paymentMethod === 'online' ? '💳 Online Payment' : 
+    (paymentMethod === 'Cash' ? '💵 Cash' : paymentMethod));
+  document.getElementById('rd-payment-method').textContent = displayPaymentMethod;
+  
+  // Display payment status
+  document.getElementById('rd-payment-status').innerHTML = `<span style="color:${paymentStatus === 'approved' || paymentStatus === 'verified' || paymentStatus === 'paid' ? 'var(--green)' : (paymentStatus === 'pending' || paymentStatus === 'submitted' ? 'var(--amber)' : 'var(--red)')};font-weight:600">${paymentStatus === 'approved' || paymentStatus === 'verified' || paymentStatus === 'paid' ? '✓ Approved' : (paymentStatus === 'submitted' ? '⏳ Awaiting Review' : paymentStatus.charAt(0).toUpperCase() + paymentStatus.slice(1))}</span>`;
+  
+  // UPI Screenshot section (for manual UPI payments)
+  const screenshotSection = document.getElementById('rd-screenshot-section');
+  if((paymentMethod === 'UPI' || paymentMethod === 'manual_upi') && (reg.paymentProofUrl || reg.screenshot)){
+    screenshotSection.style.display = 'block';
+    const screenshotUrl = reg.paymentProofUrl || reg.screenshot;
+    document.getElementById('rd-screenshot').src = screenshotUrl;
+    const uploadDate = reg.submittedAt ? new Date(reg.submittedAt).toLocaleDateString('en-IN') : new Date().toLocaleDateString('en-IN');
+    document.getElementById('rd-upload-date').textContent = uploadDate;
+  } else {
+    screenshotSection.style.display = 'none';
+  }
+  
+  // Online Payment section (for Razorpay/online payments)
+  const onlineSection = document.getElementById('rd-online-section');
+  if(paymentMethod === 'razorpay' || paymentMethod === 'online'){
+    onlineSection.style.display = 'block';
+    document.getElementById('rd-transaction-id').textContent = reg.transactionId || '—';
+    document.getElementById('rd-payment-amount').textContent = '₹' + (reg.paymentAmount || '—');
+  } else {
+    onlineSection.style.display = 'none';
+  }
+  
+  // Show approve/reject buttons for payments in submitted or rejected state
+  const manualActionsDiv = document.getElementById('rd-manual-actions');
+  if(paymentStatus === 'submitted' || paymentStatus === 'rejected'){
+    manualActionsDiv.style.display = 'flex';
+  } else {
+    manualActionsDiv.style.display = 'none';
+  }
+  
+  // Open modal
+  dbg('Opening modal...');
+  const modal = document.getElementById('reg-details-modal');
+  console.log('Modal element found:', modal ? '✅ YES' : '❌ NO');
+  if(modal){
+    modal.classList.add('open');
+    console.log('✅ Modal .open class added. Modal display:', window.getComputedStyle(modal).display);
+  } else {
+    console.error('❌ Modal element not found in DOM');
+  }
+}
+
+function closeRegDetailsModal(){
+  document.getElementById('reg-details-modal').classList.remove('open');
+  currentViewingReg = null;
+}
+
+// ── APPROVE PAYMENT FROM REGISTRATION MODAL ──
+async function approvePaymentFromReg(){
+  if(!currentViewingReg){
+    toast('Registration data not found', 'fail');
+    return;
+  }
+  const regId = currentViewingReg._id;
+  
+  if(!confirm('Approve this payment proof?')) return;
+  
+  try {
+    const res = await fetch(`${API}/payment/${regId}/approve`, {
+      method: 'PUT',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' }
+    });
+    
+    const data = await res.json();
+    
+    if(res.ok && data.success){
+      toast('✓ Payment approved successfully', 'success');
+      closeRegDetailsModal();
+      loadAllRegistrations(); // Refresh list
+    } else {
+      toast(data.message || 'Failed to approve payment', 'fail');
+    }
+  } catch(e){
+    toast('Cannot connect to server', 'fail');
+  }
+}
+
+// ── REJECT PAYMENT FROM REGISTRATION MODAL ──
+async function rejectPaymentFromReg(){
+  if(!currentViewingReg){
+    toast('Registration data not found', 'fail');
+    return;
+  }
+  const regId = currentViewingReg._id;
+  
+  const reason = prompt('Enter rejection reason:', 'Image is unclear');
+  if(!reason) return;
+  
+  try {
+    const res = await fetch(`${API}/payment/${regId}/reject`, {
+      method: 'PUT',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ reason })
+    });
+    
+    const data = await res.json();
+    
+    if(res.ok && data.success){
+      toast('✓ Payment rejected. Student can re-upload', 'success');
+      closeRegDetailsModal();
+      loadAllRegistrations(); // Refresh list
+    } else {
+      toast(data.message || 'Failed to reject payment', 'fail');
+    }
+  } catch(e){
+    toast('Cannot connect to server', 'fail');
+  }
+}
+
+// ── APPROVE REGISTRATION FROM MODAL ──
+async function approveRegFromModal(){
+  if(!currentViewingReg){
+    toast('Registration data not found', 'fail');
+    return;
+  }
+  const regId = currentViewingReg._id;
+  const btn = event.target;
+  btn.disabled = true;
+  btn.textContent = 'Approving...';
+  
+  try{
+    const res = await fetch(`${API}/teams/registrations/${regId}/approve`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ status: 'Approved' })
+    });
+    const data = await res.json();
+    if(res.ok || res.status === 200){
+      toast('✓ Registration approved!');
+      closeRegDetailsModal();
+      // Reload all registrations from server to ensure fresh data
+      await loadAllRegistrations();
+    } else {
+      toast(data.message || 'Failed to approve registration', 'fail');
+    }
+  } catch(e){
+    toast('Cannot connect to server', 'fail');
+    console.error('Approve error:', e);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Approve';
+  }
+}
+
+// ── REJECT REGISTRATION ──
+async function rejectReg(regId){
+  if(!confirm('Are you sure you want to reject this registration?')) return;
+  
+  try{
+    const res = await fetch(`${API}/teams/registrations/${regId}/reject`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ status: 'Rejected', reason: 'Rejected by organizer' })
+    });
+    const data = await res.json();
+    if(res.ok || res.status === 200){
+      toast('✓ Registration rejected');
+      // Reload all registrations from server to ensure fresh data
+      await loadAllRegistrations();
+    } else {
+      toast(data.message || 'Failed to reject registration', 'fail');
+    }
+  } catch(e){
+    toast('Cannot connect to server', 'fail');
+    console.error('Reject error:', e);
+  }
+}
+
+// ── REJECT REGISTRATION FROM MODAL ──
+async function rejectRegFromModal(){
+  if(!currentViewingReg){
+    toast('Registration data not found', 'fail');
+    return;
+  }
+  if(!confirm('Are you sure you want to reject this registration?')) return;
+  
+  const regId = currentViewingReg._id;
+  const btn = event.target;
+  btn.disabled = true;
+  btn.textContent = 'Rejecting...';
+  
+  try{
+    const res = await fetch(`${API}/teams/registrations/${regId}/reject`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ status: 'Rejected', reason: 'Rejected by organizer' })
+    });
+    const data = await res.json();
+    if(res.ok || res.status === 200){
+      toast('✓ Registration rejected');
+      closeRegDetailsModal();
+      // Reload all registrations from server to ensure fresh data
+      await loadAllRegistrations();
+    } else {
+      toast(data.message || 'Failed to reject registration', 'fail');
+    }
+  } catch(e){
+    toast('Cannot connect to server', 'fail');
+    console.error('Reject error:', e);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Reject';
+  }
+}
+
 // ── EXPORT CSV ──
 function exportCSV(){
   if(!allRegs.length){ toast('No registrations to export', 'fail'); return; }
   const rows = [
-    ['Team Name','Lead Name','Event','Email','Members','Status'],
-    ...allRegs.map(r => [
-      r.teamname || r.teamName || '',
-      r.leadname || r.leadName || '',
-      r.eventName || '',
-      r.email || '',
-      Array.isArray(r.members) ? r.members.join(' | ') : (r.members || ''),
-      'Confirmed'
-    ])
+    ['Team Name','Lead Name','Event','Email','Members','Registration Status','Payment Status'],
+    ...allRegs.map(r => {
+      const regStatus = (r.registrationStatus || 'Pending').charAt(0).toUpperCase() + (r.registrationStatus || 'Pending').slice(1);
+      const payStatus = (r.paymentStatus || 'Pending').charAt(0).toUpperCase() + (r.paymentStatus || 'Pending').slice(1);
+      return [
+        r.teamname || r.teamName || '',
+        r.leadname || r.leadName || '',
+        r.eventName || '',
+        r.email || '',
+        Array.isArray(r.members) ? r.members.join(' | ') : (r.members || ''),
+        regStatus,
+        payStatus
+      ];
+    })
   ];
   const csv = rows.map(r => r.map(v => `"${v}"`).join(',')).join('\n');
   const a = document.createElement('a');
@@ -1184,6 +1921,210 @@ async function deleteSlot(slotId){
   }
 }
 
+// ── PAYMENT PROOFS MANAGEMENT ──
+let pendingPaymentProofs = [];
+let currentViewingProof = null;
+
+async function loadPaymentProofs(){
+  try {
+    const res = await fetch(`${API}/teams/registrations?paymentStatus=submitted`, {
+      credentials: 'include'
+    });
+    
+    if(!res.ok) throw new Error();
+    const data = await res.json();
+    
+    pendingPaymentProofs = data.registrations ? data.registrations.filter(r => r.paymentStatus === 'submitted') : [];
+    
+    // Update count badge
+    const countBadge = document.getElementById('pp-count');
+    if(countBadge) {
+      countBadge.style.display = pendingPaymentProofs.length > 0 ? 'block' : 'none';
+      countBadge.textContent = pendingPaymentProofs.length;
+    }
+    
+    renderPaymentProofsList();
+    openPaymentProofsModal();
+  } catch(e){
+    toast('Failed to load payment proofs', 'fail');
+  }
+}
+
+function renderPaymentProofsList(){
+  const container = document.getElementById('payment-proofs-list');
+  
+  if(pendingPaymentProofs.length === 0){
+    container.innerHTML = '<div style="padding:32px;text-align:center;color:var(--text3)"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" style="margin:0 auto 12px;opacity:0.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg><div style="font-size:14px">No pending payment proofs</div><div style="font-size:12px;margin-top:4px">All submissions have been verified ✓</div></div>';
+    return;
+  }
+  
+  container.innerHTML = pendingPaymentProofs.map((proof, idx) => `
+    <div style="padding:14px;border-bottom:1px solid var(--border);display:grid;grid-template-columns:60px 1fr auto;gap:12px;align-items:center;cursor:pointer" onclick="viewPaymentProof('${proof._id}')">
+      <div style="width:60px;height:60px;border-radius:6px;background:var(--surface2);overflow:hidden;display:flex;align-items:center;justify-content:center">
+        <img src="${proof.paymentProofUrl}" alt="Proof" style="width:100%;height:100%;object-fit:cover">
+      </div>
+      <div style="min-width:0">
+        <div style="font-size:13px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${proof.teamname}</div>
+        <div style="font-size:11px;color:var(--text2);margin-top:2px">Lead: ${proof.leadname}</div>
+        <div style="font-size:10px;color:var(--text3);margin-top:4px">📅 ${new Date(proof.submittedAt).toLocaleDateString('en-IN')}</div>
+      </div>
+      <div style="display:flex;gap:6px">
+        <button class="btn-save" style="background:var(--green);padding:6px 12px;font-size:11px;font-weight:600;border:none;border-radius:4px;cursor:pointer;color:#fff" onclick="event.stopPropagation(); approvePaymentProof('${proof._id}')">Approve</button>
+        <button class="btn-save" style="background:var(--red);padding:6px 12px;font-size:11px;font-weight:600;border:none;border-radius:4px;cursor:pointer;color:#fff" onclick="event.stopPropagation(); currentViewingProof = {_id: '${proof._id}'}; openRejectReasonModal()">Reject</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function openPaymentProofsModal(){
+  const modal = document.getElementById('payment-proofs-modal');
+  if(modal) modal.classList.add('open');
+}
+
+function closePaymentProofsModal(){
+  const modal = document.getElementById('payment-proofs-modal');
+  if(modal) modal.classList.remove('open');
+}
+
+function viewPaymentProof(regId){
+  const proof = pendingPaymentProofs.find(p => p._id === regId);
+  if(!proof) return;
+  
+  currentViewingProof = proof;
+  
+  // Populate proof detail modal
+  document.getElementById('proof-team-name').textContent = proof.teamname || '—';
+  document.getElementById('proof-lead-name').textContent = proof.leadname || '—';
+  document.getElementById('proof-event-name').textContent = proof.event?.name || proof.event?.title || '—';
+  document.getElementById('proof-method').textContent = proof.paymentMethod || '—';
+  document.getElementById('proof-screenshot').src = proof.paymentProofUrl || '';
+  document.getElementById('proof-submitted-date').textContent = new Date(proof.submittedAt).toLocaleDateString('en-IN') + ' ' + new Date(proof.submittedAt).toLocaleTimeString('en-IN');
+  
+  // Open detail modal
+  closePaymentProofsModal();
+  const detailModal = document.getElementById('proof-detail-modal');
+  if(detailModal) detailModal.classList.add('open');
+}
+
+function closeProofDetailModal(){
+  const modal = document.getElementById('proof-detail-modal');
+  if(modal) modal.classList.remove('open');
+  currentViewingProof = null;
+}
+
+async function approvePaymentProof(regId){
+  const id = regId || (currentViewingProof && currentViewingProof._id);
+  if(!id) {
+    toast('Registration ID not found', 'fail');
+    return;
+  }
+  
+  if(!confirm('Approve this payment proof?')) return;
+  
+  try {
+    const res = await fetch(`${API}/payment/${id}/approve`, {
+      method: 'PUT',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' }
+    });
+    
+    const data = await res.json();
+    
+    if(res.ok && data.success){
+      toast('✓ Payment approved successfully', 'success');
+      pendingPaymentProofs = pendingPaymentProofs.filter(p => p._id !== id);
+      
+      closeProofDetailModal();
+      renderPaymentProofsList();
+      
+      // Update count
+      const countBadge = document.getElementById('pp-count');
+      if(countBadge) {
+        countBadge.style.display = pendingPaymentProofs.length > 0 ? 'block' : 'none';
+        countBadge.textContent = pendingPaymentProofs.length;
+      }
+    } else {
+      toast(data.message || 'Failed to approve payment', 'fail');
+    }
+  } catch(e){
+    toast('Cannot connect to server', 'fail');
+  }
+}
+
+function openRejectReasonModal(){
+  document.getElementById('reject-reason-text').value = '';
+  const modal = document.getElementById('reject-reason-modal');
+  if(modal) modal.classList.add('open');
+}
+
+function closeRejectReasonModal(){
+  const modal = document.getElementById('reject-reason-modal');
+  if(modal) modal.classList.remove('open');
+}
+
+async function rejectPaymentProof(){
+  const id = currentViewingProof && currentViewingProof._id;
+  if(!id) {
+    toast('Registration ID not found', 'fail');
+    return;
+  }
+  
+  const reason = document.getElementById('reject-reason-text').value.trim();
+  if(!reason){
+    toast('Please provide a rejection reason', 'fail');
+    return;
+  }
+  
+  try {
+    const res = await fetch(`${API}/payment/${id}/reject`, {
+      method: 'PUT',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ reason })
+    });
+    
+    const data = await res.json();
+    
+    if(res.ok && data.success){
+      toast('✓ Payment rejected. Student can re-upload', 'success');
+      pendingPaymentProofs = pendingPaymentProofs.filter(p => p._id !== id);
+      
+      closeRejectReasonModal();
+      closeProofDetailModal();
+      renderPaymentProofsList();
+      
+      // Update count
+      const countBadge = document.getElementById('pp-count');
+      if(countBadge) {
+        countBadge.style.display = pendingPaymentProofs.length > 0 ? 'block' : 'none';
+        countBadge.textContent = pendingPaymentProofs.length;
+      }
+    } else {
+      toast(data.message || 'Failed to reject payment', 'fail');
+    }
+  } catch(e){
+    toast('Cannot connect to server', 'fail');
+  }
+}
+
+// ── BADGE STYLES ──
+// Create badge styles once
+const style = document.createElement('style');
+style.id = 'reg-badge-styles';
+style.textContent = `
+  .badge-verified { background:var(--green-light); color:var(--green); padding:4px 8px; border-radius:4px; font-size:11px; font-weight:600 }
+  .badge-pending { background:var(--amber-light); color:var(--amber); padding:4px 8px; border-radius:4px; font-size:11px; font-weight:600 }
+  .badge-rejected { background:var(--red-light); color:var(--red); padding:4px 8px; border-radius:4px; font-size:11px; font-weight:600 }
+  .badge-confirmed { background:var(--green-light); color:var(--green); padding:4px 8px; border-radius:4px; font-size:11px; font-weight:600 }
+`;
+document.head.appendChild(style);
+
+// ── DEBUG MODE ──
+window.DEBUG = true;
+function dbg(msg, data){
+  if(window.DEBUG) console.log('🔵 [EventHub Dashboard]', msg, data || '');
+}
+
 // ── INIT ──
 
 function render(){ updateStats(); renderEvents(); }
@@ -1210,12 +2151,29 @@ initPage();
   window.cancelReg          = cancelReg;
   window.searchRegs         = searchRegs;
   window.loadAllRegistrations = loadAllRegistrations;
+  window.viewRegDetails = viewRegDetails;
+  window.closeRegDetailsModal = closeRegDetailsModal;
+  window.approveRegFromModal = approveRegFromModal;
+  window.rejectReg = rejectReg;
+  window.rejectRegFromModal = rejectRegFromModal;
   window.openScheduleModal = openScheduleModal;
   window.closeScheduleModal = closeScheduleModal;
   window.loadSchedule = loadSchedule;
   window.addSlot = addSlot;
   window.editSlot = editSlot;
   window.deleteSlot = deleteSlot;
+  // Payment Proofs
+  window.loadPaymentProofs = loadPaymentProofs;
+  window.closePaymentProofsModal = closePaymentProofsModal;
+  window.viewPaymentProof = viewPaymentProof;
+  window.closeProofDetailModal = closeProofDetailModal;
+  window.approvePaymentProof = approvePaymentProof;
+  window.openRejectReasonModal = openRejectReasonModal;
+  window.closeRejectReasonModal = closeRejectReasonModal;
+  window.rejectPaymentProof = rejectPaymentProof;
+  // From registration modal
+  window.approvePaymentFromReg = approvePaymentFromReg;
+  window.rejectPaymentFromReg = rejectPaymentFromReg;
 
 })();
 </script>

@@ -202,14 +202,14 @@
   }
 
   function teams_approveRegistration(registrationId, payload) {
-    return request('/registrations/' + registrationId + '/approve', {
+    return request('/teams/registrations/' + registrationId + '/approve', {
       method: 'PUT',
       json: payload || {}
     });
   }
 
   function teams_rejectRegistration(registrationId, payload) {
-    return request('/registrations/' + registrationId + '/reject', {
+    return request('/teams/registrations/' + registrationId + '/reject', {
       method: 'PUT',
       json: payload || {}
     });
@@ -220,11 +220,11 @@
   }
 
   // ===============================================
-  // REGISTRATIONS ROUTES (/registrations) - CORRECTED PATHS
+  // REGISTRATIONS ROUTES (/teams/registrations) - BACKEND ALIGNED
   // ===============================================
 
   function registrations_getByEventId(eventId, queryParams) {
-    var url = '/registrations/' + eventId;
+    var url = '/teams/registrations/' + eventId;
     if (queryParams) {
       var params = new URLSearchParams(queryParams);
       url = url + '?' + params.toString();
@@ -233,21 +233,21 @@
   }
 
   function registrations_updatePayment(registrationId, payload) {
-    return request('/registrations/' + registrationId + '/payment', {
+    return request('/teams/registrations/' + registrationId + '/payment', {
       method: 'PUT',
       json: payload
     });
   }
 
   function registrations_approve(registrationId, payload) {
-    return request('/registrations/' + registrationId + '/approve', {
+    return request('/teams/registrations/' + registrationId + '/approve', {
       method: 'PUT',
       json: payload || {}
     });
   }
 
   function registrations_reject(registrationId, payload) {
-    return request('/registrations/' + registrationId + '/reject', {
+    return request('/teams/registrations/' + registrationId + '/reject', {
       method: 'PUT',
       json: payload || {}
     });

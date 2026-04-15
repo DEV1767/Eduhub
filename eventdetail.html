@@ -85,19 +85,20 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-size:14px;tran
   display:flex;align-items:center;justify-content:space-between;
   padding:0 20px;height:54px;gap:12px;
   background:var(--surface);border-bottom:1px solid var(--border);
+  flex-wrap:nowrap;
 }
-.topbar-left{display:flex;align-items:center;gap:10px}
-.ham-btn{display:none;background:none;border:none;cursor:pointer;padding:4px;color:var(--text2);border-radius:6px}
+.topbar-left{display:flex;align-items:center;gap:10px;min-width:0;flex:1}
+.ham-btn{display:none;background:none;border:none;cursor:pointer;padding:4px;color:var(--text2);border-radius:6px;-webkit-tap-highlight-color:transparent}
 .ham-btn:hover{background:var(--surface2)}
 .ham-btn svg{width:18px;height:18px;display:block}
-.topbar-title{font-size:15px;font-weight:600;color:var(--text)}
+.topbar-title{font-size:15px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .topbar-subtitle{font-size:12px;color:var(--text3);margin-left:2px}
-.topbar-right{display:flex;align-items:center;gap:8px}
+.topbar-right{display:flex;align-items:center;gap:8px;flex-wrap:nowrap}
 .theme-btn{
   width:34px;height:34px;border-radius:8px;border:1px solid var(--border);
   background:var(--surface2);cursor:pointer;
   display:flex;align-items:center;justify-content:center;
-  color:var(--text2);transition:all 0.15s;flex-shrink:0
+  color:var(--text2);transition:all 0.15s;flex-shrink:0;-webkit-tap-highlight-color:transparent
 }
 .theme-btn:hover{border-color:var(--purple);color:var(--purple)}
 .theme-btn svg{width:15px;height:15px}
@@ -105,8 +106,115 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-size:14px;tran
 [data-theme="dark"] .icon-sun{display:block}
 [data-theme="dark"] .icon-moon{display:none}
 
+@media(max-width:900px){
+  .topbar{padding:0 14px;gap:10px}
+  .topbar-title{font-size:14px}
+}
+
+@media(max-width:768px){
+  .topbar{padding:0 12px;height:50px;gap:8px}
+  .ham-btn{display:flex}
+  .topbar-left{gap:8px}
+  .topbar-title{font-size:12px;max-width:200px}
+  .topbar-right .btn{padding:6px 12px;font-size:11px}
+}
+
+@media(max-width:640px){
+  .topbar{padding:0 10px;height:48px;gap:6px}
+  .topbar-title{font-size:11px;max-width:150px}
+  .topbar-right{gap:6px}
+  .topbar-right .btn{padding:5px 10px;font-size:10px;min-height:32px}
+  .topbar-right .btn svg{width:12px;height:12px}
+  .theme-btn{width:32px;height:32px;border-radius:6px}
+  .theme-btn svg{width:14px;height:14px}
+}
+
+@media(max-width:540px){
+  .topbar{height:46px;padding:0 8px;gap:4px}
+  .topbar-title{font-size:10px;max-width:120px}
+  .ham-btn svg{width:16px;height:16px}
+  .topbar-right .btn{padding:4px 8px;font-size:9px;min-height:28px;gap:3px}
+  .topbar-right .btn svg{width:11px;height:11px}
+}
+
+@media(max-width:480px){
+  .topbar{height:44px;padding:0 6px;gap:3px}
+  .topbar-title{font-size:9px;max-width:100px}
+  .topbar-right {gap:4px}
+  .topbar-right .btn{padding:3px 6px;font-size:8px;min-height:26px;gap:2px}
+  .topbar-right .btn svg{width:10px;height:10px}
+  .topbar-right .btn span{display:none}
+  .ham-btn{padding:2px}
+  .theme-btn{width:30px;height:30px;border-radius:5px}
+  .theme-btn svg{width:13px;height:13px}
+}
+
+@media(max-width:380px){
+  .topbar{height:42px;padding:0 4px}
+  .topbar-title{font-size:8px;max-width:80px}
+  .ham-btn{width:32px;height:32px;padding:0;display:flex;align-items:center;justify-content:center}
+  .theme-btn{width:28px;height:28px}
+}
+
 /* ── CONTENT ── */
 .content{padding:20px;flex:1}
+
+@media(max-width:768px){
+  .content{padding:14px}
+}
+
+@media(max-width:640px){
+  .content{padding:12px}
+}
+
+@media(max-width:540px){
+  .content{padding:10px}
+}
+
+@media(max-width:400px){
+  .content{padding:8px}
+}
+
+/* ── TOPBAR ADJUSTMENTS ── */
+@media(max-width:768px){
+  .topbar{gap:10px;padding:0 14px;height:52px}
+}
+
+@media(max-width:640px){
+  .topbar{padding:0 12px;height:50px;gap:8px}
+  .topbar-title{font-size:13px;font-weight:600}
+}
+
+@media(max-width:440px){
+  .topbar{height:48px;padding:0 10px;gap:6px}
+  .topbar-title{font-size:12px}
+}
+
+/* ── HAMBURGER BUTTON ── */
+.ham-btn{
+  -webkit-appearance:none;
+  -webkit-tap-highlight-color:transparent;
+  touch-action:manipulation;
+}
+
+.ham-btn:active{
+  transform:scale(0.95);
+}
+
+/* ── SIDEBAR SLIDE ANIMATION ── */
+.sidebar{
+  transition:transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.s-overlay{
+  transition:opacity 0.28s ease;
+}
+
+/* ── BOTTOM SHEET LIKE MODALS ON VERY SMALL SCREENS ── */
+@media(max-width:380px){
+  .modal{border-radius:12px 12px 0 0;max-height:95vh}
+  .overlay{justify-content:flex-end;align-items:flex-end}
+}
 
 /* ── EVENT HEADER ── */
 .event-header{
@@ -137,6 +245,40 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-size:14px;tran
 .sdot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
 .sdot-live{background:#22C55E}.sdot-upcoming{background:#F59E0B}.sdot-done{background:var(--text3)}
 
+/* ── OVERVIEW GRID ── */
+#overview-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+@media(max-width:1024px){
+  #overview-grid{gap:12px}
+}
+
+@media(max-width:900px){
+  #overview-grid{grid-template-columns:1fr}
+}
+
+@media(max-width:640px){
+  #overview-grid{gap:10px}
+}
+
+@media(max-width:540px){
+  #overview-grid{gap:8px}
+}
+
+@media(max-width:400px){
+  #overview-grid{gap:6px}
+}
+
+@media(max-width:768px){
+  .event-header{padding:14px;flex-direction:column}
+  .event-header-left{gap:12px;width:100%}
+  .event-header-right{width:100%;justify-content:space-between;flex-wrap:wrap}
+}
+
+@media(max-width:640px){
+  .event-header-name{font-size:16px}
+  .event-header{padding:12px}
+}
+
 /* ── TABS ── */
 .tabs-wrap{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:18px;overflow-x:auto;-webkit-overflow-scrolling:touch}
 .tabs-wrap::-webkit-scrollbar{display:none}
@@ -144,13 +286,30 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-size:14px;tran
   padding:10px 16px;font-size:13px;font-weight:500;color:var(--text2);
   cursor:pointer;border:none;background:none;white-space:nowrap;
   border-bottom:2px solid transparent;margin-bottom:-1px;
-  transition:all 0.15s;display:flex;align-items:center;gap:6px
+  transition:all 0.15s;display:flex;align-items:center;gap:6px;-webkit-tap-highlight-color:transparent;touch-action:manipulation
 }
 .tab:hover{color:var(--text)}
 .tab.active{color:var(--purple);font-weight:600;border-bottom-color:var(--purple)}
 .tab-badge{background:var(--purple-faint);color:var(--purple);font-size:10px;font-weight:700;padding:1px 6px;border-radius:9px}
 .tab-badge.warn{background:var(--amber-light);color:#92400E}
 [data-theme="dark"] .tab-badge.warn{color:#fbbf24}
+
+@media(max-width:640px){
+  .tabs-wrap{margin-bottom:14px}
+  .tab{padding:8px 12px;font-size:12px;gap:4px}
+  .tab-badge{font-size:9px;padding:1px 5px}
+}
+
+@media(max-width:540px){
+  .tabs-wrap{margin-bottom:12px}
+  .tab{padding:7px 10px;font-size:11px;gap:3px}
+  .tab-badge{font-size:8px;padding:0px 4px}
+}
+
+@media(max-width:400px){
+  .tabs-wrap{margin-bottom:10px}
+  .tab{padding:6px 8px;font-size:10px;gap:2px}
+}
 
 /* ── TAB PANELS ── */
 .tab-panel{display:none}
@@ -174,6 +333,65 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-size:14px;tran
 .scard-num{font-size:24px;font-weight:700;color:var(--text);margin-bottom:2px}
 .scard-label{font-size:12px;color:var(--text3)}
 
+@media(max-width:900px){
+  .stats-row{grid-template-columns:repeat(2,1fr)}
+}
+
+@media(max-width:640px){
+  .stats-row{gap:10px;margin-bottom:14px}
+  .scard{padding:10px;border-radius:8px}
+}
+
+@media(max-width:540px){
+  .stats-row{grid-template-columns:repeat(2,1fr);gap:8px}
+  .scard{padding:8px}
+  .scard-num{font-size:18px}
+  .scard-label{font-size:10px}
+  .scard-icon{width:30px;height:30px}
+  .scard-icon svg{width:14px;height:14px}
+  .scard-pill{font-size:9px;padding:1px 6px}
+}
+
+@media(max-width:1024px){
+  .stats-row{grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:16px}
+}
+
+@media(max-width:900px){
+  .stats-row{grid-template-columns:repeat(2,1fr);gap:10px}
+}
+
+@media(max-width:768px){
+  .stats-row{grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:14px}
+  .scard{padding:12px;border-radius:9px}
+  .scard-num{font-size:20px;margin-bottom:1px}
+  .scard-label{font-size:11px}
+  .scard-icon{width:30px;height:30px}
+  .scard-icon svg{width:14px;height:14px}
+  .scard-pill{font-size:10px;padding:1px 6px}
+}
+
+@media(max-width:640px){
+  .stats-row{grid-template-columns:1fr;gap:8px;margin-bottom:12px}
+  .scard{padding:11px;border-radius:8px}
+  .scard-top{margin-bottom:8px}
+  .scard-num{font-size:18px}
+  .scard-label{font-size:10px}
+  .scard-icon{width:28px;height:28px}
+  .scard-pill{font-size:9px;padding:1px 5px}
+  .prog-wrap{height:5px;margin-top:6px}
+}
+
+@media(max-width:540px){
+  .stats-row{grid-template-columns:repeat(2,1fr);gap:6px;margin-bottom:10px}
+  .scard{padding:10px;border-radius:7px}
+  .scard-top{margin-bottom:6px}
+  .scard-num{font-size:16px}
+  .scard-label{font-size:9px;color:var(--text3)}
+  .scard-icon{width:26px;height:26px}
+  .scard-icon svg{width:12px;height:12px}
+  .prog-wrap{height:4px;margin-top:4px}
+}
+
 /* ── TOOLBAR ── */
 .toolbar{display:flex;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap}
 .search-box{display:flex;align-items:center;gap:7px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:6px 11px;transition:border-color 0.15s;flex:1;min-width:180px;max-width:280px}
@@ -188,8 +406,9 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-size:14px;tran
 .toolbar-right{display:flex;gap:6px;margin-left:auto;flex-wrap:wrap}
 
 /* ── BUTTONS ── */
-.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--surface2);color:var(--text2);transition:all 0.12s;white-space:nowrap}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--surface2);color:var(--text2);transition:all 0.12s;white-space:nowrap;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
 .btn:hover{border-color:var(--border2);color:var(--text)}
+.btn:active{transform:scale(0.98)}
 .btn svg{width:13px;height:13px;flex-shrink:0}
 .btn-primary{background:var(--purple);border-color:var(--purple);color:#fff}
 .btn-primary:hover{background:var(--purple-dark);border-color:var(--purple-dark);color:#fff}
@@ -200,17 +419,28 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-size:14px;tran
 .btn-danger:hover{background:#fee2e2}
 .btn-sm{padding:4px 10px;font-size:11px;border-radius:6px}
 .btn-xs{padding:3px 8px;font-size:10px;border-radius:5px}
-.btn-cancel{padding:8px 16px;border:1px solid var(--border);border-radius:7px;font-size:13px;font-weight:500;color:var(--text2);background:transparent;cursor:pointer;transition:all 0.12s}
+.btn-cancel{padding:8px 16px;border:1px solid var(--border);border-radius:7px;font-size:13px;font-weight:500;color:var(--text2);background:transparent;cursor:pointer;transition:all 0.12s;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
 .btn-cancel:hover{border-color:var(--border2);color:var(--text)}
-.btn-save{padding:8px 18px;border:none;border-radius:7px;font-size:13px;font-weight:600;color:#fff;background:var(--purple);cursor:pointer;transition:background 0.15s}
+.btn-save{padding:8px 18px;border:none;border-radius:7px;font-size:13px;font-weight:600;color:#fff;background:var(--purple);cursor:pointer;transition:background 0.15s;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
 .btn-save:hover{background:var(--purple-dark)}
+.btn-save:active{transform:scale(0.98)}
 .btn-save:disabled{opacity:0.6;cursor:not-allowed}
-.link-btn{font-size:12px;color:var(--purple);background:none;border:none;cursor:pointer;font-weight:500}
+.link-btn{font-size:12px;color:var(--purple);background:none;border:none;cursor:pointer;font-weight:500;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
 .link-btn:hover{text-decoration:underline}
+
+@media(max-width:768px){
+  .btn,.btn-cancel,.btn-save{min-height:40px}
+  .btn-xs{min-height:32px;padding:4px 10px}
+}
+
+@media(max-width:540px){
+  .btn,.btn-cancel,.btn-save{min-height:44px;padding:10px 14px}
+  .btn-xs{min-height:36px;padding:6px 10px}
+}
 
 /* ── TABLE ── */
 .tcard{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden}
-.tbl-wrap{overflow-x:auto;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.tbl-wrap{overflow-x:auto;overflow-y:auto;-webkit-overflow-scrolling:touch;scroll-behavior:smooth}
 .tbl-wrap::-webkit-scrollbar{width:5px;height:5px}
 .tbl-wrap::-webkit-scrollbar-track{background:var(--surface2);border-radius:10px}
 .tbl-wrap::-webkit-scrollbar-thumb{background:var(--border2);border-radius:10px}
@@ -222,6 +452,17 @@ tr:hover td{background:var(--surface2)}
 .td-actions{display:flex;gap:4px;flex-wrap:wrap}
 .select-col{width:36px}
 .select-col input[type=checkbox]{width:14px;height:14px;cursor:pointer;accent-color:var(--purple)}
+
+@media(max-width:768px){
+  .tbl-wrap{-webkit-overflow-scrolling:touch;scroll-behavior:auto}
+  .tbl-wrap::-webkit-scrollbar{height:4px}
+}
+
+@media(max-width:540px){
+  /* More visible scrollbar on mobile */
+  .tbl-wrap::-webkit-scrollbar{height:6px}
+  .tbl-wrap::-webkit-scrollbar-thumb{background:var(--purple)}
+}
 
 /* ── STATUS BADGES ── */
 .badge{display:inline-flex;align-items:center;padding:2px 9px;border-radius:5px;font-size:11px;font-weight:600;white-space:nowrap}
@@ -262,6 +503,79 @@ tr:hover td{background:var(--surface2)}
 .info-item label{display:block;font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:5px}
 .info-item .val{font-size:14px;font-weight:600;color:var(--text)}
 .info-item .val.muted{font-size:13px;font-weight:400;color:var(--text2)}
+
+@media(max-width:900px){
+  .info-grid{grid-template-columns:1fr}
+}
+
+@media(max-width:640px){
+  .info-grid{gap:10px;margin-bottom:12px}
+  .info-item{padding:10px;border-radius:8px}
+  .info-item label{font-size:10px;margin-bottom:3px}
+  .info-item .val{font-size:12px}
+  .info-item .val.muted{font-size:11px}
+}
+
+@media(max-width:540px){
+  .info-grid{gap:8px}
+  .info-item{padding:8px}
+  .info-item label{font-size:9px}
+  .info-item .val{font-size:11px}
+}
+
+@media(max-width:768px){
+  .info-grid{grid-template-columns:1fr;gap:8px;margin-bottom:12px}
+  .info-item{padding:11px;border-radius:8px}
+  .info-item label{font-size:10px;margin-bottom:3px}
+  .info-item .val{font-size:13px}
+  .info-item .val.muted{font-size:12px}
+}
+
+@media(max-width:640px){
+  .info-grid{gap:7px;margin-bottom:10px}
+  .info-item{padding:10px;border-radius:7px}
+  .info-item label{font-size:9px;margin-bottom:2px}
+  .info-item .val{font-size:12px}
+  .info-item .val.muted{font-size:11px}
+}
+
+@media(max-width:540px){
+  .info-grid{gap:6px}
+  .info-item{padding:9px;border-radius:6px;border-width:0.5px}
+  .info-item label{font-size:8px;margin-bottom:2px;letter-spacing:0px}
+  .info-item .val{font-size:11px}
+  .info-item .val.muted{font-size:10px}
+}
+
+/* ── OVERVIEW GRID (RESPONSIVE) ── */
+.overview-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+@media(max-width:900px){
+  .overview-grid{grid-template-columns:1fr}
+}
+
+@media(max-width:640px){
+  .overview-grid{gap:10px}
+}
+
+@media(max-width:540px){
+  .overview-grid{gap:8px}
+}
+
+/* ── SETTINGS GRID (RESPONSIVE) ── */
+.settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+
+@media(max-width:900px){
+  .settings-grid{grid-template-columns:1fr}
+}
+
+@media(max-width:640px){
+  .settings-grid{gap:10px;margin-bottom:12px}
+}
+
+@media(max-width:540px){
+  .settings-grid{gap:8px;margin-bottom:10px}
+}
 
 /* ── RULES EDITOR ── */
 .rules-wrap{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden}
@@ -332,6 +646,52 @@ tr:hover td{background:var(--surface2)}
 .settings-section{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px;margin-bottom:16px}
 .settings-section h3{font-size:14px;font-weight:700;color:var(--text);margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--border)}
 .settings-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+
+@media(max-width:640px){
+  .settings-section{padding:14px;margin-bottom:12px}
+  .settings-section h3{font-size:13px;margin-bottom:10px;padding-bottom:8px}
+  .settings-grid{gap:10px;grid-template-columns:1fr}
+}
+
+@media(max-width:540px){
+  .settings-section{padding:10px;margin-bottom:10px;border-radius:8px}
+  .settings-section h3{font-size:12px;margin-bottom:8px;padding-bottom:6px}
+  .settings-grid{gap:8px}
+}
+
+@media(max-width:400px){
+  .settings-section{padding:8px;margin-bottom:8px}
+  .settings-section h3{font-size:11px;margin-bottom:6px}
+}
+
+/* ── OVERVIEW GRID ── */
+#overview-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+@media(max-width:1024px){
+  #overview-grid{grid-template-columns:1fr}
+}
+
+@media(max-width:768px){
+  #overview-grid{grid-template-columns:1fr}
+  .settings-section{padding:14px;margin-bottom:12px;border-radius:9px}
+  .settings-section h3{font-size:13px;margin-bottom:10px;padding-bottom:8px}
+  .settings-grid{grid-template-columns:1fr;gap:10px}
+}
+
+@media(max-width:640px){
+  #overview-grid{gap:10px}
+  .settings-section{padding:12px;margin-bottom:10px;border-radius:8px}
+  .settings-section h3{font-size:12px;margin-bottom:8px;padding-bottom:6px}
+  .settings-grid{gap:8px}
+}
+
+@media(max-width:540px){
+  #overview-grid{gap:8px}
+  .settings-section{padding:10px;margin-bottom:8px;border-radius:8px}
+  .settings-section h3{font-size:11px;margin-bottom:6px;padding-bottom:4px}
+  .btn{font-size:11px;padding:8px 10px;gap:8px}
+  .btn svg{width:13px;height:13px}
+}
 .mfield label{display:block;font-size:12px;font-weight:600;color:var(--text2);margin-bottom:5px}
 .mfield input,.mfield select,.mfield textarea{
   width:100%;padding:9px 11px;border:1px solid var(--border);border-radius:8px;
@@ -339,12 +699,30 @@ tr:hover td{background:var(--surface2)}
 }
 .mfield input:focus,.mfield select:focus,.mfield textarea:focus{border-color:var(--purple);background:var(--surface)}
 .mfield textarea{resize:vertical;min-height:80px}
+
+@media(max-width:768px){
+  .mfield input,.mfield select,.mfield textarea{
+    min-height:44px;
+    font-size:14px;
+    padding:10px 12px;
+  }
+  .mfield label{margin-bottom:6px;font-size:12px}
+}
+
+@media(max-width:540px){
+  .mfield input,.mfield select,.mfield textarea{
+    min-height:48px;
+    font-size:16px;
+    padding:11px 13px;
+    border-radius:7px;
+  }
+}
 .danger-zone{background:var(--red-light);border:1px solid #fecaca;border-radius:10px;padding:18px;margin-bottom:16px}
 .danger-zone h3{font-size:14px;font-weight:700;color:var(--red);margin-bottom:6px}
 .danger-zone p{font-size:13px;color:var(--text2);margin-bottom:12px}
 
 /* ── MODAL ── */
-.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:500;align-items:center;justify-content:center;padding:1rem}
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:500;align-items:center;justify-content:center;padding:1rem;-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px)}
 .overlay.open{display:flex}
 .modal{background:var(--surface);border-radius:12px;width:100%;max-width:500px;max-height:90vh;overflow-y:auto;animation:mIn 0.2s ease;border:1px solid var(--border)}
 .modal-lg{max-width:680px}
@@ -357,6 +735,28 @@ tr:hover td{background:var(--surface2)}
 .modal-body{padding:16px;display:flex;flex-direction:column;gap:12px}
 .modal-ft{display:flex;justify-content:flex-end;gap:8px;padding:12px 16px;border-top:1px solid var(--border)}
 .mrow{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+@media(max-width:768px){
+  .overlay{padding:0.75rem}
+  .modal{border-radius:12px;max-height:92vh}
+  .modal-lg{max-width:calc(100% - 1.5rem)}
+  .modal-hd{padding:12px 14px}
+  .modal-body{padding:14px;gap:10px}
+  .modal-ft{padding:10px 14px;gap:6px}
+}
+
+@media(max-width:540px){
+  .overlay{padding:0.5rem}
+  .modal{border-radius:10px;width:100%;max-height:93vh;max-width:100%}
+  .modal-lg{max-width:100%}
+  .modal-hd{padding:10px 12px}
+  .modal-hd-title{font-size:14px}
+  .modal-x{width:26px;height:26px}
+  .modal-x svg{width:12px;height:12px}
+  .modal-body{padding:12px;gap:8px}
+  .modal-ft{padding:8px 12px;gap:6px}
+  .mrow{grid-template-columns:1fr}
+}
 
 /* ── TEAM DETAIL MODAL ── */
 .team-detail-section{margin-bottom:16px}
@@ -423,6 +823,39 @@ tr:hover td{background:var(--surface2)}
 .notif-msg{font-size:13px;color:var(--text);margin-bottom:2px}
 .notif-time{font-size:11px;color:var(--text3)}
 
+@media(max-width:640px){
+  .notif-log{gap:6px}
+  .notif-item{padding:10px 12px;gap:8px;border-radius:7px}
+  .notif-msg{font-size:12px}
+  .notif-time{font-size:10px}
+}
+
+@media(max-width:540px){
+  .notif-item{padding:8px 10px;gap:6px}
+  .notif-msg{font-size:11px}
+}
+
+@media(max-width:768px){
+  .notif-log{gap:6px}
+  .notif-item{padding:10px 12px;gap:8px;border-radius:7px}
+  .notif-msg{font-size:12px;margin-bottom:1px}
+  .notif-time{font-size:10px}
+}
+
+@media(max-width:640px){
+  .notif-item{padding:8px 10px;gap:7px;border-radius:6px}
+  .notif-msg{font-size:11px}
+  .notif-time{font-size:9px}
+  .notif-dot{width:7px;height:7px;margin-top:3px}
+}
+
+@media(max-width:540px){
+  .notif-log{gap:4px}
+  .notif-item{padding:8px 10px;gap:6px}
+  .notif-msg{font-size:11px}
+  .notif-time{font-size:8px}
+}
+
 /* ── PROGRESS BAR ── */
 .prog-wrap{background:var(--surface2);border-radius:4px;height:6px;overflow:hidden;margin-top:4px}
 .prog-bar{height:100%;border-radius:4px;background:var(--purple);transition:width 0.3s}
@@ -433,7 +866,9 @@ tr:hover td{background:var(--surface2)}
   .info-grid{grid-template-columns:1fr}
   .settings-grid{grid-template-columns:1fr}
   .detail-grid{grid-template-columns:1fr}
+  #overview-grid{grid-template-columns:1fr}
 }
+
 @media(max-width:768px){
   :root{--sidebar:220px}
   .sidebar{transform:translateX(-100%)}
@@ -441,13 +876,302 @@ tr:hover td{background:var(--surface2)}
   .main{margin-left:0}
   .ham-btn{display:flex}
   .topbar-right .theme-btn{display:flex}
-  .event-header{padding:14px}
+  .event-header{padding:14px;flex-direction:column}
+  .event-header-left{gap:12px;width:100%}
+  .event-header-right{width:100%;justify-content:space-between;flex-wrap:wrap}
   .content{padding:14px}
-}
-@media(max-width:520px){
-  .stats-row{grid-template-columns:1fr 1fr}
-  .event-header-name{font-size:16px}
+  .tabs-wrap{gap:0;margin:-14px -14px 18px;padding:0 14px}
+  .tab{whitespace:nowrap}
+  
+  /* Tables on mobile */
+  table{min-width:600px;font-size:12px}
+  th,td{padding:8px 10px}
+  .td-actions{gap:3px}
+  .btn-xs{padding:2px 6px;font-size:9px}
+  
+  /* Modal smaller on mobile */
+  .modal{max-width:90vw;max-height:92vh}
+  .modal-lg{max-width:90vw}
+  
+  /* Form grid on mobile */
   .mrow{grid-template-columns:1fr}
+  
+  /* Search box flex */
+  .search-box{min-width:100px;max-width:100%;flex:1}
+  
+  /* Filter pills wrapping */
+  .toolbar{gap:6px}
+  .filter-pills{gap:3px}
+  .fpill{padding:4px 10px;font-size:11px}
+  
+  /* Overview specific */
+  #overview-grid{grid-template-columns:1fr;gap:10px}
+}
+
+@media(max-width:640px){
+  .event-header-name{font-size:16px}
+  .stats-row{grid-template-columns:1fr}
+  .event-header{padding:12px}
+  .content{padding:12px}
+  .tabs-wrap{margin:-12px -12px 14px;padding:0 12px}
+  
+  /* Modal margin on mobile */
+  .overlay{padding:0.5rem}
+  .modal{border-radius:12px;max-width:100vw}
+  
+  /* Topbar adjustments */
+  .topbar{padding:0 12px;height:50px}
+  .topbar-title{font-size:13px}
+  
+  /* toolbar stack */
+  .toolbar{flex-direction:column;gap:8px}
+  .search-box{max-width:100%}
+  .toolbar-right{width:100%;flex-direction:column}
+  .toolbar-right .btn{width:100%}
+  
+  /* Stats text smaller */
+  .scard-num{font-size:20px}
+  .scard-label{font-size:11px}
+  
+  /* Section header responsive */
+  .sec-hd{flex-direction:column;align-items:flex-start}
+  
+  /* Buttons wrap better */
+  .bulk-bar{flex-direction:column;gap:8px}
+  .bulk-bar-text{width:100%}
+  .bulk-bar-actions{width:100%;flex-wrap:wrap}
+  
+  /* Info items stack */
+  .info-grid{grid-template-columns:1fr}
+  .detail-grid{grid-template-columns:1fr}
+  .detail-item{padding:8px 10px}
+  
+  /* Team detail modal */
+  .member-row{gap:8px;padding:8px 10px}
+  .member-av{width:28px;height:28px;font-size:10px}
+  
+  /* FAQs on mobile */
+  .faq-q{padding:10px 12px;font-size:12px}
+  .faq-a{font-size:12px}
+  
+  /* Timeline */
+  .timeline-item{padding:10px 0;padding-left:14px}
+  .timeline-item::before{left:-6px;top:12px}
+  .timeline-item-time{min-width:80px;font-size:11px}
+  .timeline-item-title{font-size:12px}
+  
+  /* Rules editor responsive */
+  .rules-editor{min-height:200px;font-size:12px}
+  .rules-preview{padding:12px;font-size:12px}
+  
+  /* Badge adjustments */
+  .badge{font-size:10px;padding:2px 7px}
+  .status-badge-lg{padding:4px 10px;font-size:11px}
+  
+  /* Links responsive */
+  .link-btn{font-size:11px}
+  
+  /* Button responsive */
+  .btn{padding:6px 12px;font-size:11px;gap:4px}
+  .btn-cancel{padding:7px 14px;font-size:12px}
+  .btn-save{padding:7px 14px;font-size:12px}
+  
+  /* Modal footer wrap */
+  .modal-ft{flex-direction:column-reverse;gap:6px}
+  .modal-ft .btn-cancel,.modal-ft .btn-save{width:100%}
+  
+  /* Tab badge responsive */
+  .tab-badge{font-size:9px;padding:1px 5px}
+  
+  /* Input responsive */
+  .mfield input,.mfield select,.mfield textarea{font-size:14px}
+  .mfield label{font-size:11px;margin-bottom:4px}
+  
+  /* Event meta wrap */
+  .event-header-meta{gap:8px;font-size:11px;flex-wrap:wrap}
+  .event-meta-item{gap:2px}
+  
+  /* Sidebar bottom responsive */
+  .user-name{font-size:12px}
+  .user-role{font-size:10px}
+  
+  /* Toast responsive */
+  .toast{max-width:calc(100vw - 40px);bottom:16px;right:16px;left:16px;margin:0 auto}
+  
+  /* Overview section */
+  #overview-grid{grid-template-columns:1fr;gap:8px}
+}
+}
+
+@media(max-width:540px){
+  .event-icon-lg{width:40px;height:40px;font-size:18px}
+  .event-header-name{font-size:14px;line-height:1.3}
+  .topbar-title{font-size:12px}
+  .topbar{padding:0 10px;height:48px;gap:8px}
+  .topbar-left{gap:6px}
+  
+  /* Table completely mobile-friendly */
+  table{min-width:100%;font-size:11px}
+  th{font-size:9px;padding:6px 8px}
+  td{padding:8px 6px;font-size:11px}
+  .btn-xs{padding:2px 4px;font-size:8px;gap:2px}
+  .td-actions .btn-xs{padding:3px 6px}
+  
+  /* Stats row mobile */
+  .stats-row{gap:8px;margin-bottom:12px}
+  .scard{padding:10px;border-radius:8px}
+  .scard-num{font-size:18px;margin-bottom:1px}
+  .scard-label{font-size:10px}
+  .scard-icon{width:30px;height:30px}
+  .scard-top{margin-bottom:8px}
+  
+  /* Modal on very mobile */
+  .modal-hd{padding:12px 14px}
+  .modal-hd-title{font-size:14px}
+  .modal-body{padding:12px;gap:10px}
+  .modal-ft{padding:10px 14px;gap:6px}
+  .modal-x svg{width:12px;height:12px}
+  
+  /* Form on mobile */
+  .mfield{margin-bottom:8px}
+  .mfield label{margin-bottom:3px;font-size:10px}
+  .mfield input,.mfield select,.mfield textarea{padding:7px 9px;font-size:14px;border-radius:6px}
+  
+  /* Tabs small font */
+  .tab{padding:9px 12px;font-size:12px;gap:4px}
+  .tab svg{width:12px;height:12px}
+  
+  /* Filter responsive */
+  .toolbar{margin-bottom:10px}
+  .filter-pills{gap:2px;margin-top:6px}
+  .fpill{padding:3px 8px;font-size:10px;margin-bottom:2px}
+  
+  /* Event meta items horizontal scroll if needed */
+  .event-header-meta{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  
+  /* Team members list */  
+  .member-row{padding:6px 8px;gap:6px;margin-bottom:6px}
+  .member-av{width:26px;height:26px;font-size:9px}
+  .member-name{font-size:12px}
+  .member-email{font-size:10px;display:none}
+  
+  /* Sidebar nav items smaller */
+  .nav-item{padding:6px 8px;font-size:12px;gap:7px}
+  .nav-item svg{width:14px;height:14px}
+  
+  /* Section header vertical */
+  .sec-title{font-size:13px}
+  
+  /* Timeline smaller */
+  .timeline-item{gap:8px;padding:8px 0;padding-left:12px}
+  .timeline-item::before{width:8px;height:8px;left:-6px;top:10px}
+  .timeline-item-time{min-width:60px;font-size:10px}
+  .timeline-item-title{font-size:11px}
+  .timeline-item-desc{font-size:11px}
+  
+  /* Slot buttons */
+  .slot-btn{padding:3px 8px;font-size:9px}
+  
+  /* FAQ items smaller */
+  .faq-q{padding:9px 10px;font-size:11px}
+  .faq-a{font-size:11px}
+  
+  /* Reject/Payment warning */
+  .reject-warning{padding:10px 12px;gap:7px;font-size:11px}
+  .reject-warning svg{width:14px;height:14px}
+  
+  /* Rules section */
+  .rules-toolbar{padding:6px 10px;gap:2px}
+  .r-btn{padding:3px 7px;font-size:11px}
+  .rules-editor{min-height:150px;padding:10px;font-size:12px}
+  .rules-preview{padding:10px;font-size:11px}
+  
+  /* Info grid */
+  .info-item{padding:10px;border-radius:8px}
+  .info-item label{font-size:9px;margin-bottom:2px}
+  .info-item .val{font-size:12px}
+  
+  /* Badge smaller */
+  .badge{font-size:9px;padding:1px 6px}
+  .status-badge-lg{padding:3px 8px;font-size:10px}
+  .sdot{width:5px;height:5px}
+  
+  /* Add link button */
+  .link-btn{font-size:10px}
+  
+  /* Buttons on mobile */
+  .btn{padding:5px 10px;font-size:10px;border-radius:6px;gap:3px}
+  .btn-cancel{padding:6px 12px}
+  .btn-save{padding:6px 12px}
+  .btn-primary{padding:6px 12px}
+  
+  /* Bulk actions */
+  .bulk-bar{padding:8px 12px;border-radius:8px;gap:6px}
+  .bulk-bar-text{font-size:12px}
+  .bulk-btn{padding:4px 10px;font-size:11px}
+  .bulk-close{width:22px;height:22px}
+  
+  /* Search responsive */
+  .search-box{padding:5px 9px;font-size:12px}
+  .search-box svg{width:12px;height:12px}
+  
+  /* Card responsive */
+  .event-header-left{gap:10px}
+  .event-header-info{flex:1}
+  
+  /* Topbar right buttons */
+  .topbar-right{gap:6px}
+  .theme-btn{width:32px;height:32px}
+  
+  /* Danger zone */
+  .danger-zone{padding:12px;border-radius:9px}
+  .danger-zone h3{font-size:13px;margin-bottom:6px}
+  .danger-zone p{font-size:11px}
+  
+  /* Notification log */
+  .notif-item{padding:10px 12px;gap:8px;border-radius:7px}
+  .notif-dot{width:7px;height:7px;margin-top:3px}
+  .notif-msg{font-size:12px}
+  .notif-time{font-size:10px}
+}
+
+@media(max-width:400px){
+  .event-header-name{font-size:13px}
+  .topbar-title{font-size:11px}
+  
+  /* More aggressive mobile */
+  .content{padding:10px}
+  .event-header{padding:10px}
+  .tabs-wrap{margin:-10px -10px 12px;padding:0 10px}
+  .tab{padding:8px 10px;font-size:11px}
+  
+  .stats-row{gap:6px;grid-template-columns:repeat(2,1fr)}
+  .scard{padding:8px;border-radius:6px}
+  .scard-num{font-size:16px}
+  .scard-label{font-size:9px}
+  
+  /* Sidebar minimal */
+  .logo-text{display:none}
+  .logo-icon{width:28px;height:28px}
+  .nav-item{padding:5px 6px;font-size:11px}
+  .nav-item svg{width:13px;height:13px}
+  .user-row{padding:6px 8px}
+  .user-av{width:28px;height:28px;font-size:10px}
+  
+  /* Table ultra compact */
+  table{min-width:100%}
+  th{font-size:8px;padding:4px 5px}
+  td{padding:6px 4px;font-size:10px;line-height:1.2}
+  .btn-xs{padding:2px 3px;font-size:7px}
+  
+  /* Form ultra mobile */
+  .mfield input,.mfield select,.mfield textarea{font-size:14px;padding:6px 8px}
+  
+  /* Modal */
+  .modal{border-radius:10px}
+  .modal-hd{padding:10px 12px}
+  .modal-body{padding:10px;gap:8px}
+  .modal-ft{padding:8px 12px}
 }
 
 /* ── SKELETON LOADER ── */
@@ -547,7 +1271,7 @@ tr:hover td{background:var(--surface2)}
         </button>
         <button class="btn btn-primary" onclick="switchTab('settings',null)">
           <svg viewBox="0 0 16 16" fill="none"><path d="M10 2H6v2l-2 1-1.4-1.4L1.2 5l1.4 1.4-.2 2-.2 2L.8 12l1.4 1.4L3.6 12l2 1v2h4v-2l2-1 1.4 1.4L14.8 12l-1.4-1.4.2-2 .2-2 1.4-1.4L13.8 3.6 12.4 5l-2-1V2z" stroke="#fff" stroke-width="1.2" stroke-linejoin="round"/><circle cx="8" cy="8" r="2" stroke="#fff" stroke-width="1.2"/></svg>
-          Edit Event
+          <span>Edit Event</span>
         </button>
       </div>
     </div>
@@ -646,11 +1370,11 @@ tr:hover td{background:var(--surface2)}
           </div>
         </div>
 
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div class="overview-grid" id="overview-grid">
           <!-- Event Details Card -->
           <div class="settings-section" style="margin-bottom:0">
             <h3>Event Details</h3>
-            <div class="info-grid" style="grid-template-columns:1fr 1fr;gap:10px">
+            <div class="info-grid">
               <div class="info-item">
                 <label>Type</label>
                 <div class="val" id="ov-type">—</div>
@@ -687,19 +1411,19 @@ tr:hover td{background:var(--surface2)}
             <div class="settings-section" style="margin-bottom:0">
               <h3>Quick Actions</h3>
               <div style="display:flex;flex-direction:column;gap:8px">
-                <button class="btn" style="justify-content:flex-start;gap:10px" onclick="switchTab('registrations',null)">
+                <button class="btn" style="justify-content:flex-start;gap:10px;width:100%" onclick="switchTab('registrations',null)">
                   <svg viewBox="0 0 16 16" fill="none" width="15" height="15"><circle cx="6" cy="5" r="3" stroke="currentColor" stroke-width="1.3"/><path d="M1 14c0-3 2.2-5 5-5s5 2 5 5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
                   Review Pending Registrations
                 </button>
-                <button class="btn" style="justify-content:flex-start;gap:10px" onclick="switchTab('payments',null)">
+                <button class="btn" style="justify-content:flex-start;gap:10px;width:100%" onclick="switchTab('payments',null)">
                   <svg viewBox="0 0 16 16" fill="none" width="15" height="15"><rect x="1" y="4" width="14" height="9" rx="2" stroke="currentColor" stroke-width="1.3"/><path d="M1 7h14" stroke="currentColor" stroke-width="1.3"/></svg>
                   Manage Payments
                 </button>
-                <button class="btn" style="justify-content:flex-start;gap:10px" onclick="exportCSV('registrations')">
+                <button class="btn" style="justify-content:flex-start;gap:10px;width:100%" onclick="exportCSV('registrations')">
                   <svg viewBox="0 0 16 16" fill="none" width="15" height="15"><path d="M3 2h7l3 3v9a1 1 0 01-1 1H3a1 1 0 01-1-1V3a1 1 0 011-1z" stroke="currentColor" stroke-width="1.3"/><path d="M10 2v4h4M8 9v5M5.5 11.5L8 14l2.5-2.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                   Export Registrations CSV
                 </button>
-                <button class="btn" style="justify-content:flex-start;gap:10px" onclick="exportCSV('payments')">
+                <button class="btn" style="justify-content:flex-start;gap:10px;width:100%" onclick="exportCSV('payments')">
                   <svg viewBox="0 0 16 16" fill="none" width="15" height="15"><path d="M3 2h7l3 3v9a1 1 0 01-1 1H3a1 1 0 01-1-1V3a1 1 0 011-1z" stroke="currentColor" stroke-width="1.3"/><path d="M10 2v4h4M8 9v5M5.5 11.5L8 14l2.5-2.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                   Export Payment Report CSV
                 </button>
@@ -730,9 +1454,9 @@ tr:hover td{background:var(--surface2)}
           </div>
           <div class="filter-pills">
             <div class="fpill on" onclick="setRegFilter('all',this)" data-f="all">All</div>
-            <div class="fpill" onclick="setRegFilter('Pending',this)" data-f="Pending">Pending</div>
-            <div class="fpill" onclick="setRegFilter('Approved',this)" data-f="Approved">Approved</div>
-            <div class="fpill" onclick="setRegFilter('Rejected',this)" data-f="Rejected">Rejected</div>
+            <div class="fpill" onclick="setRegFilter('pending',this)" data-f="pending">Pending</div>
+            <div class="fpill" onclick="setRegFilter('approved',this)" data-f="approved">Approved</div>
+            <div class="fpill" onclick="setRegFilter('rejected',this)" data-f="rejected">Rejected</div>
           </div>
           <div class="toolbar-right">
             <button class="btn" onclick="exportCSV('registrations')">
@@ -780,7 +1504,7 @@ tr:hover td{background:var(--surface2)}
       <!-- TAB: PAYMENTS -->
       <!-- ══════════════════════════════════ -->
       <div class="tab-panel" id="panel-payments">
-        <div class="stats-row" style="grid-template-columns:repeat(3,1fr)">
+        <div class="stats-row">
           <div class="scard">
             <div class="scard-top">
               <div class="scard-icon i-green"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="#22C55E" stroke-width="1.3"/><path d="M5 8l2.5 2.5 4-4" stroke="#22C55E" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
@@ -938,7 +1662,7 @@ tr:hover td{background:var(--surface2)}
           </button>
         </div>
 
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
+        <div class="settings-grid">
           <div class="settings-section" style="margin-bottom:0">
             <h3>Detailed Description</h3>
             <div class="mfield">
@@ -1170,8 +1894,94 @@ tr:hover td{background:var(--surface2)}
   </div>
 </div>
 
+<!-- REGISTRATION DETAILS MODAL WITH PAYMENT INFO -->
+<div class="overlay" id="reg-details-modal" onclick="if(event.target===this)closeModal('reg-details-modal')">
+  <div class="modal" style="max-width:650px">
+    <div class="modal-hd">
+      <div class="modal-hd-title">Registration & Payment Details</div>
+      <button class="modal-x" onclick="closeModal('reg-details-modal')">
+        <svg viewBox="0 0 16 16" fill="none"><path d="M3 3l10 10M13 3L3 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <div class="modal-body" style="padding:0">
+      <!-- Team Info Section -->
+      <div style="padding:16px;border-bottom:1px solid var(--border)">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+          <div>
+            <div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px">Team Name</div>
+            <div style="font-size:13px;font-weight:600;color:var(--text);margin-top:4px" id="rd-teamname">—</div>
+          </div>
+          <div>
+            <div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px">Lead Name</div>
+            <div style="font-size:13px;font-weight:600;color:var(--text);margin-top:4px" id="rd-leadname">—</div>
+          </div>
+          <div>
+            <div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px">Email</div>
+            <div style="font-size:13px;color:var(--text);margin-top:4px" id="rd-email">—</div>
+          </div>
+          <div>
+            <div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px">Status</div>
+            <div style="font-size:13px;font-weight:600;color:var(--text);margin-top:4px" id="rd-status">—</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Members Section -->
+      <div style="padding:16px;border-bottom:1px solid var(--border)">
+        <div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px">Team Members (Total)</div>
+        <div id="rd-members" style="display:flex;flex-direction:column;gap:6px">—</div>
+      </div>
+
+      <!-- Payment Section -->
+      <div style="padding:16px;border-bottom:1px solid var(--border)">
+        <div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px">💳 Payment Information</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+          <div>
+            <div style="font-size:11px;color:var(--text2);margin-bottom:4px">Payment Method</div>
+            <div style="font-size:12px;font-weight:600;color:var(--text)" id="rd-payment-method">—</div>
+          </div>
+          <div>
+            <div style="font-size:11px;color:var(--text2);margin-bottom:4px">Payment Status</div>
+            <div style="font-size:12px;font-weight:600;color:var(--text)" id="rd-payment-status">—</div>
+          </div>
+        </div>
+
+        <!-- UPI Screenshot Section -->
+        <div id="rd-screenshot-section" style="display:none">
+          <div style="font-size:11px;font-weight:600;color:var(--text2);margin-bottom:8px">Payment Proof (UPI Screenshot)</div>
+          <div style="border:1px solid var(--border);border-radius:8px;overflow:hidden;background:var(--surface2)">
+            <img id="rd-screenshot" src="" alt="Payment proof" style="width:100%;height:auto;display:block;max-height:300px;object-fit:contain">
+          </div>
+          <div style="font-size:10px;color:var(--text3);margin-top:6px">Uploaded on: <span id="rd-upload-date">—</span></div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div style="display:flex;gap:8px;padding:16px;justify-content:flex-end;border-top:1px solid var(--border);flex-wrap:wrap">
+        <button class="btn-cancel" onclick="closeModal('reg-details-modal')">Close</button>
+        
+        <!-- Registration Approval -->
+        <button class="btn" style="background:var(--green);color:white" onclick="approveRegFromDetails()" id="rd-approve-btn">✓ Approve</button>
+        <button class="btn" style="background:var(--red);color:white" onclick="rejectRegFromDetails()" id="rd-reject-btn">✗ Reject</button>
+        
+        <!-- Payment Approval (shown only for submitted/rejected payment) -->
+        <div id="payment-actions" style="display:none;display:flex;gap:8px">
+          <button class="btn" style="background:#10b981;color:white" onclick="approvePaymentFromDetails()" id="rd-approve-payment-btn">✓ Approve Payment</button>
+          <button class="btn" style="background:#ef4444;color:white" onclick="rejectPaymentFromDetails()" id="rd-reject-payment-btn">✗ Reject Payment</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script src="auth-client.js" onerror="console.warn('auth-client.js not loaded')"></script>
 <script>
+// ── GLOBAL: Get correct dashboard URL based on role ──
+let currentUserRole = null;
+function getDashboardUrl(){
+  return currentUserRole === 'Student' ? 'student-dashboard.html' : 'dashboard.html';
+}
+
 (async () => {
 
 // ── STEP 1: Check logout flag ──
@@ -1182,7 +1992,6 @@ if(sessionStorage.getItem('eventhub_logging_out')){
 }
 
 // ── STEP 2: Verify auth and get user role ──
-let currentUserRole = null;
 try{
   const r = await AuthAPI.me();
   if(!r.ok) throw new Error();
@@ -1205,11 +2014,6 @@ function toggleTheme(){
 
 // ── API ──
 const API = 'http://localhost:8000/api/v1';
-
-// ── HELPER: Get correct dashboard URL based on role ──
-function getDashboardUrl(){
-  return currentUserRole === 'Student' ? 'student-dashboard.html' : 'dashboard.html';
-}
 
 // ── GET EVENT ID FROM URL ──
 const params = new URLSearchParams(location.search);
@@ -1306,6 +2110,7 @@ async function loadEvent(){
     if(!res.ok) throw new Error();
     const data = await res.json();
     eventData = data.event || data;
+    await updateEventStatus();
     renderEventHeader();
     populateSettings();
   } catch(e){
@@ -1322,8 +2127,89 @@ async function loadEvent(){
       prize: '₹50,000',
       description: 'A 24-hour national level hackathon for college students.'
     };
+    await updateEventStatus();
     renderEventHeader();
     populateSettings();
+  }
+}
+
+async function updateEventStatus(){
+  // Check if event date/time has passed
+  if(eventData.date){
+    try {
+      // Try to fetch remaining days from API
+      try {
+        const res = await fetch(`${API}/events/${eventId}`, { credentials:'include' });
+        if(res.ok){
+          const data = await res.json();
+          const event = data.event || data;
+          if(event.daysRemaining !== undefined){
+            eventData.daysRemaining = event.daysRemaining;
+            eventData.status = event.status || 'Upcoming';
+            console.log('Fetched remaining days:', event.daysRemaining, 'Status:', event.status);
+            return;
+          }
+        }
+      } catch(e) {
+        console.log('Could not fetch remaining days from API, calculating locally...');
+      }
+      
+      // Fallback: Calculate remaining days locally
+      let dateStr = eventData.date;
+      let timeStr = eventData.time || '00:00';
+      
+      console.log('Parsing event date:', dateStr, 'Time:', timeStr);
+      
+      // Handle timezone in date (remove Z if present)
+      if(dateStr.includes('Z')){
+        dateStr = dateStr.split('T')[0]; // Extract just the date part
+      }
+      
+      if(timeStr.includes('PM') || timeStr.includes('AM')){
+        const timeParts = timeStr.match(/(\d+):(\d+)\s*(AM|PM)/i);
+        if(timeParts){
+          let hours = parseInt(timeParts[1]);
+          const mins = timeParts[2];
+          const period = timeParts[3].toUpperCase();
+          if(period === 'PM' && hours !== 12) hours += 12;
+          if(period === 'AM' && hours === 12) hours = 0;
+          timeStr = `${String(hours).padStart(2, '0')}:${mins}`;
+        }
+      }
+      
+      // Build proper ISO datetime
+      const isoDateTime = dateStr + 'T' + timeStr + ':00';
+      console.log('Built ISO datetime:', isoDateTime);
+      
+      const eventDateTime = new Date(isoDateTime);
+      const now = new Date();
+      
+      console.log('Parsed eventDateTime:', eventDateTime, 'IsValid:', !isNaN(eventDateTime.getTime()), 'Now:', now);
+      
+      // Check if date is valid
+      if(isNaN(eventDateTime.getTime())){
+        console.warn('Invalid event date:', isoDateTime);
+        eventData.status = 'Upcoming';
+        eventData.daysRemaining = -1;
+        eventData.hoursRemaining = 0;
+      } else {
+        const diff = eventDateTime - now;
+        console.log('Date diff (ms):', diff);
+        
+        if(diff <= 0){
+          eventData.status = 'Completed';
+          eventData.daysRemaining = 0;
+          eventData.hoursRemaining = 0;
+        } else {
+          eventData.status = 'Upcoming';
+          eventData.daysRemaining = Math.floor(diff / (1000 * 60 * 60 * 24));
+          eventData.hoursRemaining = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        }
+        console.log('Calculated remaining:', eventData.daysRemaining + 'd ' + eventData.hoursRemaining + 'h');
+      }
+    } catch(e) {
+      console.error('Error parsing event date/time:', e);
+    }
   }
 }
 
@@ -1352,7 +2238,17 @@ function renderEventHeader(){
   const sb = document.getElementById('event-status-badge');
   const st = (e.status || 'Upcoming').toLowerCase();
   sb.className = 'status-badge-lg status-' + st;
-  sb.innerHTML = `<span class="sdot sdot-${st}"></span><span id="event-status-text">${e.status || 'Upcoming'}</span>`;
+  
+  // Display remaining time if Upcoming, otherwise show status
+  let statusDisplay = e.status || 'Upcoming';
+  if(st === 'upcoming' && e.daysRemaining !== undefined && e.daysRemaining >= 0){
+    if(e.daysRemaining > 0){
+      statusDisplay = `${e.daysRemaining}d ${e.hoursRemaining || 0}h`;
+    } else if(e.daysRemaining === 0 && e.hoursRemaining > 0){
+      statusDisplay = `${e.hoursRemaining}h`;
+    }
+  }
+  sb.innerHTML = `<span class="sdot sdot-${st}"></span><span id="event-status-text">${statusDisplay}</span>`;
 
   // overview fields
   document.getElementById('ov-type').textContent = e.type || '—';
@@ -1370,16 +2266,29 @@ async function loadRegistrations(){
     const res = await fetch(`${API}/teams/registrations/${eventId}`, { credentials:'include' });
     if(!res.ok) throw new Error();
     const data = await res.json();
-    registrations = data.registrations || data || [];
+    console.log('Raw registrations data:', data); // Debug log
+    registrations = (data.registrations || data || []).map(r => ({
+      ...r,
+      teamName: r.teamName || r.teamname || r.team_name || r.name || 'Team ' + r._id?.slice(0,5),
+      leadName: r.leadName || r.leadname || r.lead_name || r.lead || 'Lead',
+      registrationStatus: r.registrationStatus || r.Registrationstatus || r.status || 'Pending',
+      paymentStatus: r.paymentStatus || r.payment_status || 'approved' || 'Pending',
+      paymentAmount: r.paymentAmount || r.payment_amount || 0,
+      paymentDate: r.paymentDate || r.payment_date,
+      paymentMethod: r.paymentMethod || r.payment_method,
+      transactionId: r.transactionId || r.transaction_id || r.txn_id
+    }));
+    console.log('Mapped registrations:', registrations); // Debug log
   } catch(e){
+    console.error('Failed to load registrations:', e);
     // Demo data
     registrations = [
-      { _id:'r1', teamName:'CodeStorm', leadName:'Arjun Mehta', email:'arjun@email.com', members:['Priya S','Rahul K','Sneha T'], status:'Pending', paymentStatus:'Pending', paymentAmount:200, createdAt:'2025-07-10T10:30:00Z', phone:'9876543210' },
-      { _id:'r2', teamName:'ByteForce', leadName:'Kavya Nair', email:'kavya@email.com', members:['Arun P','Deepak R'], status:'Approved', paymentStatus:'Paid', paymentAmount:200, paymentDate:'2025-07-11T08:00:00Z', paymentMethod:'UPI', transactionId:'TXN8823749', createdAt:'2025-07-09T14:00:00Z', phone:'9876543211' },
-      { _id:'r3', teamName:'NullPointers', leadName:'Siddharth V', email:'sidd@email.com', members:['Anjali M','Rohit S','Kiran B'], status:'Pending', paymentStatus:'Pending', paymentAmount:200, createdAt:'2025-07-12T09:15:00Z', phone:'9876543212' },
-      { _id:'r4', teamName:'AlgoKings', leadName:'Meera Rao', email:'meera@email.com', members:['Dev P'], status:'Rejected', rejectionReason:'Incomplete registration form', paymentStatus:'Pending', paymentAmount:0, createdAt:'2025-07-08T16:45:00Z', phone:'9876543213' },
-      { _id:'r5', teamName:'TechTitans', leadName:'Vikram S', email:'vikram@email.com', members:['Neha A','Suresh K','Lakshmi R'], status:'Approved', paymentStatus:'Paid', paymentAmount:200, paymentDate:'2025-07-11T11:00:00Z', paymentMethod:'Cash', transactionId:'CASH001', createdAt:'2025-07-10T11:00:00Z', phone:'9876543214' },
-      { _id:'r6', teamName:'PixelCraft', leadName:'Divya M', email:'divya@email.com', members:['Hari V','Preethi J'], status:'Pending', paymentStatus:'Failed', paymentAmount:200, createdAt:'2025-07-13T08:30:00Z', phone:'9876543215' },
+      { _id:'r1', teamName:'CodeStorm', leadName:'Arjun Mehta', email:'arjun@email.com', members:['Priya S','Rahul K','Sneha T'], registrationStatus:'Pending', paymentStatus:'Pending', paymentAmount:200, createdAt:'2025-07-10T10:30:00Z', phone:'9876543210' },
+      { _id:'r2', teamName:'ByteForce', leadName:'Kavya Nair', email:'kavya@email.com', members:['Arun P','Deepak R'], registrationStatus:'Approved', paymentStatus:'Paid', paymentAmount:200, paymentDate:'2025-07-11T08:00:00Z', paymentMethod:'UPI', transactionId:'TXN8823749', createdAt:'2025-07-09T14:00:00Z', phone:'9876543211' },
+      { _id:'r3', teamName:'NullPointers', leadName:'Siddharth V', email:'sidd@email.com', members:['Anjali M','Rohit S','Kiran B'], registrationStatus:'Pending', paymentStatus:'Pending', paymentAmount:200, createdAt:'2025-07-12T09:15:00Z', phone:'9876543212' },
+      { _id:'r4', teamName:'AlgoKings', leadName:'Meera Rao', email:'meera@email.com', members:['Dev P'], registrationStatus:'Rejected', rejectionReason:'Incomplete registration form', paymentStatus:'Pending', paymentAmount:0, createdAt:'2025-07-08T16:45:00Z', phone:'9876543213' },
+      { _id:'r5', teamName:'TechTitans', leadName:'Vikram S', email:'vikram@email.com', members:['Neha A','Suresh K','Lakshmi R'], registrationStatus:'Approved', paymentStatus:'Paid', paymentAmount:200, paymentDate:'2025-07-11T11:00:00Z', paymentMethod:'Cash', transactionId:'CASH001', createdAt:'2025-07-10T11:00:00Z', phone:'9876543214' },
+      { _id:'r6', teamName:'PixelCraft', leadName:'Divya M', email:'divya@email.com', members:['Hari V','Preethi J'], registrationStatus:'Pending', paymentStatus:'Failed', paymentAmount:200, createdAt:'2025-07-13T08:30:00Z', phone:'9876543215' },
     ];
   }
   updateOverviewStats();
@@ -1408,8 +2317,8 @@ async function loadSchedule(){
 // ── UPDATE OVERVIEW STATS ──
 function updateOverviewStats(){
   const total = registrations.length;
-  const pending = registrations.filter(r => r.status === 'Pending').length;
-  const approved = registrations.filter(r => r.status === 'Approved').length;
+  const pending = registrations.filter(r => r.registrationStatus === 'Pending').length;
+  const approved = registrations.filter(r => r.registrationStatus === 'Approved').length;
   const paidAmt = registrations.filter(r => r.paymentStatus === 'Paid').reduce((s,r) => s + (r.paymentAmount||0), 0);
   const maxTeams = eventData.maxTeams || 0;
 
@@ -1455,7 +2364,9 @@ function setRegFilter(f, el){
 }
 function renderRegs(){
   filteredRegs = registrations.filter(r => {
-    const matchFilter = regFilter === 'all' || r.status === regFilter;
+    const normalizedStatus = (r.registrationStatus || 'pending').toLowerCase();
+    const normalizedFilter = (regFilter || 'all').toLowerCase();
+    const matchFilter = normalizedFilter === 'all' || normalizedStatus === normalizedFilter;
     const matchSearch = !regSearch || r.teamName?.toLowerCase().includes(regSearch) || r.email?.toLowerCase().includes(regSearch) || r.leadName?.toLowerCase().includes(regSearch);
     return matchFilter && matchSearch;
   });
@@ -1465,25 +2376,27 @@ function renderRegs(){
     return;
   }
   tbody.innerHTML = filteredRegs.map(r => {
-    const statusClass = { Pending:'badge-pending', Approved:'badge-approved', Rejected:'badge-rejected', Confirmed:'badge-confirmed' }[r.status] || 'badge-pending';
-    const payClass = { Paid:'badge-paid', Pending:'badge-unpaid', Failed:'badge-failed' }[r.paymentStatus] || 'badge-unpaid';
+    const normalizedStatus = (r.registrationStatus || 'pending').toLowerCase();
+    const normalizedPayment = (r.paymentStatus || 'pending').toLowerCase();
+    const statusClass = { pending:'badge-pending', approved:'badge-approved', 'verified':'badge-approved', rejected:'badge-rejected', confirmed:'badge-confirmed' }[normalizedStatus] || 'badge-pending';
+    const payClass = { paid:'badge-paid', approved:'badge-paid', pending:'badge-unpaid', failed:'badge-failed', verified:'badge-paid', submitted:'badge-unpaid' }[normalizedPayment] || 'badge-unpaid';
     const checked = selectedRegIds.has(r._id) ? 'checked' : '';
+    const displayStatus = normalizedStatus.charAt(0).toUpperCase() + normalizedStatus.slice(1);
+    const displayPayment = normalizedPayment.charAt(0).toUpperCase() + normalizedPayment.slice(1);
+    const teamName = r.teamName || r.teamname || r.teamId || '—';
+    const leadName = r.leadName || r.leadname || '—';
     return `<tr>
       <td class="select-col"><input type="checkbox" ${checked} onchange="toggleSelectReg('${r._id}',this)"></td>
-      <td><strong>${esc(r.teamName)}</strong></td>
-      <td>${esc(r.leadName)}</td>
-      <td style="font-size:12px;color:var(--text2)">${esc(r.email)}</td>
+      <td><strong>${esc(teamName)}</strong></td>
+      <td>${esc(leadName)}</td>
+      <td style="font-size:12px;color:var(--text2)">${esc(r.email || '—')}</td>
       <td style="font-size:12px;color:var(--text2)">${(r.members||[]).length + 1} members</td>
-      <td><span class="badge ${statusClass}">${r.status}</span></td>
-      <td><span class="badge ${payClass}">${r.paymentStatus||'—'}</span></td>
+      <td><span class="badge ${statusClass}">${displayStatus}</span></td>
+      <td><span class="badge ${payClass}">${r.paymentStatus ? displayPayment : '—'}</span></td>
       <td style="font-size:12px;color:var(--text3)">${r.createdAt ? fmtDateShort(r.createdAt) : '—'}</td>
-      <td>
-        <div class="td-actions">
-          <button class="btn btn-xs" onclick="viewTeam('${r._id}')">View</button>
-          ${r.status !== 'Approved' && r.status !== 'Confirmed' ? `<button class="btn btn-xs btn-success" onclick="approveReg('${r._id}')">Approve</button>` : ''}
-          ${r.status !== 'Rejected' ? `<button class="btn btn-xs btn-danger" onclick="openRejectModal('${r._id}')">Reject</button>` : ''}
-          <button class="btn btn-xs" onclick="openPaymentModal('${r._id}')">💳</button>
-        </div>
+      <td style="display:flex;gap:6px;align-items:center">
+        <button class="btn btn-xs" onclick="viewRegDetails('${r._id}')" title="View details">View</button>
+        <button class="btn btn-xs btn-danger" onclick="rejectReg('${r._id}')" title="Reject registration">Reject</button>
       </td>
     </tr>`;
   }).join('');
@@ -1516,11 +2429,11 @@ function updateBulkBar(){
 // ── MODAL UTILITIES ──
 function openModal(modalId){
   const modal = document.getElementById(modalId);
-  if(modal) modal.classList.add('show');
+  if(modal) modal.classList.add('open');
 }
 function closeModal(modalId){
   const modal = document.getElementById(modalId);
-  if(modal) modal.classList.remove('show');
+  if(modal) modal.classList.remove('open');
 }
 
 function clearBulkSelection(){
@@ -1558,16 +2471,32 @@ async function approveReg(id){
 }
 async function _doApprove(id, silent){
   try{
-    const res = await fetch(`${API}/teams/registrations/${id}/approve`, { method:'PUT', credentials:'include' });
-    if(!res.ok) throw new Error();
-    const data = await res.json();
+    const res = await fetch(`${API}/teams/registrations/${id}/approve`, { 
+      method:'PUT', 
+      credentials:'include',
+      headers:{'Content-Type':'application/json'}
+    });
+    
+    if(!res.ok){
+      const errData = await res.json().catch(() => ({}));
+      console.error('Approve failed:', res.status, errData);
+      if(!silent) toast('Failed to approve registration', 'fail');
+      return;
+    }
+    
+    const data = await res.json().catch(() => ({}));
+    console.log('Approve success:', data);
+    
     const idx = registrations.findIndex(r => r._id === id);
-    if(idx >= 0) registrations[idx].status = 'Approved';
+    if(idx >= 0){
+      registrations[idx].status = 'Approved';
+      registrations[idx].approvedAt = new Date().toISOString();
+    }
+    addLog('approval', `Team "${registrations.find(r=>r._id===id)?.teamName}" approved`);
   } catch(e){
-    const idx = registrations.findIndex(r => r._id === id);
-    if(idx >= 0) registrations[idx].status = 'Approved';
+    console.error('Approve error:', e);
+    if(!silent) toast('Error approving registration', 'fail');
   }
-  addLog('approval', `Team "${registrations.find(r=>r._id===id)?.teamName}" approved`);
 }
 
 // ── REJECT ──
@@ -1584,23 +2513,51 @@ async function confirmReject(){
   const reason = document.getElementById('reject-reason-select').value;
   const notes = document.getElementById('reject-notes').value.trim();
   if(!reason){ toast('Please select a rejection reason','fail'); return; }
+  
   const ids = Array.isArray(rejectTargetId) ? rejectTargetId : [rejectTargetId];
+  let failedCount = 0;
+  
   for(const id of ids){
     try{
       const res = await fetch(`${API}/teams/registrations/${id}/reject`, {
         method:'PUT', credentials:'include',
         headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({ reason, notes })
+        body: JSON.stringify({ rejectionReason: reason, rejectionNotes: notes })
       });
-      if(!res.ok) throw new Error();
-    } catch(e){}
-    const idx = registrations.findIndex(r => r._id === id);
-    if(idx >= 0){ registrations[idx].status = 'Rejected'; registrations[idx].rejectionReason = reason + (notes ? ': ' + notes : ''); }
-    addLog('rejection', `Team "${registrations.find(r=>r._id===id)?.teamName}" rejected: ${reason}`);
+      
+      if(!res.ok){
+        const errData = await res.json().catch(() => ({}));
+        console.error('Reject failed:', res.status, errData);
+        failedCount++;
+        continue;
+      }
+      
+      const data = await res.json().catch(() => ({}));
+      console.log('Reject success:', data);
+      
+      const idx = registrations.findIndex(r => r._id === id);
+      if(idx >= 0){ 
+        registrations[idx].status = 'Rejected'; 
+        registrations[idx].rejectionReason = reason;
+        registrations[idx].rejectionNotes = notes;
+        registrations[idx].rejectedAt = new Date().toISOString();
+      }
+      addLog('rejection', `Team "${registrations.find(r=>r._id===id)?.teamName}" rejected: ${reason}`);
+    } catch(e){
+      console.error('Reject error:', e);
+      failedCount++;
+    }
   }
+  
   closeModal('reject-modal');
   clearBulkSelection();
-  toast(ids.length > 1 ? `${ids.length} registrations rejected` : 'Registration rejected');
+  
+  if(failedCount > 0){
+    toast(`${failedCount} rejection(s) failed. Check console for details.`, 'fail');
+  } else {
+    toast(ids.length > 1 ? `${ids.length} registrations rejected` : 'Registration rejected');
+  }
+  
   updateOverviewStats();
   renderRegs();
   renderPayTable();
@@ -1624,20 +2581,48 @@ async function confirmPayment(){
   const method = document.getElementById('pay-method-select').value;
   const txn = document.getElementById('pay-txn-input').value.trim();
   const date = document.getElementById('pay-date-input').value;
-  const payData = { paymentStatus:status, paymentAmount:Number(amount)||0, paymentMethod:method, transactionId:txn, paymentDate:date };
+  
+  const payData = { 
+    status: status,
+    amount: Number(amount) || 0, 
+    method: method, 
+    transactionId: txn, 
+    date: date 
+  };
+  
   try{
     const res = await fetch(`${API}/teams/registrations/${payTargetId}/payment`, {
       method:'PUT', credentials:'include',
       headers:{'Content-Type':'application/json'},
       body: JSON.stringify(payData)
     });
-    if(!res.ok) throw new Error();
-  } catch(e){}
-  const idx = registrations.findIndex(r => r._id === payTargetId);
-  if(idx >= 0) Object.assign(registrations[idx], payData);
-  addLog('info', `Payment updated for "${registrations.find(r=>r._id===payTargetId)?.teamName}": ${status}`);
-  closeModal('payment-modal');
-  toast('Payment status updated!');
+    
+    if(!res.ok){
+      const errData = await res.json().catch(() => ({}));
+      console.error('Payment update failed:', res.status, errData);
+      toast('Failed to update payment status', 'fail');
+      return;
+    }
+    
+    const data = await res.json().catch(() => ({}));
+    console.log('Payment update success:', data);
+    
+    const idx = registrations.findIndex(r => r._id === payTargetId);
+    if(idx >= 0){
+      registrations[idx].paymentStatus = status;
+      registrations[idx].paymentAmount = Number(amount) || 0;
+      registrations[idx].paymentMethod = method;
+      registrations[idx].transactionId = txn;
+      registrations[idx].paymentDate = date;
+    }
+    addLog('info', `Payment updated for "${registrations.find(r=>r._id===payTargetId)?.teamName}": ${status}`);
+    closeModal('payment-modal');
+    toast('Payment status updated!');
+  } catch(e){
+    console.error('Payment error:', e);
+    toast('Error updating payment status', 'fail');
+  }
+  
   updateOverviewStats();
   renderRegs();
   renderPayTable();
@@ -1666,23 +2651,34 @@ function renderPayTable(){
     return;
   }
   tbody.innerHTML = filtered.map(r => {
-    const payClass = { Paid:'badge-paid', Pending:'badge-unpaid', Failed:'badge-failed' }[r.paymentStatus] || 'badge-unpaid';
+    const normalizedPayStatus = (r.paymentStatus || 'pending').toLowerCase();
+    const payClass = { paid:'badge-paid', approved:'badge-paid', pending:'badge-unpaid', failed:'badge-failed', submitted:'badge-unpaid', verified:'badge-paid' }[normalizedPayStatus] || 'badge-unpaid';
+    const displayPayStatus = normalizedPayStatus.charAt(0).toUpperCase() + normalizedPayStatus.slice(1);
     return `<tr>
       <td><strong>${esc(r.teamName)}</strong></td>
       <td>${esc(r.leadName)}</td>
       <td class="pay-amount">₹${(r.paymentAmount||0).toLocaleString('en-IN')}</td>
-      <td><span class="badge ${payClass}">${r.paymentStatus||'—'}</span></td>
+      <td><span class="badge ${payClass}">${displayPayStatus||'—'}</span></td>
       <td style="font-size:12px;color:var(--text2)">${r.paymentMethod||'—'}</td>
       <td><span class="pay-txn">${r.transactionId||'—'}</span></td>
       <td style="font-size:12px;color:var(--text3)">${r.paymentDate ? fmtDateShort(r.paymentDate) : '—'}</td>
       <td>
-        <div class="td-actions">
-          <button class="btn btn-xs" onclick="openPaymentModal('${r._id}')">Update</button>
-          <button class="btn btn-xs" onclick="viewTeam('${r._id}')">View Team</button>
-        </div>
+        <button class="btn btn-xs" onclick="viewPaymentProof('${r._id}')">View Screenshot</button>
       </td>
     </tr>`;
   }).join('');
+}
+
+// ── VIEW PAYMENT PROOF ──
+function viewPaymentProof(id){
+  const r = registrations.find(r => r._id === id);
+  if(!r) return;
+  if(!r.paymentProofUrl && !r.screenshot){
+    alert('No payment proof available');
+    return;
+  }
+  // Open in new tab to view full image
+  window.open(r.paymentProofUrl || r.screenshot, '_blank');
 }
 
 // ── VIEW TEAM ──
@@ -1690,8 +2686,8 @@ function viewTeam(id){
   const r = registrations.find(r => r._id === id);
   if(!r) return;
   document.getElementById('team-modal-title').textContent = r.teamName;
-  const statusClass = { Pending:'badge-pending', Approved:'badge-approved', Rejected:'badge-rejected' }[r.status] || 'badge-pending';
-  const payClass = { Paid:'badge-paid', Pending:'badge-unpaid', Failed:'badge-failed' }[r.paymentStatus] || 'badge-unpaid';
+  const statusClass = { Pending:'badge-pending', Approved:'badge-approved', Rejected:'badge-rejected' }[r.registrationStatus] || 'badge-pending';
+  const payClass = { Paid:'badge-paid', Approved:'badge-paid', Pending:'badge-unpaid', Failed:'badge-failed', Submitted:'badge-unpaid' }[r.paymentStatus] || 'badge-unpaid';
   const allMembers = [{ name: r.leadName, email: r.email, isLead:true }, ...(r.members||[]).map(m => typeof m === 'string' ? { name:m, email:'—' } : m)];
 
   document.getElementById('team-modal-body').innerHTML = `
@@ -1713,11 +2709,11 @@ function viewTeam(id){
     <div class="team-detail-section">
       <h4>Registration Details</h4>
       <div class="detail-grid">
-        <div class="detail-item"><label>Status</label><div class="dval"><span class="badge ${statusClass}">${r.status}</span></div></div>
+        <div class="detail-item"><label>Status</label><div class="dval"><span class="badge ${statusClass}">${r.registrationStatus}</span></div></div>
         <div class="detail-item"><label>Registered On</label><div class="dval sm">${r.createdAt ? fmtDateShort(r.createdAt) : '—'}</div></div>
         <div class="detail-item"><label>Phone</label><div class="dval sm">${esc(r.phone||'—')}</div></div>
         <div class="detail-item"><label>Email</label><div class="dval sm">${esc(r.email||'—')}</div></div>
-        ${r.status === 'Rejected' ? `<div class="detail-item" style="grid-column:1/-1"><label>Rejection Reason</label><div class="dval sm" style="color:var(--red)">${esc(r.rejectionReason||'—')}</div></div>` : ''}
+        ${r.registrationStatus === 'Rejected' ? `<div class="detail-item" style="grid-column:1/-1"><label>Rejection Reason</label><div class="dval sm" style="color:var(--red)">${esc(r.rejectionReason||'—')}</div></div>` : ''}
       </div>
     </div>
     <div class="team-detail-section">
@@ -1733,11 +2729,257 @@ function viewTeam(id){
   `;
   document.getElementById('team-modal-ft').innerHTML = `
     <button class="btn-cancel" onclick="closeModal('team-modal')">Close</button>
-    ${r.status !== 'Approved' ? `<button class="btn-save btn-success" style="background:var(--green);border:none" onclick="closeModal('team-modal');approveReg('${r._id}')">✓ Approve</button>` : ''}
-    ${r.status !== 'Rejected' ? `<button class="btn-save" style="background:var(--red)" onclick="closeModal('team-modal');openRejectModal('${r._id}')">✗ Reject</button>` : ''}
+    ${r.registrationStatus !== 'Approved' ? `<button class="btn-save btn-success" style="background:var(--green);border:none" onclick="closeModal('team-modal');approveReg('${r._id}')">✓ Approve</button>` : ''}
+    ${r.registrationStatus !== 'Rejected' ? `<button class="btn-save" style="background:var(--red)" onclick="closeModal('team-modal');openRejectModal('${r._id}')">✗ Reject</button>` : ''}
     <button class="btn-save" onclick="closeModal('team-modal');openPaymentModal('${r._id}')">💳 Update Payment</button>
   `;
   openModal('team-modal');
+}
+
+// ── VIEW REGISTRATION DETAILS WITH PAYMENT INFO ──
+let currentViewingReg = null;
+function viewRegDetails(regId){
+  const reg = registrations.find(r => r._id === regId);
+  if(!reg){
+    alert('Registration not found');
+    return;
+  }
+  currentViewingReg = reg;
+  
+  // Populate modal fields
+  document.getElementById('rd-teamname').textContent = reg.teamName || reg.teamname || '—';
+  document.getElementById('rd-leadname').textContent = reg.leadName || reg.leadname || '—';
+  document.getElementById('rd-email').textContent = reg.email || '—';
+  
+  // Status badge
+  const status = (reg.registrationStatus || 'pending').toLowerCase();
+  const statusText = status === 'approved' || status === 'verified' ? '✓ Approved' : (status === 'pending' ? '⏳ Pending' : '✗ Rejected');
+  const statusColor = status === 'approved' || status === 'verified' ? 'var(--green)' : (status === 'pending' ? 'var(--amber)' : 'var(--red)');
+  document.getElementById('rd-status').innerHTML = `<span style="color:${statusColor};font-weight:600">${statusText}</span>`;
+  
+  // Members
+  const membersDiv = document.getElementById('rd-members');
+  const allMembers = [{ name: reg.leadName || reg.leadname }, ...(reg.members||[]).map(m => typeof m === 'string' ? { name:m } : m)];
+  if(allMembers.length > 0){
+    membersDiv.innerHTML = allMembers.map((m, i) => 
+      `<div style="padding:6px;background:var(--surface2);border-radius:4px;font-size:12px">${i + 1}. ${m.name || 'Unknown'}</div>`
+    ).join('');
+  } else {
+    membersDiv.innerHTML = '<div style="color:var(--text3)">No members found</div>';
+  }
+  
+  // Payment information
+  const paymentMethod = reg.paymentMethod || 'unknown';
+  const paymentStatus = (reg.paymentStatus || reg.paymentMode || 'Pending').toLowerCase();
+  const displayPaymentMethod = paymentMethod === 'manual_upi' || paymentMethod === 'UPI' ? '💸 UPI' : (paymentMethod === 'razorpay' || paymentMethod === 'online' ? '💳 Online Payment' : (paymentMethod === 'Cash' ? '💵 Cash' : paymentMethod));
+  const paymentStatusColor = paymentStatus === 'approved' || paymentStatus === 'paid' || paymentStatus === 'verified' ? 'var(--green)' : (paymentStatus === 'pending' || paymentStatus === 'submitted' ? 'var(--amber)' : 'var(--red)');
+  const paymentStatusText = paymentStatus === 'approved' || paymentStatus === 'paid' || paymentStatus === 'verified' ? '✓ Approved' : (paymentStatus === 'submitted' ? '⏳ Awaiting Review' : paymentStatus.charAt(0).toUpperCase() + paymentStatus.slice(1));
+  document.getElementById('rd-payment-method').textContent = displayPaymentMethod;
+  document.getElementById('rd-payment-status').innerHTML = `<span style="color:${paymentStatusColor};font-weight:600">${paymentStatusText}</span>`;
+  
+  // Screenshot section
+  const screenshotSection = document.getElementById('rd-screenshot-section');
+  if(reg.paymentProofUrl || reg.screenshot){
+    screenshotSection.style.display = 'block';
+    const screenshotUrl = reg.paymentProofUrl || reg.screenshot;
+    document.getElementById('rd-screenshot').src = screenshotUrl;
+    const uploadDate = reg.paymentDate || reg.uploadedAt || new Date().toLocaleDateString('en-IN');
+    document.getElementById('rd-upload-date').textContent = uploadDate;
+  } else {
+    screenshotSection.style.display = 'none';
+  }
+  
+  // Show/hide approve button based on registration status
+  const approveBtn = document.getElementById('rd-approve-btn');
+  approveBtn.style.display = (status === 'approved' || status === 'verified') ? 'none' : 'inline-block';
+  
+  // Show/hide payment approval buttons based on payment status
+  const paymentActionsDiv = document.getElementById('payment-actions');
+  if(paymentStatus === 'submitted' || paymentStatus === 'rejected'){
+    paymentActionsDiv.style.display = 'flex';
+  } else {
+    paymentActionsDiv.style.display = 'none';
+  }
+  
+  // Open modal
+  openModal('reg-details-modal');
+}
+
+// ── APPROVE REGISTRATION FROM DETAILS MODAL ──
+async function approveRegFromDetails(){
+  if(!currentViewingReg){
+    alert('Registration data not found');
+    return;
+  }
+  if(!confirm('Approve this registration?')) return;
+  
+  const regId = currentViewingReg._id;
+  const btn = event.target;
+  btn.disabled = true;
+  btn.textContent = 'Approving...';
+  
+  try{
+    const res = await fetch(`${API}/teams/registrations/${regId}/approve`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ status: 'Approved' })
+    });
+    const data = await res.json();
+    if(res.ok || res.status === 200){
+      alert('✓ Registration approved!');
+      closeModal('reg-details-modal');
+      // Reload all registrations from server to ensure fresh data
+      await loadRegistrations();
+      // Force re-render the table
+      renderRegs();
+    } else {
+      alert(data.message || 'Failed to approve registration');
+    }
+  } catch(e){
+    alert('Error: ' + e.message);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '✓ Approve';
+  }
+}
+
+// ── REJECT REGISTRATION (FROM TABLE) ──
+async function rejectReg(regId){
+  if(!confirm('Are you sure you want to reject this registration?')) return;
+  
+  try{
+    const res = await fetch(`${API}/teams/registrations/${regId}/reject`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ status: 'Rejected', reason: 'Rejected by organizer' })
+    });
+    const data = await res.json();
+    if(res.ok || res.status === 200){
+      alert('✓ Registration rejected');
+      // Reload all registrations from server to ensure fresh data
+      await loadRegistrations();
+      // Force re-render the table
+      renderRegs();
+    } else {
+      alert(data.message || 'Failed to reject registration');
+    }
+  } catch(e){
+    alert('Error: ' + e.message);
+  }
+}
+
+// ── REJECT REGISTRATION FROM DETAILS MODAL ──
+async function rejectRegFromDetails(){
+  if(!currentViewingReg){
+    alert('Registration data not found');
+    return;
+  }
+  if(!confirm('Are you sure you want to reject this registration?')) return;
+  
+  const regId = currentViewingReg._id;
+  const btn = event.target;
+  btn.disabled = true;
+  btn.textContent = 'Rejecting...';
+  
+  try{
+    const res = await fetch(`${API}/teams/registrations/${regId}/reject`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ status: 'Rejected', reason: 'Rejected by organizer' })
+    });
+    const data = await res.json();
+    if(res.ok || res.status === 200){
+      alert('✓ Registration rejected');
+      closeModal('reg-details-modal');
+      // Reload all registrations from server to ensure fresh data
+      await loadRegistrations();
+      // Force re-render the table
+      renderRegs();
+    } else {
+      alert(data.message || 'Failed to reject registration');
+    }
+  } catch(e){
+    alert('Error: ' + e.message);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Reject';
+  }
+}
+
+// ── APPROVE PAYMENT FROM DETAILS MODAL ──
+async function approvePaymentFromDetails(){
+  if(!currentViewingReg){
+    alert('Registration data not found');
+    return;
+  }
+  if(!confirm('Approve this payment proof?')) return;
+  
+  const regId = currentViewingReg._id;
+  const btn = event.target;
+  btn.disabled = true;
+  btn.textContent = 'Approving...';
+  
+  try{
+    const res = await fetch(`${API}/payment/${regId}/approve`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include'
+    });
+    const data = await res.json();
+    if(res.ok && data.success){
+      alert('✓ Payment approved successfully');
+      closeModal('reg-details-modal');
+      await loadRegistrations();
+    } else {
+      alert(data.message || 'Failed to approve payment');
+    }
+  } catch(e){
+    alert('Error: ' + e.message);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '✓ Approve Payment';
+  }
+}
+
+// ── REJECT PAYMENT FROM DETAILS MODAL ──
+async function rejectPaymentFromDetails(){
+  if(!currentViewingReg){
+    alert('Registration data not found');
+    return;
+  }
+  
+  const reason = prompt('Enter rejection reason:', 'Image is unclear');
+  if(!reason) return;
+  
+  const regId = currentViewingReg._id;
+  const btn = event.target;
+  btn.disabled = true;
+  btn.textContent = 'Rejecting...';
+  
+  try{
+    const res = await fetch(`${API}/payment/${regId}/reject`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ reason })
+    });
+    const data = await res.json();
+    if(res.ok && data.success){
+      alert('✓ Payment rejected. Student can re-upload');
+      closeModal('reg-details-modal');
+      await loadRegistrations();
+    } else {
+      alert(data.message || 'Failed to reject payment');
+    }
+  } catch(e){
+    alert('Error: ' + e.message);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '✗ Reject Payment';
+  }
 }
 
 // ── SCHEDULE ──
@@ -1992,6 +3234,7 @@ async function saveSettings(){
   } catch(e){
     eventData = { ...eventData, ...body };
   }
+  await updateEventStatus();
   renderEventHeader();
   updateOverviewStats();
   addLog('info', `Event settings updated`);
@@ -2013,7 +3256,7 @@ async function executeDeleteEvent(){
 
 function confirmCancelAllRegs(){
   if(!confirm(`Cancel all ${registrations.length} registrations for this event?`)) return;
-  registrations.forEach(r => r.status = 'Rejected');
+  registrations.forEach(r => r.registrationStatus = 'Rejected');
   addLog('rejection','All registrations cancelled');
   toast(`${registrations.length} registrations cancelled`);
   updateOverviewStats();
@@ -2030,7 +3273,7 @@ function exportCSV(type){
     registrations.forEach(r => rows.push([
       r.teamName||'', r.leadName||'', r.email||'',
       [r.leadName,...(r.members||[])].join(' | '),
-      r.status||'', r.paymentStatus||'',
+      r.registrationStatus||'', r.paymentStatus||'',
       r.paymentAmount||0, r.transactionId||'',
       r.createdAt ? fmtDateShort(r.createdAt) : '',
       r.rejectionReason||''
@@ -2143,6 +3386,13 @@ window.executeDeleteEvent = executeDeleteEvent;
 window.confirmCancelAllRegs = confirmCancelAllRegs;
 window.setPayFilter = setPayFilter;
 window.filterPay = filterPay;
+window.viewRegDetails = viewRegDetails;
+window.viewPaymentProof = viewPaymentProof;
+window.approveRegFromDetails = approveRegFromDetails;
+window.rejectReg = rejectReg;
+window.rejectRegFromDetails = rejectRegFromDetails;
+window.approvePaymentFromDetails = approvePaymentFromDetails;
+window.rejectPaymentFromDetails = rejectPaymentFromDetails;
 
 // ── INIT ──
 await loadUserProfile();

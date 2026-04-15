@@ -1255,6 +1255,44 @@
       color: var(--text3)
     }
 
+    /* ── SCHEDULE STYLES ── */
+    .schedule-slot {
+      padding: 12px 14px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      transition: border-color 0.15s, box-shadow 0.15s
+    }
+
+    .schedule-slot:hover {
+      border-color: var(--purple-light);
+      box-shadow: 0 2px 8px var(--shadow)
+    }
+
+    .slot-time {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--purple);
+      margin-bottom: 6px;
+      display: inline-block;
+      padding: 3px 8px;
+      background: var(--purple-faint);
+      border-radius: 12px
+    }
+
+    .slot-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 4px
+    }
+
+    .slot-desc {
+      font-size: 12px;
+      color: var(--text2);
+      line-height: 1.5
+    }
+
     /* ── REGISTER MODAL ── */
     .overlay {
       display: none;
@@ -1802,6 +1840,560 @@
 
       .tabs-row {
         overflow-x: auto
+      }
+    }
+
+    /* ── PAYMENT SECTION STYLES ── */
+    .payment-modal {
+      max-width: 520px
+    }
+
+    /* Event Summary */
+    .payment-summary-card {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px
+    }
+
+    .summary-event-name {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 10px
+    }
+
+    .summary-meta-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--text2);
+      margin-bottom: 8px
+    }
+
+    .summary-meta-row svg {
+      width: 13px;
+      height: 13px;
+      color: var(--text3);
+      flex-shrink: 0
+    }
+
+    .summary-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 12px 0
+    }
+
+    .summary-fee-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 14px;
+      font-weight: 600
+    }
+
+    .summary-fee-label {
+      color: var(--text2)
+    }
+
+    .summary-fee-amount {
+      color: var(--purple);
+      font-size: 16px
+    }
+
+    /* Payment Method Toggle */
+    .payment-method-section {
+      margin-bottom: 16px
+    }
+
+    .payment-method-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text2);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px
+    }
+
+    .payment-method-tabs {
+      display: flex;
+      gap: 8px;
+      background: var(--surface2);
+      padding: 4px;
+      border-radius: 10px;
+      border: 1px solid var(--border)
+    }
+
+    .payment-method-tab {
+      flex: 1;
+      padding: 10px 12px;
+      border: none;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text2);
+      background: transparent;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px
+    }
+
+    .payment-method-tab:hover {
+      color: var(--text)
+    }
+
+    .payment-method-tab.active {
+      background: var(--surface);
+      color: var(--purple);
+      font-weight: 700;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08)
+    }
+
+    .payment-method-tab svg {
+      width: 14px;
+      height: 14px
+    }
+
+    /* Online Payment */
+    .online-payment-content {
+      display: none
+    }
+
+    .online-payment-content.active {
+      display: block
+    }
+
+    .payment-trust-badges {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 14px;
+      font-size: 11px;
+      color: var(--text3)
+    }
+
+    .trust-badge {
+      display: flex;
+      align-items: center;
+      gap: 5px
+    }
+
+    .trust-badge svg {
+      width: 14px;
+      height: 14px;
+      color: var(--green)
+    }
+
+    /* Manual Payment */
+    .manual-payment-content {
+      display: none
+    }
+
+    .manual-payment-content.active {
+      display: block
+    }
+
+    .upi-details-box {
+      background: var(--purple-faint);
+      border: 1px solid var(--purple-light);
+      border-radius: 10px;
+      padding: 14px;
+      margin-bottom: 14px
+    }
+
+    .upi-detail-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      font-size: 13px;
+      border-bottom: 1px solid rgba(91, 79, 232, 0.2)
+    }
+
+    .upi-detail-row:last-child {
+      border-bottom: none
+    }
+
+    .upi-detail-label {
+      color: var(--text2);
+      font-weight: 500
+    }
+
+    .upi-detail-value {
+      color: var(--text);
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px
+    }
+
+    .copy-btn {
+      width: 22px;
+      height: 22px;
+      border: 1px solid rgba(91, 79, 232, 0.3);
+      background: rgba(91, 79, 232, 0.1);
+      border-radius: 5px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--purple);
+      transition: all 0.2s;
+      flex-shrink: 0;
+      font-size: 11px
+    }
+
+    .copy-btn:hover {
+      background: var(--purple);
+      color: #fff
+    }
+
+    /* Upload Section */
+    .upload-section {
+      margin-bottom: 14px
+    }
+
+    .upload-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text2);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px
+    }
+
+    .upload-dropzone {
+      border: 2px dashed var(--border);
+      border-radius: 10px;
+      padding: 24px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: var(--surface2)
+    }
+
+    .upload-dropzone:hover {
+      border-color: var(--purple);
+      background: rgba(91, 79, 232, 0.05)
+    }
+
+    .upload-dropzone.drag-over {
+      border-color: var(--purple);
+      background: var(--purple-faint)
+    }
+
+    .upload-dropzone svg {
+      width: 28px;
+      height: 28px;
+      color: var(--text3);
+      margin: 0 auto 8px;
+      display: block
+    }
+
+    .upload-text {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text)
+    }
+
+    .upload-subtext {
+      font-size: 11px;
+      color: var(--text3);
+      margin-top: 4px
+    }
+
+    .upload-input {
+      display: none
+    }
+
+    /* Image Preview */
+    .image-preview-box {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 12px;
+      display: none
+    }
+
+    .image-preview-box.show {
+      display: block
+    }
+
+    .image-preview-img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      display: block
+    }
+
+    .image-preview-bar {
+      background: var(--surface2);
+      padding: 10px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px
+    }
+
+    .image-preview-name {
+      font-size: 12px;
+      color: var(--text2);
+      font-weight: 500;
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap
+    }
+
+    .image-preview-remove {
+      width: 24px;
+      height: 24px;
+      border-radius: 5px;
+      background: var(--red-light);
+      border: none;
+      color: var(--red);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      flex-shrink: 0;
+      font-size: 12px
+    }
+
+    .image-preview-remove:hover {
+      background: var(--red)
+    }
+
+    /* Optional Fields */
+    .optional-fields-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 14px
+    }
+
+    .mfield {
+      display: flex;
+      flex-direction: column;
+      gap: 5px
+    }
+
+    .mfield label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text2)
+    }
+
+    .mfield input {
+      width: 100%;
+      padding: 9px 11px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 13px;
+      color: var(--text);
+      background: var(--surface2);
+      outline: none;
+      transition: border-color 0.15s
+    }
+
+    .mfield input:focus {
+      border-color: var(--purple);
+      background: var(--surface)
+    }
+
+    /* Submit Button */
+    .payment-submit-btn {
+      width: 100%;
+      padding: 10px 14px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      margin-bottom: 8px
+    }
+
+    .payment-submit-btn.btn-primary {
+      background: var(--purple);
+      color: #fff
+    }
+
+    .payment-submit-btn.btn-primary:hover:not(:disabled) {
+      background: var(--purple-dark);
+      transform: translateY(-1px)
+    }
+
+    .payment-submit-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed
+    }
+
+    /* Payment Status Card */
+    .payment-status-card {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      text-align: center
+    }
+
+    .status-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 12px;
+      font-size: 24px
+    }
+
+    .status-icon.pending {
+      background: var(--amber-light);
+      color: var(--amber)
+    }
+
+    .status-icon.approved {
+      background: var(--green-light);
+      color: var(--green)
+    }
+
+    .status-icon.rejected {
+      background: var(--red-light);
+      color: var(--red)
+    }
+
+    .status-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 4px
+    }
+
+    .status-message {
+      font-size: 12px;
+      color: var(--text2);
+      margin-bottom: 12px;
+      line-height: 1.5
+    }
+
+    .status-date {
+      font-size: 11px;
+      color: var(--text3);
+      padding: 8px;
+      background: var(--surface);
+      border-radius: 6px
+    }
+
+    .status-reupload-btn {
+      margin-top: 10px;
+      padding: 8px 14px;
+      border: 1px solid var(--purple);
+      background: transparent;
+      color: var(--purple);
+      border-radius: 7px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      width: 100%
+    }
+
+    .status-reupload-btn:hover {
+      background: var(--purple-faint)
+    }
+
+    /* Spinner */
+    .upload-spinner {
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(91, 79, 232, 0.3);
+      border-top-color: var(--purple);
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+      margin: 0 auto
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg)
+      }
+    }
+
+    /* Toast notification */
+    .toast-payment {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      max-width: 320px;
+      padding: 12px 16px;
+      border-radius: 9px;
+      font-size: 13px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      z-index: 9999;
+      opacity: 0;
+      transform: translateY(-10px);
+      transition: all 0.22s ease;
+      pointer-events: none;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15)
+    }
+
+    .toast-payment.show {
+      opacity: 1;
+      transform: translateY(0)
+    }
+
+    .toast-payment.success {
+      background: var(--green-light);
+      color: #166534;
+      border: 1px solid #bbf7d0
+    }
+
+    .toast-payment.error {
+      background: var(--red-light);
+      color: #991b1b;
+      border: 1px solid #fecaca
+    }
+
+    .toast-payment svg {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0
+    }
+
+    @media (max-width: 540px) {
+      .optional-fields-grid {
+        grid-template-columns: 1fr
+      }
+
+      .upload-dropzone {
+        padding: 16px
+      }
+
+      .payment-summary-card,
+      .upi-details-box {
+        padding: 12px
+      }
+
+      .image-preview-img {
+        height: 150px
       }
     }
   </style>
@@ -2356,12 +2948,12 @@
     </div>
   </div>
 
-  <!-- ── PAYMENT MODAL ── -->
+  <!-- ── PAYMENT MODAL (Dynamic: UPI Manual or Razorpay) ── -->
   <div class="overlay" id="payment-modal" onclick="if(event.target===this)closePaymentModal()">
-    <div class="modal" style="max-width:500px">
+    <div class="modal payment-modal">
       <div class="modal-hd">
         <div>
-          <div class="modal-hd-title">💳 Payment Details</div>
+          <div class="modal-hd-title">💳 Complete Payment</div>
           <div class="modal-hd-sub" id="payment-modal-event">—</div>
         </div>
         <button class="modal-x" onclick="closePaymentModal()">
@@ -2370,54 +2962,225 @@
           </svg>
         </button>
       </div>
-      <div class="modal-body">
-        <div class="card" style="padding:12px;margin-bottom:14px">
-          <div class="card-row">
-            <svg viewBox="0 0 16 16" fill="none"><rect x="1" y="4" width="14" height="9" rx="1" stroke="currentColor" stroke-width="1.2"/><path d="M1 7h14" stroke="currentColor" stroke-width="1.2"/></svg>
-            <div class="card-row-label">Amount</div>
-            <div class="card-row-value" id="pay-amount">₹0</div>
+      <div class="modal-body" style="max-height:65vh;overflow-y:auto">
+        
+        <!-- SECTION 1: EVENT SUMMARY CARD -->
+        <div class="payment-summary-card">
+          <div class="summary-event-name" id="payment-event-name">Event Name</div>
+          <div class="summary-meta-row">
+            <svg viewBox="0 0 16 16" fill="none"><rect x="1" y="3" width="14" height="11" rx="2" stroke="currentColor" stroke-width="1.3"/><path d="M5 1v4M11 1v4M1 7h14" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+            <span id="payment-event-date">—</span>
           </div>
-          <div class="card-row">
-            <svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.2"/><path d="M5 8l2.5 2.5 3.5-4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
-            <div class="card-row-label">Status</div>
-            <div class="card-row-value" id="pay-status">Pending</div>
+          <div class="summary-meta-row">
+            <svg viewBox="0 0 16 16" fill="none"><path d="M8 1c3.866 0 7 3.134 7 7s-3.134 7-7 7-7-3.134-7-7 3.134-7 7-7z" stroke="currentColor" stroke-width="1.3"/><path d="M8 4v4l3 2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+            <span id="payment-event-time">—</span>
           </div>
-          <div class="card-row">
-            <svg viewBox="0 0 16 16" fill="none"><path d="M2 3h12c1 0 1 1 1 1v9c0 1-1 1-1 1H2c-1 0-1-1-1-1V4c0-1 1-1 1-1z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M6 8h4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
-            <div class="card-row-label">Team Name</div>
-            <div class="card-row-value" id="pay-team">—</div>
+          <div class="summary-meta-row">
+            <svg viewBox="0 0 16 16" fill="none"><path d="M8 1c3.866 0 7 3.134 7 7s-3.134 7-7 7-7-3.134-7-7 3.134-7 7-7z" stroke="currentColor" stroke-width="1.3"/><circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.3"/></svg>
+            <span id="payment-event-venue">—</span>
           </div>
-          <div class="card-row">
-            <svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="4.5" r="2" stroke="currentColor" stroke-width="1.2"/><path d="M2 13c0-2.7 2.3-4.5 6-4.5s6 1.8 6 4.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
-            <div class="card-row-label">Lead</div>
-            <div class="card-row-value" id="pay-lead">—</div>
+          <div class="summary-divider"></div>
+          <div class="summary-fee-row">
+            <span class="summary-fee-label">Registration Fee</span>
+            <span class="summary-fee-amount" id="pay-amount">₹0</span>
           </div>
         </div>
-        <div class="mfield">
-          <label>Payment Method</label>
-          <select id="pay-method" style="width:100%;padding:9px 11px;border:1px solid var(--border);border-radius:8px;background:var(--surface2);color:var(--text);outline:none;font-size:13px">
-            <option value="">Select payment method</option>
-            <option value="UPI">UPI</option>
-            <option value="Credit Card">Credit Card</option>
-            <option value="Debit Card">Debit Card</option>
-            <option value="Net Banking">Net Banking</option>
-            <option value="Cash">Cash (At Counter)</option>
-          </select>
+
+        <!-- SECTION 2: PAYMENT METHOD SELECTION -->
+        <div class="payment-method-section">
+          <div class="payment-method-title">Select Payment Method</div>
+          <div class="payment-method-tabs">
+            <button class="payment-method-tab active" onclick="switchPaymentMethod('online', this)">
+              <svg viewBox="0 0 16 16" fill="none"><rect x="1" y="3" width="14" height="10" rx="1.5" stroke="currentColor" stroke-width="1.2"/><circle cx="8" cy="8" r="1" fill="currentColor"/></svg>
+              Pay Online
+            </button>
+            <button class="payment-method-tab" onclick="switchPaymentMethod('manual', this)">
+              <svg viewBox="0 0 16 16" fill="none"><path d="M1 4h14v10H1z" stroke="currentColor" stroke-width="1.2"/><path d="M1 6h14" stroke="currentColor" stroke-width="1.2"/></svg>
+              Manual UPI
+            </button>
+          </div>
         </div>
-        <div class="mfield" style="margin-top:12px">
-          <label>Transaction ID / Reference</label>
-          <input type="text" id="pay-txn" placeholder="e.g. TXN123456789" style="width:100%;padding:9px 11px;border:1px solid var(--border);border-radius:8px;background:var(--surface2);color:var(--text);outline:none;font-size:13px">
+
+        <!-- SECTION 3a: ONLINE PAYMENT -->
+        <div class="online-payment-content active">
+          <div class="payment-trust-badges">
+            <div class="trust-badge">
+              <svg viewBox="0 0 16 16" fill="none"><path d="M8 1c3.866 0 7 3.134 7 7s-3.134 7-7 7-7-3.134-7-7 3.134-7 7-7z" stroke="currentColor" stroke-width="1.3"/><path d="M6.5 8l2 2 3-4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Secure Checkout
+            </div>
+            <div class="trust-badge">
+              <svg viewBox="0 0 16 16" fill="none"><path d="M8 1c3.866 0 7 3.134 7 7s-3.134 7-7 7-7-3.134-7-7 3.134-7 7-7z" stroke="currentColor" stroke-width="1.3"/><path d="M6.5 8l2 2 3-4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Instant Confirmation
+            </div>
+            <div class="trust-badge">
+              <svg viewBox="0 0 16 16" fill="none"><path d="M8 1c3.866 0 7 3.134 7 7s-3.134 7-7 7-7-3.134-7-7 3.134-7 7-7z" stroke="currentColor" stroke-width="1.3"/><path d="M6.5 8l2 2 3-4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Verified Partner
+            </div>
+          </div>
+
+          <!-- Amount Display -->
+          <div class="card" style="padding:16px;margin-bottom:16px;text-align:center;background:var(--purple-faint);border-color:var(--purple-light)">
+            <div style="font-size:11px;color:var(--text3);margin-bottom:6px">Total Amount to Pay</div>
+            <div style="font-size:28px;font-weight:700;color:var(--purple);margin-bottom:4px" id="razorpay-amount">₹0</div>
+            <div style="font-size:11px;color:var(--text2)">Powered by Razorpay • PCI DSS Certified 🔒</div>
+          </div>
         </div>
-      </div>
-      <div class="modal-ft" style="display:flex;justify-content:center;gap:8px;padding:12px 16px;border-top:1px solid var(--border)">
-        <button class="btn-cancel" onclick="closePaymentModal()">Close</button>
-        <button class="btn-save" style="background:var(--green)" onclick="submitPayment()">Mark as Paid</button>
+
+        <!-- SECTION 3b: MANUAL UPI PAYMENT -->
+        <div class="manual-payment-content">
+          <!-- UPI Details Box -->
+          <div class="upi-details-box">
+            <div style="text-align:center;margin-bottom:12px">
+              <div style="font-weight:600;color:var(--text);margin-bottom:2px">Send Payment To</div>
+              <div style="font-size:11px;color:var(--text2)">Copy the details below</div>
+            </div>
+            <div class="upi-detail-row">
+              <span class="upi-detail-label">UPI ID</span>
+              <div class="upi-detail-value">
+                <span id="upi-id">—</span>
+                <button class="copy-btn" onclick="copyToClipboard('upi-id-value', this)">📋</button>
+              </div>
+            </div>
+            <div class="upi-detail-row">
+              <span class="upi-detail-label">Account Holder</span>
+              <div class="upi-detail-value">
+                <span id="upi-holder">—</span>
+              </div>
+            </div>
+            <div class="upi-detail-row">
+              <span class="upi-detail-label">Amount</span>
+              <div class="upi-detail-value">
+                <span id="upi-amount" style="font-size:14px">₹0</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Upload Section -->
+          <div class="upload-section">
+            <div class="upload-title">Payment Proof</div>
+            <div class="upload-dropzone" id="upload-dropzone" ondrop="handleDrop(event)" ondragover="event.preventDefault();this.classList.add('drag-over')" ondragleave="this.classList.remove('drag-over')" onclick="document.getElementById('payment-screenshot').click()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+              <div class="upload-text">Upload Payment Screenshot</div>
+              <div class="upload-subtext">JPG, PNG, Max 5MB</div>
+              <input type="file" id="payment-screenshot" class="upload-input" accept="image/png,image/jpeg,image/jpg" onchange="handleScreenshotUpload(event)">
+            </div>
+
+            <!-- Image Preview -->
+            <div class="image-preview-box" id="image-preview-box">
+              <img id="screenshot-preview-img" class="image-preview-img" src="" alt="Payment Screenshot">
+              <div class="image-preview-bar">
+                <span class="image-preview-name" id="image-preview-name">screenshot.png</span>
+                <button class="image-preview-remove" onclick="clearScreenhotUpload()">✕</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      
+      <!-- MODAL FOOTER -->
+      <div class="modal-ft" style="display:flex;justify-content:center;gap:8px;padding:14px 16px;border-top:1px solid var(--border)">
+        <button class="btn-cancel" onclick="closePaymentModal()">Cancel</button>
+        
+        <!-- Online Payment Button -->
+        <button id="online-pay-btn" class="payment-submit-btn btn-primary" onclick="initializeRazorpay()" style="display:none">
+          <span id="online-spinner" style="display:none" class="upload-spinner"></span>
+          Pay Now
+        </button>
+        
+        <!-- Manual Payment Submit -->
+        <button id="manual-submit-btn" class="payment-submit-btn btn-primary" onclick="submitManualPayment()" style="display:none;opacity:0.5" disabled>
+          <span id="manual-spinner" style="display:none;width:14px;height:14px" class="upload-spinner"></span>
+          Submit Proof
+        </button>
       </div>
     </div>
   </div>
 
+  <!-- QR CODE MODAL -->
+  <div class="overlay" id="qr-modal" onclick="if(event.target===this)closeQRModal()">
+    <div class="modal" style="max-width:360px;text-align:center">
+      <div class="modal-hd">
+        <div>
+          <div class="modal-hd-title">📱 UPI Payment QR Code</div>
+          <div class="modal-hd-sub" id="qr-modal-upi">—</div>
+        </div>
+        <button class="modal-x" onclick="closeQRModal()">
+          <svg viewBox="0 0 16 16" fill="none">
+            <path d="M3 3l10 10M13 3L3 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body" style="padding:24px 16px">
+        <div id="qr-code-image" style="width:240px;height:240px;margin:0 auto 16px;background:var(--surface2);border-radius:8px;display:flex;align-items:center;justify-content:center;border:2px dashed var(--border)">
+          <img id="qr-img" src="" alt="QR Code" style="max-width:100%;max-height:100%">
+        </div>
+        <div style="font-size:12px;color:var(--text2);margin-bottom:12px">
+          Scan this QR code with your mobile payment app to make the payment.
+        </div>
+        <button class="btn btn-primary" style="width:100%" onclick="closeQRModal()">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Razorpay Payment Gateway SDK -->
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  
   <script src="auth-client.js"></script>
   <script>
+    // ── GLOBAL FUNCTIONS (Available from HTML onclick handlers) ──
+    function toggleSidebar() { 
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.getElementById('sOverlay');
+      if(sidebar) sidebar.classList.toggle('open');
+      if(overlay) overlay.classList.toggle('open');
+    }
+    
+    function closeSidebar() { 
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.getElementById('sOverlay');
+      if(sidebar) sidebar.classList.remove('open');
+      if(overlay) overlay.classList.remove('open');
+    }
+    
+    // Wrapper for handlePayClick - defers if async hasn't finished
+    function handlePayClick(regId) {
+      if(window._handlePayClickFn) {
+        window._handlePayClickFn(regId);
+      } else {
+        console.error('Payment system not ready yet');
+      }
+    }
+    
+    // Wrappers for payment modal functions
+    function closePaymentModal() {
+      if(window._closePaymentModalFn) window._closePaymentModalFn();
+    }
+    
+    function toggleQRModal() {
+      if(window._toggleQRModalFn) window._toggleQRModalFn();
+    }
+    
+    function closeQRModal() {
+      if(window._closeQRModalFn) window._closeQRModalFn();
+    }
+    
+    function handleScreenshotUpload(event) {
+      if(window._handleScreenshotUploadFn) window._handleScreenshotUploadFn(event);
+    }
+    
+    function clearScreenhotUpload() {
+      if(window._clearScreenshotUploadFn) window._clearScreenshotUploadFn();
+    }
+    
+    function submitUPIPayment() {
+      if(window._submitUPIPaymentFn) window._submitUPIPaymentFn();
+    }
+    
+    function initializeRazorpay() {
+      if(window._initializeRazorpayFn) window._initializeRazorpayFn();
+    }
+
+    // PAGE INITIALIZATION ──
     (async () => {
 
       // ── STEP 1: Logout flag check ──
@@ -2472,8 +3235,6 @@
       let currentEventId = null;
 
       // ── SIDEBAR ──
-      function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); document.getElementById('sOverlay').classList.toggle('open'); }
-      function closeSidebar() { document.getElementById('sidebar').classList.remove('open'); document.getElementById('sOverlay').classList.remove('open'); }
       function navClick(el, title) {
         document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
         el.classList.add('active');
@@ -2591,17 +3352,20 @@
         <div class="emeta">
           <div class="emeta-row"><svg viewBox="0 0 12 12" fill="none"><rect x="0.5" y="2" width="11" height="9" rx="1.5" stroke="currentColor" stroke-width="1.1"/><path d="M4 1v2M8 1v2M0.5 5h11" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>${ds}${e.time ? ' · ' + e.time : ''}</div>
           ${e.venue ? `<div class="emeta-row"><svg viewBox="0 0 12 12" fill="none"><path d="M6 1a4 4 0 014 4c0 2.8-4 7-4 7S2 7.8 2 5a4 4 0 014-4z" stroke="currentColor" stroke-width="1.1"/><circle cx="6" cy="5" r="1.5" stroke="currentColor" stroke-width="1.1"/></svg>${e.venue}</div>` : ''}
+          ${e.fee ? `<div class="emeta-row" style="font-weight:600;color:var(--green)"><svg viewBox="0 0 12 12" fill="none" style="color:var(--green)"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.1"/><path d="M6 2.5v7M8.5 5H3.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>Registration: ₹${e.fee}</div>` : ''}
           ${e.prize ? `<div class="emeta-row"><svg viewBox="0 0 12 12" fill="none"><path d="M6 1l1.2 3.5H11l-3 2.2 1.2 3.5L6 8.5 2.8 10.2 4 6.7 1 4.5h3.8z" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round"/></svg>${e.prize}</div>` : ''}
         </div>
         <div class="edivider"></div>
         <div class="ecard-footer">
-          <div class="estatus"><div class="sdot ${sc.dot}"></div>${sc.label} · <strong>${e.teams || e.team || 0}</strong> teams${e.maxTeams ? ' / ' + e.maxTeams : ''}</div>
+          <div class="estatus"><div class="sdot ${sc.dot}"></div>${(e.status || 'Upcoming').toLowerCase() === 'upcoming' && e.daysRemaining !== undefined && e.daysRemaining >= 0 ? 
+              (e.daysRemaining > 0 ? `${e.daysRemaining}d ${e.hoursRemaining || 0}h` : (e.hoursRemaining > 0 ? `${e.hoursRemaining}h` : sc.label)) 
+              : sc.label} · <strong>${e.teams || e.team || 0}</strong> teams${e.maxTeams ? ' / ' + e.maxTeams : ''}</div>
           <div>
             ${reg
               ? (() => {
                   const regForEvent = myRegs.find(r => (r.event && typeof r.event === 'object' ? r.event._id : r.event) === e._id);
                   const regId = regForEvent ? regForEvent._id : e._id;
-                  return `<button class="btn-view" onclick="openRulesModal('${e._id}')" style="display:inline-flex;align-items:center;">📋 Rules</button><button class="btn-view" onclick="openEventModal('${e._id}')" style="display:inline-flex;align-items:center;margin-left:6px">📄 Details</button><button class="btn-view" onclick="openPaymentModal('${regId}')" style="display:inline-flex;align-items:center;margin-left:6px;background:var(--green);color:#fff">💳 Pay</button>`;
+                  return `<button class="btn-view" onclick="openRulesModal('${e._id}')" style="display:inline-flex;align-items:center;">📋 Rules</button><button class="btn-view" onclick="openEventModal('${e._id}')" style="display:inline-flex;align-items:center;margin-left:6px">📄 Details</button><button class="btn-view" onclick="handlePayClick('${regId}')" style="display:inline-flex;align-items:center;margin-left:6px;background:var(--green);color:#fff">💳 Pay</button>`;
                 })()
               : isCompleted
                 ? `<button class="btn-register registered">Closed</button>`
@@ -2611,6 +3375,44 @@
         </div>
       </div>`;
         }).join('');
+      }
+
+      // ── REFRESH PAYMENT STATUSES PERIODICALLY ──
+      async function refreshPaymentStatuses() {
+        if (!myRegs.length) return;
+        
+        for (const reg of myRegs) {
+          try {
+            const res = await fetch(`${API}/payment/${reg._id}/getstatus`, {
+              credentials: 'include'
+            });
+            
+            if (res.ok) {
+              const data = await res.json();
+              if (data.success && data.paymentDetails) {
+                // Update if status changed
+                const oldStatus = (reg.paymentStatus || '').toLowerCase();
+                const newStatus = (data.paymentDetails.paymentStatus || '').toLowerCase();
+                
+                if (oldStatus !== newStatus) {
+                  reg.paymentStatus = data.paymentDetails.paymentStatus;
+                  reg.paymentMethod = data.paymentDetails.paymentMethod;
+                  reg.paymentProofUrl = data.paymentDetails.paymentProofUrl;
+                  
+                  // If newly approved, show notification
+                  if (newStatus === 'approved' && oldStatus !== 'approved') {
+                    console.log(`✓ Payment approved for ${reg.teamname}`);
+                  }
+                }
+              }
+            }
+          } catch (e) {
+            console.warn(`Failed to refresh status for ${reg._id}:`, e);
+          }
+        }
+        
+        // Re-render after checking all statuses
+        renderMyRegs();
       }
 
       // ── RENDER MY REGISTRATIONS ──
@@ -2626,13 +3428,23 @@
           const ev = r.event && typeof r.event === 'object' ? r.event : (events.find(e => e._id === r.event) || {});
           const tc = TC[ev.type] || TC['Techtalk'];
           const ds = ev.date ? new Date(ev.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : 'TBD';
-          const statusCls = ev.status === 'Upcoming' ? 'badge-upcoming' : ev.status === 'Completed' ? 'badge-done' : 'badge-confirmed';
+          const eventStatusCls = ev.status === 'Upcoming' ? 'badge-upcoming' : ev.status === 'Completed' ? 'badge-done' : 'badge-confirmed';
           const membersCount = Array.isArray(r.members) ? r.members.length : (r.members || 1);
+          const paymentMethod = ev.paymentMode || 'razorpay';
+          const paymentStatus = (r.paymentStatus || '').toLowerCase();
+          const isPaymentApproved = paymentStatus === 'approved';
+          
+          // Registration Status
+          const regStatus = (r.registrationStatus || 'Pending').toLowerCase();
+          const regStatusColor = regStatus === 'approved' ? 'var(--green)' : (regStatus === 'rejected' ? 'var(--red)' : 'var(--amber)');
+          const regStatusText = regStatus === 'approved' ? '✓ Approved' : (regStatus === 'rejected' ? '✕ Rejected' : '⏳ Pending');
+          
           return `<div class="reg-card">
         <div class="reg-event-icon ${tc.ic}"><svg viewBox="0 0 16 16" fill="none">${tc.svg}</svg></div>
         <div class="reg-info">
           <div class="reg-event-name">${ev.name || r.eventName || 'Event'}</div>
           <div class="reg-team-name">Team: <strong>${r.teamname || r.teamName || '—'}</strong></div>
+          ${ev.fee ? `<div style="font-size:12px;color:var(--green);font-weight:600;margin:4px 0">Registration Fee: ₹${ev.fee}</div>` : ''}
           <div class="reg-meta">
             <div class="reg-meta-item"><svg viewBox="0 0 12 12" fill="none"><rect x="0.5" y="2" width="11" height="9" rx="1.5" stroke="currentColor" stroke-width="1.1"/><path d="M4 1v2M8 1v2M0.5 5h11" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>${ds}</div>
             ${ev.venue ? `<div class="reg-meta-item"><svg viewBox="0 0 12 12" fill="none"><path d="M6 1a4 4 0 014 4c0 2.8-4 7-4 7S2 7.8 2 5a4 4 0 014-4z" stroke="currentColor" stroke-width="1.1"/></svg>${ev.venue}</div>` : ''}
@@ -2640,17 +3452,63 @@
           </div>
         </div>
         <div class="reg-status" style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
-          <span class="${statusCls}">${ev.status || 'Confirmed'}</span>
-          <span style="font-size:10px;padding:4px 8px;background:var(--amber-faint);color:var(--amber);border-radius:4px;font-weight:600">
-            💰 ${r.paymentStatus || 'Pending'}
+          <span class="${eventStatusCls}">${ev.status || 'Confirmed'}</span>
+          <span style="font-size:10px;padding:4px 8px;background:${regStatusColor}-light;color:${regStatusColor};border-radius:4px;font-weight:600;border:1px solid ${regStatusColor}">
+            ${regStatusText}
           </span>
-          <button class="btn-view" onclick="openPaymentModal('${r._id}')" style="font-size:11px;padding:4px 10px;display:inline-block;background:var(--green);color:#fff">💳 Pay</button>
+          <span style="font-size:10px;padding:4px 8px;background:${isPaymentApproved ? 'var(--green-light)' : (paymentStatus === 'rejected' ? 'var(--red-light)' : 'var(--amber-light)')};color:${isPaymentApproved ? '#166534' : (paymentStatus === 'rejected' ? '#991b1b' : '#92400E')};border-radius:4px;font-weight:600">
+            ${isPaymentApproved ? '✓ Paid' : (paymentStatus === 'rejected' ? '✕ Rejected' : (paymentStatus === 'submitted' ? '⏳ Awaiting Approval' : '💰 Pending'))}
+          </span>
+          ${!isPaymentApproved ? `<button class="btn-view" onclick="handlePayClick('${r._id}')" style="font-size:11px;padding:4px 10px;display:inline-block;background:var(--teal);color:#fff;border:none;border-radius:6px;cursor:pointer">💳 Pay</button>` : ''}
         </div>
       </div>`;
         };
         list.innerHTML = myRegs.map(renderCard).join('');
         const upcoming = myRegs.filter(r => { const ev = r.event && typeof r.event === 'object' ? r.event : events.find(e => String(e._id) === String(r.event)); return ev && ev.status === 'Upcoming'; });
         upList.innerHTML = upcoming.length ? upcoming.map(renderCard).join('') : `<div class="empty"><svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="16" stroke="currentColor" stroke-width="1.8"/><path d="M20 12v8l5 3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><h3>No upcoming events</h3><p>Register for upcoming events and they will appear here.</p></div>`;
+      }
+      
+      // Helper to open payment modal with correct data
+      async function handlePayClick(regId) {
+        const reg = myRegs.find(r => r._id === regId);
+        if (!reg) return;
+        
+        // Fetch latest payment status
+        try {
+          const res = await fetch(`${API}/payment/${regId}/getstatus`, {
+            credentials: 'include'
+          });
+          
+          if (res.ok) {
+            const data = await res.json();
+            if (data.success && data.paymentDetails) {
+              reg.paymentStatus = data.paymentDetails.paymentStatus;
+              reg.paymentMethod = data.paymentDetails.paymentMethod;
+              reg.paymentProofUrl = data.paymentDetails.paymentProofUrl;
+            }
+          }
+        } catch (e) {
+          console.warn('Failed to fetch payment status:', e);
+        }
+        
+        // Check if already approved - don't open modal (case-insensitive)
+        const status = (reg.paymentStatus || '').toLowerCase();
+        if (status === 'approved') {
+          showPaymentToast('✓ Payment already approved!', 'success');
+          renderRegistrations(); // Re-render to hide Pay button
+          return;
+        }
+        
+        // Only open modal for pending or rejected
+        if (status !== 'pending' && status !== 'rejected' && status !== 'submitted') {
+          return;
+        }
+        
+        const ev = reg.event && typeof reg.event === 'object' ? reg.event : events.find(e => e._id === reg.event);
+        if (!ev) return;
+        
+        const paymentMode = ev.paymentMode || 'razorpay';
+        openPaymentModal(regId, reg, ev, paymentMode);
       }
 
       // ── STATS ──
@@ -2769,9 +3627,10 @@
           const res = await fetch(`${API}/schedule/${eventId}`, { credentials: 'include' });
           if (!res.ok) throw new Error();
           const data = await res.json();
-          const slots = data.slots || [];
+          // Handle multiple response formats: data.schedule, data.slots, or direct array
+          const slots = data.schedule || data.slots || (Array.isArray(data) ? data : []);
 
-          if (!slots.length) {
+          if (!slots || !slots.length) {
             document.getElementById('eventm-schedule-content').innerHTML = '<div class="empty" style="padding:20px"><p>No schedule available.</p></div>';
             return;
           }
@@ -2905,6 +3764,86 @@
           const data = await res.json();
           if (res.ok) {
             events = data.events || [];
+            // Fetch remaining days for each event and calculate status
+            for(let ev of events) {
+              try {
+                // Try to fetch remaining days from API
+                const remainRes = await fetch(`${API}/events/${ev._id}`, { credentials: 'include' });
+                if(remainRes.ok){
+                  const remainData = await remainRes.json();
+                  const eventData = remainData.event || remainData;
+                  if(eventData.daysRemaining !== undefined){
+                    ev.daysRemaining = eventData.daysRemaining;
+                    ev.hoursRemaining = eventData.hoursRemaining || 0;
+                    ev.status = eventData.status || ev.status || 'Upcoming';
+                  }
+                }
+              } catch(e) {
+                console.log('Could not fetch remaining days for event:', ev._id);
+              }
+              
+              // Fallback: Calculate local
+              if(ev.daysRemaining === undefined && ev.date){
+                try {
+                  let dateStr = ev.date;
+                  let timeStr = ev.time || '00:00';
+                  
+                  console.log('Parsing event:', ev.name, 'Date:', dateStr, 'Time:', timeStr);
+                  
+                  // Handle timezone in date (remove Z and time if present)
+                  if(dateStr.includes('Z')){
+                    dateStr = dateStr.split('T')[0]; // Extract just the date part
+                  }
+                  
+                  if(timeStr.includes('PM') || timeStr.includes('AM')){
+                    const timeParts = timeStr.match(/(\d+):(\d+)\s*(AM|PM)/i);
+                    if(timeParts){
+                      let hours = parseInt(timeParts[1]);
+                      const mins = timeParts[2];
+                      const period = timeParts[3].toUpperCase();
+                      if(period === 'PM' && hours !== 12) hours += 12;
+                      if(period === 'AM' && hours === 12) hours = 0;
+                      timeStr = `${String(hours).padStart(2, '0')}:${mins}`;
+                    }
+                  }
+                  
+                  // Build proper ISO datetime
+                  const isoDateTime = dateStr + 'T' + timeStr + ':00';
+                  console.log('Built ISO datetime:', isoDateTime);
+                  
+                  const eventDateTime = new Date(isoDateTime);
+                  const now = new Date();
+                  
+                  console.log('Parsed eventDateTime:', eventDateTime, 'IsValid:', !isNaN(eventDateTime.getTime()), 'Now:', now);
+                  
+                  // Check if date is valid
+                  if(isNaN(eventDateTime.getTime())){
+                    console.warn('Invalid event date for', ev.name, ':', dateStr);
+                    ev.status = 'Upcoming';
+                    ev.daysRemaining = -1;
+                    ev.hoursRemaining = 0;
+                  } else {
+                    const diff = eventDateTime - now;
+                    console.log('Date diff (ms):', diff);
+                    
+                    if(diff <= 0){
+                      ev.status = 'Completed';
+                      ev.daysRemaining = 0;
+                      ev.hoursRemaining = 0;
+                    } else {
+                      ev.status = 'Upcoming';
+                      ev.daysRemaining = Math.floor(diff / (1000 * 60 * 60 * 24));
+                      ev.hoursRemaining = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    }
+                    console.log('Calculated for', ev.name, ':', ev.daysRemaining + 'd ' + ev.hoursRemaining + 'h');
+                  }
+                } catch(e) {
+                  console.error('Error parsing event date:', ev.name, e);
+                  ev.daysRemaining = -1;
+                  ev.hoursRemaining = 0;
+                }
+              }
+            }
             console.log('Loaded events:', events.length);
             renderEvents();
             updateStats();
@@ -2947,7 +3886,7 @@
                     eventId: event._id,
                     eventName: event.name,
                     paymentStatus: data.paymentStatus || 'Pending',
-                    status: 'Confirmed',
+                    registrationStatus: 'Confirmed',
                     createdAt: new Date().toISOString()
                   });
                 } else {
@@ -2990,64 +3929,294 @@
       }
 
       // ── PAYMENT MODAL ──
+      // Payment Modal State
       let paymentTargetId = null;
-      
-      function openPaymentModal(regId) {
-        paymentTargetId = regId;
-        const reg = myRegs.find(r => r._id === regId);
-        if (!reg) return;
-        
-        const event = events.find(e => e._id === reg.event);
-        document.getElementById('payment-modal-event').textContent = event?.name || 'Event';
-        document.getElementById('pay-amount').textContent = reg.paymentAmount ? '₹' + reg.paymentAmount : '₹0';
-        document.getElementById('pay-status').textContent = reg.paymentStatus || 'Pending';
-        document.getElementById('pay-team').textContent = reg.teamname || reg.teamName || '—';
-        document.getElementById('pay-lead').textContent = reg.leadname || reg.leadName || '—';
-        document.getElementById('pay-method').value = reg.paymentMethod || '';
-        document.getElementById('pay-txn').value = reg.transactionId || '';
-        
-        document.getElementById('payment-modal').classList.add('open');
-      }
+      let paymentTimerInterval = null;
+      let currentPaymentMethod = null; // 'upi_manual' or 'razorpay'
       
       function closePaymentModal() {
-        document.getElementById('payment-modal').classList.remove('open');
+        const modal = document.getElementById('payment-modal');
+        if (modal) modal.classList.remove('open');
         paymentTargetId = null;
+        clearPaymentTimer();
+        clearScreenhotUpload();
       }
       
-      async function submitPayment() {
-        const method = document.getElementById('pay-method').value.trim();
-        const txn = document.getElementById('pay-txn').value.trim();
+      function closeQRModal() {
+        const qrModal = document.getElementById('qr-modal');
+        if (qrModal) qrModal.classList.remove('open');
+      }
+      
+      function toggleQRModal() {
+        const qrModal = document.getElementById('qr-modal');
+        if (qrModal) qrModal.classList.add('open');
+      }
+      
+      // Handle file upload for payment screenshot
+      function handleScreenshotUpload(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        // Validate file type
+        if (!['image/png', 'image/jpeg'].includes(file.type)) {
+          toast('Please upload JPG or PNG file', 'fail');
+          return;
+        }
+
+        // Validate file size (5MB)
+        if (file.size > 5 * 1024 * 1024) {
+          toast('File size must be less than 5MB', 'fail');
+          return;
+        }
+
+        // Read and display image
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const previewBox = document.getElementById('image-preview-box');
+          const previewImg = document.getElementById('screenshot-preview-img');
+          const previewName = document.getElementById('image-preview-name');
+          
+          if (previewImg) previewImg.src = e.target.result;
+          if (previewName) previewName.textContent = file.name;
+          if (previewBox) previewBox.classList.add('show');
+          
+          // Enable submit button
+          enableManualPaymentSubmit();
+        };
+        reader.readAsDataURL(file);
+      }
+      
+      function clearScreenhotUpload() {
+        const fileInput = document.getElementById('payment-screenshot');
+        const previewBox = document.getElementById('image-preview-box');
+        const submitBtn = document.getElementById('manual-submit-btn');
         
-        if (!method) { toast('Please select a payment method', 'fail'); return; }
+        if (fileInput) fileInput.value = '';
+        if (previewBox) previewBox.classList.remove('show');
+        if (submitBtn) {
+          submitBtn.disabled = true;
+          submitBtn.style.opacity = '0.5';
+        }
+      }
+      
+      function enableManualPaymentSubmit() {
+        const btn = document.getElementById('manual-submit-btn');
+        if (btn) {
+          btn.disabled = false;
+          btn.style.opacity = '1';
+        }
+      }
+      
+      // Payment Timer (10 minutes for UPI) - Optional, can be hidden if not needed
+      function startPaymentTimer() {
+        const timerEl = document.getElementById('payment-timer');
+        if (!timerEl) return; // Timer element not present, skip
         
+        let timeRemaining = 600; // 10 minutes in seconds
+        
+        const updateTimer = () => {
+          const mins = Math.floor(timeRemaining / 60);
+          const secs = timeRemaining % 60;
+          const timerText = document.getElementById('timer-text');
+          if (timerText) {
+            timerText.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+          }
+          
+          if (timeRemaining <= 0) {
+            clearPaymentTimer();
+            toast('Payment time expired. Please try again.', 'fail');
+            closePaymentModal();
+          } else {
+            timeRemaining--;
+          }
+        };
+        
+        timerEl.style.display = 'block';
+        updateTimer();
+        paymentTimerInterval = setInterval(updateTimer, 1000);
+      }
+      
+      function clearPaymentTimer() {
+        if (paymentTimerInterval) {
+          clearInterval(paymentTimerInterval);
+          paymentTimerInterval = null;
+        }
+        const timerEl = document.getElementById('payment-timer');
+        if (timerEl) timerEl.style.display = 'none';
+      }
+      
+      // Open Payment Modal with Dynamic Content
+      async function openPaymentModal(regId, registration, event, paymentMode) {
+        paymentTargetId = regId;
+        currentPaymentMethod = paymentMode;
+        
+        // Extract event info with fallbacks
+        const eventTitle = event.title || event.name || event.eventName || 'Event';
+        const eventFee = event.fee || event.registrationFee || 0;
+        const organizerUPI = event.upiId || event.organizerUPI || 'organizer@bank';
+        const organizerName = event.organizerName || event.organizer || 'Event Organizer';
+        
+        // Extract event details - date, time, venue
+        let eventDate = '—';
+        let eventTime = '—';
+        let eventVenue = '—';
+        
+        // Try to format date from various possible properties
+        if (event.date) {
+          try {
+            const dateObj = new Date(event.date);
+            eventDate = dateObj.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+          } catch (e) {
+            eventDate = event.date || '—';
+          }
+        } else if (event.eventDate) {
+          eventDate = event.eventDate;
+        }
+        
+        // Extract time
+        if (event.time) {
+          eventTime = event.time;
+        } else if (event.eventTime) {
+          eventTime = event.eventTime;
+        }
+        
+        // Extract venue
+        if (event.venue) {
+          eventVenue = event.venue;
+        } else if (event.location) {
+          eventVenue = event.location;
+        } else if (event.eventVenue) {
+          eventVenue = event.eventVenue;
+        }
+        
+        // Update modal header
+        const paymentHeaderEl = document.getElementById('payment-modal-event');
+        if (paymentHeaderEl) paymentHeaderEl.textContent = eventTitle;
+        
+        // Update event summary card
+        const eventNameEl = document.getElementById('payment-event-name');
+        if (eventNameEl) eventNameEl.textContent = eventTitle;
+        
+        const eventDateEl = document.getElementById('payment-event-date');
+        if (eventDateEl) eventDateEl.textContent = eventDate;
+        
+        const eventTimeEl = document.getElementById('payment-event-time');
+        if (eventTimeEl) eventTimeEl.textContent = eventTime;
+        
+        const eventVenueEl = document.getElementById('payment-event-venue');
+        if (eventVenueEl) eventVenueEl.textContent = eventVenue;
+        
+        // Update fee amount
+        const payAmountEl = document.getElementById('pay-amount');
+        const razorpayAmountEl = document.getElementById('razorpay-amount');
+        const upiAmountEl = document.getElementById('upi-amount');
+        if (payAmountEl) payAmountEl.textContent = '₹' + eventFee;
+        if (razorpayAmountEl) razorpayAmountEl.textContent = '₹' + eventFee;
+        if (upiAmountEl) upiAmountEl.textContent = '₹' + eventFee;
+        
+        // Update UPI details
+        const upiIdEl = document.getElementById('upi-id');
+        const upiHolderEl = document.getElementById('upi-holder');
+        if (upiIdEl) upiIdEl.textContent = organizerUPI;
+        if (upiHolderEl) upiHolderEl.textContent = organizerName;
+        
+        // Get payment method buttons and content sections
+        const onlineContent = document.querySelector('.online-payment-content');
+        const manualContent = document.querySelector('.manual-payment-content');
+        const onlineBtn = document.getElementById('online-pay-btn');
+        const manualBtn = document.getElementById('manual-submit-btn');
+        
+        // Reset to online payment by default
+        if (onlineContent) onlineContent.classList.add('active');
+        if (manualContent) manualContent.classList.remove('active');
+        if (onlineBtn) onlineBtn.style.display = 'flex';
+        if (manualBtn) manualBtn.style.display = 'none';
+        
+        // Reset payment method tabs
+        document.querySelectorAll('.payment-method-tab').forEach((tab, idx) => {
+          tab.classList.toggle('active', idx === 0);
+        });
+        
+        // Clear previous uploads
+        clearScreenhotUpload();
+        
+        // Fetch latest payment status from server
         try {
-          const res = await fetch(`${API}/teams/registrations/${paymentTargetId}/payment`, {
-            method: 'PUT',
-            credentials: 'include',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ 
-              paymentStatus: 'Paid',
-              paymentMethod: method,
-              transactionId: txn,
-              paymentDate: new Date().toISOString().split('T')[0]
-            })
+          const res = await fetch(`${API}/payment/${regId}/getstatus`, {
+            credentials: 'include'
           });
           
           if (res.ok) {
-            // Refetch registrations from database
-            await loadMyRegistrations();
-            closePaymentModal();
-            renderMyRegs();
-            updateStats();
-            toast('Payment marked as completed!', 'success');
-          } else {
-            toast('Failed to update payment status', 'fail');
+            const data = await res.json();
+            if (data.success && data.paymentStatus) {
+              registration.paymentStatus = data.paymentStatus;
+            }
           }
         } catch (e) {
-          console.error('Payment submission error:', e);
-          toast('Cannot connect to server', 'fail');
+          console.warn('Failed to fetch payment status:', e);
         }
+        
+        // Handle payment status - disable upload if already approved or submitted
+        const manualSubmitBtn = document.getElementById('manual-submit-btn');
+        const uploadSection = document.querySelector('.upload-section');
+        
+        if (registration && registration.paymentStatus) {
+          const status = registration.paymentStatus;
+          
+          if (status === 'approved') {
+            // Payment already approved - disable upload
+            if (manualSubmitBtn) {
+              manualSubmitBtn.disabled = true;
+              manualSubmitBtn.style.opacity = '0.5';
+              manualSubmitBtn.textContent = '✓ Payment Approved';
+            }
+            if (uploadSection) {
+              uploadSection.style.display = 'none';
+            }
+          } else if (status === 'submitted') {
+            // Awaiting approval - disable upload
+            if (manualSubmitBtn) {
+              manualSubmitBtn.disabled = true;
+              manualSubmitBtn.style.opacity = '0.5';
+              manualSubmitBtn.textContent = '⏳ Awaiting Approval';
+            }
+            if (uploadSection) {
+              uploadSection.style.opacity = '0.5';
+              uploadSection.style.pointerEvents = 'none';
+            }
+          } else if (status === 'rejected') {
+            // Rejected - allow re-upload
+            if (manualSubmitBtn) {
+              manualSubmitBtn.disabled = false;
+              manualSubmitBtn.style.opacity = '1';
+              manualSubmitBtn.innerHTML = '<span id="manual-spinner" style="display:none;width:14px;height:14px" class="upload-spinner"></span> Re-submit Proof';
+            }
+            if (uploadSection) {
+              uploadSection.style.display = 'block';
+              uploadSection.style.opacity = '1';
+              uploadSection.style.pointerEvents = 'auto';
+            }
+          } else {
+            // Pending - allow upload
+            if (manualSubmitBtn) {
+              manualSubmitBtn.disabled = false;
+              manualSubmitBtn.style.opacity = '1';
+              manualSubmitBtn.innerHTML = '<span id="manual-spinner" style="display:none;width:14px;height:14px" class="upload-spinner"></span> Submit Proof';
+            }
+            if (uploadSection) {
+              uploadSection.style.display = 'block';
+              uploadSection.style.opacity = '1';
+              uploadSection.style.pointerEvents = 'auto';
+            }
+          }
+        }
+        
+        // Show modal
+        const paymentModal = document.getElementById('payment-modal');
+        if (paymentModal) paymentModal.classList.add('open');
       }
+
+
 
       async function loadStudentSchedule(eventId) {
         try {
@@ -3105,14 +4274,16 @@
       
       // Step 3: Try to open registration from URL if needed
       tryOpenRegisterFromUrl();
+      
+      // Step 4: Start periodic refresh of payment statuses (every 10 seconds)
+      setInterval(refreshPaymentStatuses, 10000);
+      console.log('✓ Payment status auto-refresh started');
 
 
 
       // ── EXPOSE TO GLOBAL SCOPE ──
       window.logout = logout;
       window.toggleTheme = toggleTheme;
-      window.toggleSidebar = toggleSidebar;
-      window.closeSidebar = closeSidebar;
       window.navClick = navClick;
       window.switchTab = switchTab;
       window.setFilter = setFilter;
@@ -3128,9 +4299,20 @@
       window.addMember = addMember;
       window.removeMember = removeMember;
       window.submitRegistration = submitRegistration;
-      window.submitPayment = submitPayment;
       window.openPaymentModal = openPaymentModal;
       window.closePaymentModal = closePaymentModal;
+      window._closePaymentModalFn = closePaymentModal;  // Store actual implementation for wrapper
+      window.handlePayClick = handlePayClick;
+      window._handlePayClickFn = handlePayClick;  // Store actual implementation for wrapper
+      window.refreshPaymentStatuses = refreshPaymentStatuses;
+      window.closeQRModal = closeQRModal;
+      window._closeQRModalFn = closeQRModal;
+      window.toggleQRModal = toggleQRModal;
+      window._toggleQRModalFn = toggleQRModal;
+      window.handleScreenshotUpload = handleScreenshotUpload;
+      window._handleScreenshotUploadFn = handleScreenshotUpload;
+      window.clearScreenhotUpload = clearScreenhotUpload;
+      window._clearScreenshotUploadFn = clearScreenhotUpload;
       window.loadMyRegistrations = loadMyRegistrations;
       window.openStudentScheduleModal = openStudentScheduleModal;
       window.closeStudentScheduleModal = closeStudentScheduleModal;
@@ -3158,6 +4340,297 @@
         return result;
       };
       // ✅ All data now comes from database API calls, no localStorage
+
+      /* ──────────────────────────────────────────────────────────────────────
+         PAYMENT MODULE FUNCTIONS
+      ────────────────────────────────────────────────────────────────────── */
+
+      window.switchPaymentMethod = function(method, btn) {
+        if (!btn) return;
+        
+        // Update button active state
+        document.querySelectorAll('.payment-method-tab').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        // Hide/show content
+        document.querySelectorAll('.online-payment-content, .manual-payment-content').forEach(el => 
+          el.classList.remove('active')
+        );
+
+        if (method === 'online') {
+          const onlineContent = document.querySelector('.online-payment-content');
+          const onlineBtn = document.getElementById('online-pay-btn');
+          const manualBtn = document.getElementById('manual-submit-btn');
+          
+          if (onlineContent) onlineContent.classList.add('active');
+          if (onlineBtn) onlineBtn.style.display = 'flex';
+          if (manualBtn) manualBtn.style.display = 'none';
+        } else {
+          const manualContent = document.querySelector('.manual-payment-content');
+          const onlineBtn = document.getElementById('online-pay-btn');
+          const manualBtn = document.getElementById('manual-submit-btn');
+          
+          if (manualContent) manualContent.classList.add('active');
+          if (onlineBtn) onlineBtn.style.display = 'none';
+          if (manualBtn) manualBtn.style.display = 'flex';
+        }
+      };
+
+      window.handleDrop = function(e) {
+        e.preventDefault();
+        const dropzone = document.getElementById('upload-dropzone');
+        if (dropzone) dropzone.classList.remove('drag-over');
+        const files = e.dataTransfer.files;
+        if (files.length > 0) handleScreenshotUpload({ target: { files } });
+      };
+
+      window.handleScreenshotUpload = function(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        // Validate file type
+        if (!['image/png', 'image/jpeg'].includes(file.type)) {
+          showPaymentToast('Please upload JPG or PNG file', 'error');
+          return;
+        }
+
+        // Validate file size (5MB)
+        if (file.size > 5 * 1024 * 1024) {
+          showPaymentToast('File size must be less than 5MB', 'error');
+          return;
+        }
+
+        // Read and display image
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const previewBox = document.getElementById('image-preview-box');
+          document.getElementById('screenshot-preview-img').src = e.target.result;
+          document.getElementById('image-preview-name').textContent = file.name;
+          previewBox.classList.add('show');
+          
+          // Enable submit button
+          enableManualPaymentSubmit();
+        };
+        reader.readAsDataURL(file);
+      };
+
+      window.clearScreenhotUpload = function() {
+        document.getElementById('payment-screenshot').value = '';
+        document.getElementById('image-preview-box').classList.remove('show');
+        document.getElementById('manual-submit-btn').disabled = true;
+        document.getElementById('manual-submit-btn').style.opacity = '0.5';
+      };
+
+      window.enableManualPaymentSubmit = function() {
+        const btn = document.getElementById('manual-submit-btn');
+        btn.disabled = false;
+        btn.style.opacity = '1';
+      };
+
+      window.copyToClipboard = function(elementId, button) {
+        const text = document.getElementById(elementId)?.textContent || 
+                     document.getElementById(elementId)?.value;
+        if (!text || !button) return;
+
+        navigator.clipboard.writeText(text).then(() => {
+          const original = button.textContent;
+          button.textContent = '✓';
+          setTimeout(() => button.textContent = original, 2000);
+        }).catch(() => {
+          showPaymentToast('Failed to copy', 'error');
+        });
+      };
+
+      window.submitManualPayment = function() {
+        const fileInput = document.getElementById('payment-screenshot');
+        
+        if (!fileInput || !fileInput.files[0]) {
+          showPaymentToast('Please upload payment screenshot', 'error');
+          return;
+        }
+
+        const screenshotFile = fileInput.files[0];
+
+        // Show loading state
+        const btn = document.getElementById('manual-submit-btn');
+        const spinner = document.getElementById('manual-spinner');
+        if (btn) btn.disabled = true;
+        if (spinner) spinner.style.display = 'block';
+
+        // Prepare FormData for backend
+        const formData = new FormData();
+        formData.append('image', screenshotFile);
+        formData.append('paymentMethod', 'UPI');
+        formData.append('status', 'pending');
+
+        // Send to backend
+        fetch(`${API}/payment/${paymentTargetId}`, {
+          method: 'POST',
+          credentials: 'include',
+          body: formData
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            showPaymentToast('✓ Payment proof submitted! Waiting for admin approval', 'success');
+            // Reload data and refresh UI
+            loadMyRegistrations().then(() => {
+              renderMyRegs();
+              updateStats();
+            });
+            setTimeout(() => closePaymentModal(), 2000);
+          } else {
+            showPaymentToast(data.message || 'Failed to submit payment proof', 'error');
+            if (btn) btn.disabled = false;
+            if (spinner) spinner.style.display = 'none';
+          }
+        })
+        .catch(err => {
+          console.error('Payment submission error:', err);
+          showPaymentToast('Cannot connect to server. Check your connection.', 'error');
+          if (btn) btn.disabled = false;
+          if (spinner) spinner.style.display = 'none';
+        });
+      };
+
+      window.initializeRazorpay = function() {
+        const amountEl = document.getElementById('razorpay-amount');
+        if (!amountEl) {
+          showPaymentToast('Payment amount not found', 'error');
+          return;
+        }
+        
+        const amount = parseFloat(amountEl.textContent.replace('₹', ''));
+        const btn = document.getElementById('online-pay-btn');
+        const spinner = document.getElementById('online-spinner');
+        
+        if (btn) btn.disabled = true;
+        if (spinner) spinner.style.display = 'block';
+
+        // Create Razorpay order on backend
+        fetch(`${API}/teams/registrations/${paymentTargetId}/razorpay-order`, {
+          method: 'POST',
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            amount: amount,
+            currency: 'INR'
+          })
+        })
+        .then(res => res.json())
+        .then(orderData => {
+          if (!orderData.success || !orderData.orderId) {
+            throw new Error(orderData.message || 'Failed to create order');
+          }
+
+          // Initialize Razorpay payment
+          if (!window.Razorpay) {
+            showPaymentToast('Razorpay SDK not loaded. Please refresh and try again.', 'error');
+            throw new Error('Razorpay SDK not available');
+          }
+
+          const options = {
+            key: orderData.razorpayKey || 'RAZORPAY_KEY_ID', // From backend env
+            amount: amount * 100, // Convert to paise
+            currency: 'INR',
+            name: 'EventHub',
+            description: 'Event Registration Payment',
+            order_id: orderData.orderId,
+            handler: function(response) {
+              // Payment successful - verify on backend
+              verifyRazorpayPayment(response, amount);
+            },
+            prefill: {
+              email: orderData.email || '',
+              contact: orderData.phone || ''
+            },
+            theme: {
+              color: '#5B4FE8'
+            },
+            modal: {
+              ondismiss: function() {
+                if (btn) btn.disabled = false;
+                if (spinner) spinner.style.display = 'none';
+                showPaymentToast('Payment cancelled', 'error');
+              }
+            }
+          };
+
+          const razorpay = new Razorpay(options);
+          razorpay.open();
+        })
+        .catch(err => {
+          console.error('Razorpay initialization error:', err);
+          showPaymentToast(err.message || 'Failed to initialize payment. Please try again.', 'error');
+          if (btn) btn.disabled = false;
+          if (spinner) spinner.style.display = 'none';
+        });
+      };
+
+      // Verify Razorpay payment with backend
+      function verifyRazorpayPayment(response, amount) {
+        const btn = document.getElementById('online-pay-btn');
+        const spinner = document.getElementById('online-spinner');
+        
+        if (spinner) spinner.style.display = 'block';
+        if (btn) btn.disabled = true;
+
+        fetch(`${API}/teams/registrations/${paymentTargetId}/verify-razorpay`, {
+          method: 'POST',
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            razorpay_payment_id: response.razorpay_payment_id,
+            razorpay_order_id: response.razorpay_order_id,
+            razorpay_signature: response.razorpay_signature,
+            amount: amount,
+            currency: 'INR'
+          })
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            showPaymentToast('✓ Payment successful! Thank you for registering!', 'success');
+            // Reload and refresh UI
+            loadMyRegistrations().then(() => {
+              renderMyRegs();
+              updateStats();
+            });
+            setTimeout(() => closePaymentModal(), 2000);
+          } else {
+            showPaymentToast(data.message || 'Payment verification failed', 'error');
+            if (btn) btn.disabled = false;
+            if (spinner) spinner.style.display = 'none';
+          }
+        })
+        .catch(err => {
+          console.error('Payment verification error:', err);
+          showPaymentToast('Payment verified but could not update records. Contact support.', 'error');
+          if (btn) btn.disabled = false;
+          if (spinner) spinner.style.display = 'none';
+        });
+      }
+
+      window.showPaymentToast = function(message, type = 'success') {
+        const toast = document.createElement('div');
+        toast.className = `toast-payment show ${type}`;
+        toast.innerHTML = `
+          <svg viewBox="0 0 16 16" fill="none">
+            ${type === 'success' ? 
+              '<path d="M8 1c3.866 0 7 3.134 7 7s-3.134 7-7 7-7-3.134-7-7 3.134-7 7-7z" stroke="currentColor" stroke-width="1.3"/><path d="M6.5 8l2 2 3-4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>' :
+              '<path d="M8 1c3.866 0 7 3.134 7 7s-3.134 7-7 7-7-3.134-7-7 3.134-7 7-7z" stroke="currentColor" stroke-width="1.3"/><line x1="5" y1="5" x2="11" y2="11" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><line x1="11" y1="5" x2="5" y2="11" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>'
+            }
+          </svg>
+          <span>${message}</span>
+        `;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 3000);
+      };
+
+      window.closePaymentModal = function() {
+        const modal = document.getElementById('payment-modal');
+        if (modal) modal.classList.remove('open');
+      };
 
     })();
   </script>
