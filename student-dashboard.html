@@ -1903,91 +1903,7 @@
       font-size: 16px
     }
 
-    /* Payment Method Toggle */
-    .payment-method-section {
-      margin-bottom: 16px
-    }
 
-    .payment-method-title {
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--text2);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 8px
-    }
-
-    .payment-method-tabs {
-      display: flex;
-      gap: 8px;
-      background: var(--surface2);
-      padding: 4px;
-      border-radius: 10px;
-      border: 1px solid var(--border)
-    }
-
-    .payment-method-tab {
-      flex: 1;
-      padding: 10px 12px;
-      border: none;
-      border-radius: 8px;
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--text2);
-      background: transparent;
-      cursor: pointer;
-      transition: all 0.2s;
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px
-    }
-
-    .payment-method-tab:hover {
-      color: var(--text)
-    }
-
-    .payment-method-tab.active {
-      background: var(--surface);
-      color: var(--purple);
-      font-weight: 700;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08)
-    }
-
-    .payment-method-tab svg {
-      width: 14px;
-      height: 14px
-    }
-
-    /* Online Payment */
-    .online-payment-content {
-      display: none
-    }
-
-    .online-payment-content.active {
-      display: block
-    }
-
-    .payment-trust-badges {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 14px;
-      font-size: 11px;
-      color: var(--text3)
-    }
-
-    .trust-badge {
-      display: flex;
-      align-items: center;
-      gap: 5px
-    }
-
-    .trust-badge svg {
-      width: 14px;
-      height: 14px;
-      color: var(--green)
-    }
 
     /* Manual Payment */
     .manual-payment-content {
@@ -2948,7 +2864,7 @@
     </div>
   </div>
 
-  <!-- ── PAYMENT MODAL (Dynamic: UPI Manual or Razorpay) ── -->
+  <!-- ── PAYMENT MODAL (Manual UPI Proof Upload) ── -->
   <div class="overlay" id="payment-modal" onclick="if(event.target===this)closePaymentModal()">
     <div class="modal payment-modal">
       <div class="modal-hd">
@@ -2986,48 +2902,8 @@
           </div>
         </div>
 
-        <!-- SECTION 2: PAYMENT METHOD SELECTION -->
-        <div class="payment-method-section">
-          <div class="payment-method-title">Select Payment Method</div>
-          <div class="payment-method-tabs">
-            <button class="payment-method-tab active" onclick="switchPaymentMethod('online', this)">
-              <svg viewBox="0 0 16 16" fill="none"><rect x="1" y="3" width="14" height="10" rx="1.5" stroke="currentColor" stroke-width="1.2"/><circle cx="8" cy="8" r="1" fill="currentColor"/></svg>
-              Pay Online
-            </button>
-            <button class="payment-method-tab" onclick="switchPaymentMethod('manual', this)">
-              <svg viewBox="0 0 16 16" fill="none"><path d="M1 4h14v10H1z" stroke="currentColor" stroke-width="1.2"/><path d="M1 6h14" stroke="currentColor" stroke-width="1.2"/></svg>
-              Manual UPI
-            </button>
-          </div>
-        </div>
-
-        <!-- SECTION 3a: ONLINE PAYMENT -->
-        <div class="online-payment-content active">
-          <div class="payment-trust-badges">
-            <div class="trust-badge">
-              <svg viewBox="0 0 16 16" fill="none"><path d="M8 1c3.866 0 7 3.134 7 7s-3.134 7-7 7-7-3.134-7-7 3.134-7 7-7z" stroke="currentColor" stroke-width="1.3"/><path d="M6.5 8l2 2 3-4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              Secure Checkout
-            </div>
-            <div class="trust-badge">
-              <svg viewBox="0 0 16 16" fill="none"><path d="M8 1c3.866 0 7 3.134 7 7s-3.134 7-7 7-7-3.134-7-7 3.134-7 7-7z" stroke="currentColor" stroke-width="1.3"/><path d="M6.5 8l2 2 3-4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              Instant Confirmation
-            </div>
-            <div class="trust-badge">
-              <svg viewBox="0 0 16 16" fill="none"><path d="M8 1c3.866 0 7 3.134 7 7s-3.134 7-7 7-7-3.134-7-7 3.134-7 7-7z" stroke="currentColor" stroke-width="1.3"/><path d="M6.5 8l2 2 3-4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              Verified Partner
-            </div>
-          </div>
-
-          <!-- Amount Display -->
-          <div class="card" style="padding:16px;margin-bottom:16px;text-align:center;background:var(--purple-faint);border-color:var(--purple-light)">
-            <div style="font-size:11px;color:var(--text3);margin-bottom:6px">Total Amount to Pay</div>
-            <div style="font-size:28px;font-weight:700;color:var(--purple);margin-bottom:4px" id="razorpay-amount">₹0</div>
-            <div style="font-size:11px;color:var(--text2)">Powered by Razorpay • PCI DSS Certified 🔒</div>
-          </div>
-        </div>
-
-        <!-- SECTION 3b: MANUAL UPI PAYMENT -->
-        <div class="manual-payment-content">
+        <!-- MANUAL UPI PAYMENT -->
+        <div class="manual-payment-content active">
           <!-- UPI Details Box -->
           <div class="upi-details-box">
             <div style="text-align:center;margin-bottom:12px">
@@ -3081,14 +2957,8 @@
       <div class="modal-ft" style="display:flex;justify-content:center;gap:8px;padding:14px 16px;border-top:1px solid var(--border)">
         <button class="btn-cancel" onclick="closePaymentModal()">Cancel</button>
         
-        <!-- Online Payment Button -->
-        <button id="online-pay-btn" class="payment-submit-btn btn-primary" onclick="initializeRazorpay()" style="display:none">
-          <span id="online-spinner" style="display:none" class="upload-spinner"></span>
-          Pay Now
-        </button>
-        
         <!-- Manual Payment Submit -->
-        <button id="manual-submit-btn" class="payment-submit-btn btn-primary" onclick="submitManualPayment()" style="display:none;opacity:0.5" disabled>
+        <button id="manual-submit-btn" class="payment-submit-btn btn-primary" onclick="submitManualPayment()" style="display:flex;opacity:0.5" disabled>
           <span id="manual-spinner" style="display:none;width:14px;height:14px" class="upload-spinner"></span>
           Submit Proof
         </button>
@@ -3122,9 +2992,6 @@
     </div>
   </div>
 
-  <!-- Razorpay Payment Gateway SDK -->
-  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-  
   <script src="auth-client.js"></script>
   <script>
     // ── GLOBAL FUNCTIONS (Available from HTML onclick handlers) ──
@@ -3174,10 +3041,6 @@
     
     function submitUPIPayment() {
       if(window._submitUPIPaymentFn) window._submitUPIPaymentFn();
-    }
-    
-    function initializeRazorpay() {
-      if(window._initializeRazorpayFn) window._initializeRazorpayFn();
     }
 
     // PAGE INITIALIZATION ──
@@ -3430,7 +3293,6 @@
           const ds = ev.date ? new Date(ev.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : 'TBD';
           const eventStatusCls = ev.status === 'Upcoming' ? 'badge-upcoming' : ev.status === 'Completed' ? 'badge-done' : 'badge-confirmed';
           const membersCount = Array.isArray(r.members) ? r.members.length : (r.members || 1);
-          const paymentMethod = ev.paymentMode || 'razorpay';
           const paymentStatus = (r.paymentStatus || '').toLowerCase();
           const isPaymentApproved = paymentStatus === 'approved';
           
@@ -3507,8 +3369,7 @@
         const ev = reg.event && typeof reg.event === 'object' ? reg.event : events.find(e => e._id === reg.event);
         if (!ev) return;
         
-        const paymentMode = ev.paymentMode || 'razorpay';
-        openPaymentModal(regId, reg, ev, paymentMode);
+        openPaymentModal(regId, reg, ev);
       }
 
       // ── STATS ──
@@ -3932,7 +3793,6 @@
       // Payment Modal State
       let paymentTargetId = null;
       let paymentTimerInterval = null;
-      let currentPaymentMethod = null; // 'upi_manual' or 'razorpay'
       
       function closePaymentModal() {
         const modal = document.getElementById('payment-modal');
@@ -4046,9 +3906,8 @@
       }
       
       // Open Payment Modal with Dynamic Content
-      async function openPaymentModal(regId, registration, event, paymentMode) {
+      async function openPaymentModal(regId, registration, event) {
         paymentTargetId = regId;
-        currentPaymentMethod = paymentMode;
         
         // Extract event info with fallbacks
         const eventTitle = event.title || event.name || event.eventName || 'Event';
@@ -4108,10 +3967,8 @@
         
         // Update fee amount
         const payAmountEl = document.getElementById('pay-amount');
-        const razorpayAmountEl = document.getElementById('razorpay-amount');
         const upiAmountEl = document.getElementById('upi-amount');
         if (payAmountEl) payAmountEl.textContent = '₹' + eventFee;
-        if (razorpayAmountEl) razorpayAmountEl.textContent = '₹' + eventFee;
         if (upiAmountEl) upiAmountEl.textContent = '₹' + eventFee;
         
         // Update UPI details
@@ -4119,23 +3976,6 @@
         const upiHolderEl = document.getElementById('upi-holder');
         if (upiIdEl) upiIdEl.textContent = organizerUPI;
         if (upiHolderEl) upiHolderEl.textContent = organizerName;
-        
-        // Get payment method buttons and content sections
-        const onlineContent = document.querySelector('.online-payment-content');
-        const manualContent = document.querySelector('.manual-payment-content');
-        const onlineBtn = document.getElementById('online-pay-btn');
-        const manualBtn = document.getElementById('manual-submit-btn');
-        
-        // Reset to online payment by default
-        if (onlineContent) onlineContent.classList.add('active');
-        if (manualContent) manualContent.classList.remove('active');
-        if (onlineBtn) onlineBtn.style.display = 'flex';
-        if (manualBtn) manualBtn.style.display = 'none';
-        
-        // Reset payment method tabs
-        document.querySelectorAll('.payment-method-tab').forEach((tab, idx) => {
-          tab.classList.toggle('active', idx === 0);
-        });
         
         // Clear previous uploads
         clearScreenhotUpload();
@@ -4345,37 +4185,6 @@
          PAYMENT MODULE FUNCTIONS
       ────────────────────────────────────────────────────────────────────── */
 
-      window.switchPaymentMethod = function(method, btn) {
-        if (!btn) return;
-        
-        // Update button active state
-        document.querySelectorAll('.payment-method-tab').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-
-        // Hide/show content
-        document.querySelectorAll('.online-payment-content, .manual-payment-content').forEach(el => 
-          el.classList.remove('active')
-        );
-
-        if (method === 'online') {
-          const onlineContent = document.querySelector('.online-payment-content');
-          const onlineBtn = document.getElementById('online-pay-btn');
-          const manualBtn = document.getElementById('manual-submit-btn');
-          
-          if (onlineContent) onlineContent.classList.add('active');
-          if (onlineBtn) onlineBtn.style.display = 'flex';
-          if (manualBtn) manualBtn.style.display = 'none';
-        } else {
-          const manualContent = document.querySelector('.manual-payment-content');
-          const onlineBtn = document.getElementById('online-pay-btn');
-          const manualBtn = document.getElementById('manual-submit-btn');
-          
-          if (manualContent) manualContent.classList.add('active');
-          if (onlineBtn) onlineBtn.style.display = 'none';
-          if (manualBtn) manualBtn.style.display = 'flex';
-        }
-      };
-
       window.handleDrop = function(e) {
         e.preventDefault();
         const dropzone = document.getElementById('upload-dropzone');
@@ -4492,124 +4301,6 @@
           if (spinner) spinner.style.display = 'none';
         });
       };
-
-      window.initializeRazorpay = function() {
-        const amountEl = document.getElementById('razorpay-amount');
-        if (!amountEl) {
-          showPaymentToast('Payment amount not found', 'error');
-          return;
-        }
-        
-        const amount = parseFloat(amountEl.textContent.replace('₹', ''));
-        const btn = document.getElementById('online-pay-btn');
-        const spinner = document.getElementById('online-spinner');
-        
-        if (btn) btn.disabled = true;
-        if (spinner) spinner.style.display = 'block';
-
-        // Create Razorpay order on backend
-        fetch(`${API}/teams/registrations/${paymentTargetId}/razorpay-order`, {
-          method: 'POST',
-          credentials: 'include',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            amount: amount,
-            currency: 'INR'
-          })
-        })
-        .then(res => res.json())
-        .then(orderData => {
-          if (!orderData.success || !orderData.orderId) {
-            throw new Error(orderData.message || 'Failed to create order');
-          }
-
-          // Initialize Razorpay payment
-          if (!window.Razorpay) {
-            showPaymentToast('Razorpay SDK not loaded. Please refresh and try again.', 'error');
-            throw new Error('Razorpay SDK not available');
-          }
-
-          const options = {
-            key: orderData.razorpayKey || 'RAZORPAY_KEY_ID', // From backend env
-            amount: amount * 100, // Convert to paise
-            currency: 'INR',
-            name: 'EventHub',
-            description: 'Event Registration Payment',
-            order_id: orderData.orderId,
-            handler: function(response) {
-              // Payment successful - verify on backend
-              verifyRazorpayPayment(response, amount);
-            },
-            prefill: {
-              email: orderData.email || '',
-              contact: orderData.phone || ''
-            },
-            theme: {
-              color: '#5B4FE8'
-            },
-            modal: {
-              ondismiss: function() {
-                if (btn) btn.disabled = false;
-                if (spinner) spinner.style.display = 'none';
-                showPaymentToast('Payment cancelled', 'error');
-              }
-            }
-          };
-
-          const razorpay = new Razorpay(options);
-          razorpay.open();
-        })
-        .catch(err => {
-          console.error('Razorpay initialization error:', err);
-          showPaymentToast(err.message || 'Failed to initialize payment. Please try again.', 'error');
-          if (btn) btn.disabled = false;
-          if (spinner) spinner.style.display = 'none';
-        });
-      };
-
-      // Verify Razorpay payment with backend
-      function verifyRazorpayPayment(response, amount) {
-        const btn = document.getElementById('online-pay-btn');
-        const spinner = document.getElementById('online-spinner');
-        
-        if (spinner) spinner.style.display = 'block';
-        if (btn) btn.disabled = true;
-
-        fetch(`${API}/teams/registrations/${paymentTargetId}/verify-razorpay`, {
-          method: 'POST',
-          credentials: 'include',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            razorpay_payment_id: response.razorpay_payment_id,
-            razorpay_order_id: response.razorpay_order_id,
-            razorpay_signature: response.razorpay_signature,
-            amount: amount,
-            currency: 'INR'
-          })
-        })
-        .then(res => res.json())
-        .then(data => {
-          if (data.success) {
-            showPaymentToast('✓ Payment successful! Thank you for registering!', 'success');
-            // Reload and refresh UI
-            loadMyRegistrations().then(() => {
-              renderMyRegs();
-              updateStats();
-            });
-            setTimeout(() => closePaymentModal(), 2000);
-          } else {
-            showPaymentToast(data.message || 'Payment verification failed', 'error');
-            if (btn) btn.disabled = false;
-            if (spinner) spinner.style.display = 'none';
-          }
-        })
-        .catch(err => {
-          console.error('Payment verification error:', err);
-          showPaymentToast('Payment verified but could not update records. Contact support.', 'error');
-          if (btn) btn.disabled = false;
-          if (spinner) spinner.style.display = 'none';
-        });
-      }
 
       window.showPaymentToast = function(message, type = 'success') {
         const toast = document.createElement('div');

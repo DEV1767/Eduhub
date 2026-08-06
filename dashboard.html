@@ -1079,24 +1079,26 @@ async function saveEvent(){
   btn.textContent = 'Creating...';
 
   try{
-    const formData = new FormData();
-    formData.append('name', name);
-    formData.append('date', date);
-    formData.append('type', document.getElementById('m-type').value);
-    formData.append('status', document.getElementById('m-status').value);
-    formData.append('time', document.getElementById('m-time').value);
-    formData.append('venue', document.getElementById('m-venue').value.trim());
+    const payload = {
+      name: name,
+      date: date,
+      type: document.getElementById('m-type').value,
+      status: document.getElementById('m-status').value,
+      time: document.getElementById('m-time').value,
+      venue: document.getElementById('m-venue').value.trim(),
+      prize: document.getElementById('m-prize').value.trim(),
+      description: document.getElementById('m-desc').value.trim(),
+      paymentMode: paymentMode
+    };
+    
     if(document.getElementById('m-maxteams').value) {
-      formData.append('maxTeams', Number(document.getElementById('m-maxteams').value));
+      payload.maxTeams = Number(document.getElementById('m-maxteams').value);
     }
-    formData.append('prize', document.getElementById('m-prize').value.trim());
-    formData.append('description', document.getElementById('m-desc').value.trim());
-    formData.append('paymentMode', paymentMode);
     
     // Add fee if specified
     const fee = document.getElementById('m-fee').value;
     if(fee) {
-      formData.append('fee', Number(fee));
+      payload.fee = Number(fee);
     }
     
     // Add UPI details if selected
@@ -1109,15 +1111,27 @@ async function saveEvent(){
       if(!upiId){ toast('UPI ID is required for UPI payments', 'fail'); btn.disabled = false; btn.textContent = 'Create Event'; return; }
       if(!qrFile){ toast('QR code is required for UPI payments', 'fail'); btn.disabled = false; btn.textContent = 'Create Event'; return; }
       
-      formData.append('organizerName', orgName);
-      formData.append('upiId', upiId);
-      formData.append('qrCode', qrFile);
+      // Convert QR code to base64
+      const reader = new FileReader();
+      await new Promise(function(resolve, reject) {
+        reader.onload = function() {
+          payload.organizerName = orgName;
+          payload.upiId = upiId;
+          payload.qrCode = reader.result; // base64 string
+          resolve();
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(qrFile);
+      });
     }
     
     const res = await fetch(`${API}/events`, {
       method: 'POST',
       credentials: 'include',
-      body: formData
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(payload)
     });
     
     const data = await res.json();
