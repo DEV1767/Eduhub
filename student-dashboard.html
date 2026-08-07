@@ -2328,7 +2328,7 @@
 
     <!-- ── SIDEBAR ── -->
     <aside class="sidebar" id="sidebar">
-      <a href="index.html" class="sidebar-logo">
+      <a href="home.html" class="sidebar-logo">
         <div class="logo-icon">
           <svg viewBox="0 0 16 16" fill="none">
             <rect x="1" y="4" width="14" height="10" rx="2" fill="rgba(255,255,255,0.15)" stroke="white"
@@ -3088,7 +3088,9 @@
       }
 
       // ── API ──
-      const API = 'http://localhost:8000/api/v1';
+      const API = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+        ? 'http://localhost:8000/api/v1'
+        : 'https://eduhub-backend.vercel.app/api/v1';
 
       // ── STATE ──
       let events = [];
